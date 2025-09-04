@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <title>
+      {{ title if title else "ระบบควบคุมทรัพย์สิน วิทยาลัยอาชีวศึกษานครปฐม" }}
+    </title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+      integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+      integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+      crossorigin="anonymous"
+    ></script>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+      }
+      header {
+        background-color: white;
+        padding: 5px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+      header img {
+        height: 50px;
+        margin-right: 10px;
+      }
+      nav {
+        background-color: #007bff;
+        padding: 10px;
+        text-align: center;
+      }
+      nav a {
+        color: white;
+        margin: 0 15px;
+        text-decoration: none;
+        font-weight: bold;
+      }
+      nav a:hover {
+        text-decoration: underline;
+      }
+      .container {
+        padding: 30px;
+        min-height: 500px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+      footer {
+        background-color: #007bff;
+        color: white;
+        text-align: center;
+        padding: 10px;
+        position: relative;
+        bottom: 0;
+        width: 100%;
+      }
+      /* Modal */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 999;
+        padding-top: 50px;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+      .modal-content {
+        background-color: white;
+        margin: auto;
+        padding: 20px;
+        border: none;
+        width: 350px;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      }
+      .modal-content img {
+        width: 80px;
+        margin-bottom: 10px;
+      }
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 20px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      .close:hover {
+        color: red;
+      }
+      input[type="text"],
+      input[type="password"] {
+        width: 90%;
+        padding: 8px;
+        margin: 8px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      button {
+        background-color: #007bff;
+        color: white;
+        padding: 8px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      /* Success/Fail Message */
+      .status-message {
+        display: none;
+        margin-top: 15px;
+        font-weight: bold;
+        font-size: 14px;
+      }
+      .success {
+        color: green;
+      }
+      .error {
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div style="display: flex; align-items: center">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="โลโก้" />
+        <h2>ระบบควบคุมทรัพย์สิน วิทยาลัยอาชีวศึกษานครปฐม</h2>
+      </div>
+      <button id="loginBtn" type="button" class="btn btn-primary">เข้าสู่ระบบ</button>
+    </header>
+
+    <nav>
+      <a href="/">หน้าแรก</a>
+      <a href="/page1">หน้า 1</a>
+      <a href="/page2">หน้า 2</a>
+      <a href="/page3">หน้า 3</a>
+      <a href="/page4">หน้า 4</a>
+      <a href="/page5">หน้า 5</a>
+    </nav>
+
+    <div class="container">{% block content %}{% endblock %}</div>
+
+    <footer>© 2025 วิทยาลัยอาชีวศึกษานครปฐม | ระบบควบคุมทรัพย์สิน</footer>
+
+    <!-- Modal Login -->
+    <div id="loginModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="โลโก้" />
+        <h3>เข้าสู่ระบบ</h3>
+        <input type="text" id="username" placeholder="ชื่อผู้ใช้" />
+        <input type="password" id="password" placeholder="รหัสผ่าน" />
+        <button id="loginSubmit">เข้าสู่ระบบ</button>
+        <div id="status" class="status-message"></div>
+      </div>
+    </div>
+
+    <script>
+      var modal = document.getElementById("loginModal");
+      var btn = document.getElementById("loginBtn");
+      var span = document.getElementsByClassName("close")[0];
+      var submitBtn = document.getElementById("loginSubmit");
+      var statusMsg = document.getElementById("status");
+
+      btn.onclick = function () {
+        modal.style.display = "block";
+      };
+      span.onclick = function () {
+        modal.style.display = "none";
+        statusMsg.style.display = "none";
+      };
+      window.onclick = function (event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+          statusMsg.style.display = "none";
+        }
+      };
+
+      submitBtn.onclick = function () {
+        let user = document.getElementById("username").value;
+        let pass = document.getElementById("password").value;
+
+        if (user === "admin" && pass === "1234") {
+          statusMsg.innerHTML = "✅ เข้าสู่ระบบสำเร็จ";
+          statusMsg.className = "status-message success";
+          statusMsg.style.display = "block";
+        } else {
+          statusMsg.innerHTML = "❌ เข้าสู่ระบบไม่สำเร็จ";
+          statusMsg.className = "status-message error";
+          statusMsg.style.display = "block";
+        }
+      };
+    </script>
+  </body>
+</html>
