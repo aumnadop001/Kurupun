@@ -8,17 +8,17 @@ def index():
     return render_template('index.html')
 
 # 5 หน้าอื่น
-@app.route('/page1')
-def page1():
-    return render_template('page1.html')
+@app.route('/withdrawal')
+def withdrawal():
+    return render_template('withdrawal.html')
 
-@app.route('/page2')
-def page2():
-    return render_template('page2.html')
+@app.route('/inventorycontrol')
+def inventorycontrol():
+    return render_template('inventorycontrol.html')
 
-@app.route('/page3')
-def page3():
-    return render_template('page3.html')
+@app.route('/fixed_asset')
+def fixed_asset():
+    return render_template('fixed_asset.html')
 
 @app.route('/page4')
 def page4():

@@ -1,0 +1,66 @@
+{% extends "base.html" %} {% block content %}
+
+<p class="h3 text-center">บัญชีคุมพัสดุ (ครุภัณฑ์)</p>
+<div><p class="h6 text-end">แบบ พ.3102-8</p></div>
+<table class="table table-bordered text-center align-middle">
+  <thead class="table-primary">
+    <tr>
+      <th colspan="2">
+        ชื่อพัสดุ
+        <div class="small text-muted">รายละเอียดเพิ่มเติม</div>
+      </th>
+      <th colspan="4">
+        หมายเลขพัสดุ
+        <div class="small text-muted">เพิ่มข้อความได้</div>
+      </th>
+      <th colspan="3">
+        หน่วยนับ
+        <div class="small text-muted">ข้อความบรรยาย</div>
+      </th>
+      <th colspan="2">
+        อัตรา
+        <div class="small text-muted">สามารถเพิ่มรายละเอียด</div>
+      </th>
+    </tr>
+    <tr>
+      <th colspan="11">รายละเอียด</th>
+    </tr>
+    <tr>
+      <th rowspan="3">ว.ด.ป.</th>
+      <th rowspan="3">หลักฐาน</th>
+      <th colspan="4">รับ</th>
+      <th colspan="3">จ่าย</th>
+      <th rowspan="3">คงคลัง</th>
+      <th rowspan="3">ลายมือชื่อ</th>
+    </tr>
+    <tr>
+      <th rowspan="2">วิธีการได้มา</th>
+      <th rowspan="2">ประเภทเงิน</th>
+      <th rowspan="2">ราคาต่อหน่วย</th>
+      <th rowspan="2">จำนวน</th>
+      <th colspan="2">ความต้องการ</th>
+      <th rowspan="2">จำนวน</th>
+    </tr>
+    <tr>
+      <th>ขั้นต้น</th>
+      <th>ทดแทน</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>01/01/2025</td>
+      <td>ใบเสร็จ</td>
+      <td>ซื้อ</td>
+      <td>งบประมาณ</td>
+      <td>500</td>
+      <td>10</td>
+      <td>✔</td>
+      <td></td>
+      <td>5</td>
+      <td>15</td>
+      <td>นาย ก</td>
+    </tr>
+  </tbody>
+</table>
+
+{% endblock %}
