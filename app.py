@@ -1,4 +1,12 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
+import mysql.connector
+def get_mysql_connection():
+    return mysql.connector.connect(
+        host='localhost',
+        user='user',
+        password='userpassword',
+        database='pasadu2025'
+    )
 
 app = Flask(__name__)
 
@@ -10,7 +18,25 @@ def index():
 # 5 หน้าอื่น
 @app.route('/withdrawal')
 def withdrawal():
-    return render_template('withdrawal.html')
+    q = request.args.get('q', default='', type=str)
+    connection = get_mysql_connection()
+    cursor = connection.cursor(dictionary=True)
+    if q:
+        sql = """
+        SELECT * FROM description
+        WHERE Des_id LIKE %s OR Des_name LIKE %s OR keyword LIKE %s
+        LIMIT 20
+        """
+        like_q = f"%{q}%"
+        cursor.execute(sql, (like_q, like_q, like_q))
+    else:
+        cursor.execute("SELECT * FROM description LIMIT 20")
+    data = cursor.fetchall()
+    cursor.close()
+    connection.close()
+    if request.headers.get('Accept') == 'application/json' or request.args.get('json') == '1':
+        return jsonify(data)
+    return render_template('withdrawal.html', data=data)
 
 @app.route('/inventorycontrol')
 def inventorycontrol():
