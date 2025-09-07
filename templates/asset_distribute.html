@@ -1,0 +1,32 @@
+{% extends "base.html" %} {% block content %}
+<p class="h3 text-center">บัญชีคุมครุภัณฑ์จ่ายให้หน่วย</p>
+<div><p class="h6 text-end">แบบ พ. 3108</p></div>
+<table class="table table-bordered text-center align-middle">
+  <thead class="table-primary">
+    <tr>
+      <th colspan="3">
+        ชื่อพัสดุ
+        <div class="small text-muted">
+          รายละเอียดเพิ่มเติมเกี่ยวกับชื่อพัสดุ
+        </div>
+      </th>
+      <th colspan="2">
+        หมายเลขพัสดุ
+        <div class="small text-muted">
+          รายละเอียดเพิ่มเติมเกี่ยวกับหมายเลขพัสดุ
+        </div>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>นามหน่วย</td>
+      <td>หลักฐานรับ</td>
+      <td>หลักฐานจ่าย</td>
+      <td>จำนวน</td>
+      <td>เลขลำดับครุภัณฑ์</td>
+    </tr>
+  </tbody>
+</table>
+
+{% endblock %}

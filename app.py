@@ -18,25 +18,25 @@ def index():
 # 5 หน้าอื่น
 @app.route('/withdrawal')
 def withdrawal():
-    q = request.args.get('q', default='', type=str)
-    connection = get_mysql_connection()
-    cursor = connection.cursor(dictionary=True)
-    if q:
-        sql = """
-        SELECT * FROM description
-        WHERE Des_id LIKE %s OR Des_name LIKE %s OR keyword LIKE %s
-        LIMIT 20
-        """
-        like_q = f"%{q}%"
-        cursor.execute(sql, (like_q, like_q, like_q))
-    else:
-        cursor.execute("SELECT * FROM description LIMIT 20")
-    data = cursor.fetchall()
-    cursor.close()
-    connection.close()
-    if request.headers.get('Accept') == 'application/json' or request.args.get('json') == '1':
-        return jsonify(data)
-    return render_template('withdrawal.html', data=data)
+    # q = request.args.get('q', default='', type=str)
+    # connection = get_mysql_connection()
+    # cursor = connection.cursor(dictionary=True)
+    # if q:
+    #     sql = """
+    #     SELECT * FROM description
+    #     WHERE Des_id LIKE %s OR Des_name LIKE %s OR keyword LIKE %s
+    #     LIMIT 20
+    #     """
+    #     like_q = f"%{q}%"
+    #     cursor.execute(sql, (like_q, like_q, like_q))
+    # else:
+    #     cursor.execute("SELECT * FROM description LIMIT 20")
+    # data = cursor.fetchall()
+    # cursor.close()
+    # connection.close()
+    # if request.headers.get('Accept') == 'application/json' or request.args.get('json') == '1':
+        # return jsonify(data)
+    return render_template('withdrawal.html', data=[])
 
 @app.route('/inventorycontrol')
 def inventorycontrol():
@@ -46,13 +46,13 @@ def inventorycontrol():
 def fixed_asset():
     return render_template('fixed_asset.html')
 
-@app.route('/page4')
-def page4():
-    return render_template('page4.html')
+@app.route('/asset_distribute')
+def asset_distribute():
+    return render_template('asset_distribute.html')
 
-@app.route('/page5')
-def page5():
-    return render_template('page5.html')
+@app.route('/asset_control')
+def asset_control():
+    return render_template('asset_control.html')
 
 # หน้า Login
 @app.route('/login', methods=['GET', 'POST'])

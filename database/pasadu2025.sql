@@ -1,3 +1,9 @@
+CREATE DATABASE IF NOT EXISTS pasadu2025;
+
+CREATE USER IF NOT EXISTS 'user'@'%' IDENTIFIED BY 'userpassword';
+GRANT ALL PRIVILEGES ON pasadu2025.* TO 'user'@'%';
+FLUSH PRIVILEGES;
+
 -- phpMyAdmin SQL Dump
 -- version 5.2.0
 -- https://www.phpmyadmin.net/

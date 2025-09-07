@@ -1,0 +1,72 @@
+{% extends "base.html" %} {% block content %}
+<p class="h3 text-center">บัญชีคุมครุภัณฑ์</p>
+<div><p class="h6 text-end">แบบ พ. 3103-3</p></div>
+
+<div class="container mt-4">
+  <div class="table-responsive">
+    <table class="table table-bordered text-center align-middle">
+      <thead class="table-primary">
+        <tr>
+          <th colspan="5">
+            หน่วย
+            <div class="small text-muted">Unit Information</div>
+          </th>
+          <th colspan="4">
+            หมายเลขพัสดุ
+            <div class="small text-muted">Asset Number</div>
+          </th>
+        </tr>
+        <tr>
+          <th colspan="5">
+            ครุภัณฑ์
+            <div class="small text-muted">Equipment</div>
+          </th>
+          <th colspan="4" rowspan="2">
+            ขนาด
+            <div class="small text-muted">Size</div>
+          </th>
+        </tr>
+        <tr>
+          <th colspan="2">
+            หน่วยนับ
+            <div class="small text-muted">Unit</div>
+          </th>
+          <th colspan="2">
+            จำนวนอัตรา
+            <div class="small text-muted">Quantity Rate</div>
+          </th>
+          <th>
+            หมายเลขอัตรา
+            <div class="small text-muted">Rate Number</div>
+          </th>
+        </tr>
+        <tr>
+          <th>ว.ด.ป.</th>
+          <th>ที่เอกสาร</th>
+          <th>รับ</th>
+          <th>ส่งคืน</th>
+          <th>ราคา</th>
+          <th>คงเหลือ</th>
+          <th>ว.ด.ป.</th>
+          <th>จำนวน</th>
+          <th>หน่วย</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>01/01/2568</td>
+          <td>Doc-01</td>
+          <td>5</td>
+          <td>1</td>
+          <td>500</td>
+          <td>4</td>
+          <td>01/01/2568</td>
+          <td>10</td>
+          <td>ชิ้น</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}
