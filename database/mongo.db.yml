@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  mongo:
+    user: root
+    image: mongo:7
+    container_name: kurupun-mongo
+    restart: always
+    environment:
+      MONGO_INITDB_DATABASE: pasadu2025
+    ports:
+      - '27017:27017'
+    networks:
+      - kurupun-network
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: kurupun-mongo-express
+    restart: always
+    environment:
+      # ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      # ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_SERVER: mongo
+    ports:
+      - '4444:8081'
+    depends_on:
+      - mongo
+    networks:
+      - kurupun-network
+
+networks:
+  kurupun-network:
+    driver: bridge
+    name: kurupun-network

@@ -1,13 +1,69 @@
-{% extends "base.html" %} {% block content %}
-<h3>เข้าสู่ระบบ</h3>
-{% if error %}
-<p style="color: red">{{ error }}</p>
-{% endif %}
-<form method="post">
-  <label class="center w-100">ชื่อผู้ใช้:</label><br />
-  <input class="form-control" type="text" placeholder="Username" />
-  <label class="center w-100">รหัสผ่าน:</label><br />
-  <input class="form-control" type="password" placeholder="Password" />
-  <button type="submit">เข้าสู่ระบบ</button>
-</form>
+{% extends "base.html" %}
+
+{% block content %}
+<!-- <div class="row justify-content-center"> -->
+<!-- <div class="col-md-6 col-lg-4"> -->
+<div class="card shadow w-100">
+  <div class="card-body">
+    <div class="text-center mb-4">
+      <img src="{{ url_for('static', filename='logo.png') }}" alt="โลโก้" height="80" class="mb-3" />
+      <h3 class="card-title">เข้าสู่ระบบ</h3>
+      <p class="text-muted">กรุณาใส่ชื่อผู้ใช้และรหัสผ่าน</p>
+    </div>
+
+    {% if error %}
+    <div class="alert alert-danger" role="alert">
+      <i class="fas fa-exclamation-circle me-2"></i>{{ error }}
+    </div>
+    {% endif %}
+
+    <form method="post">
+      <div class="mb-3">
+        <label for="username" class="form-label">
+          <i class="fas fa-user me-1"></i>ชื่อผู้ใช้:
+        </label>
+        <input class="form-control" type="text" id="username" name="username" placeholder="กรอกชื่อผู้ใช้" required
+          autocomplete="username" />
+      </div>
+
+      <div class="mb-3">
+        <label for="password" class="form-label">
+          <i class="fas fa-lock me-1"></i>รหัสผ่าน:
+        </label>
+        <input class="form-control" type="password" id="password" name="password" placeholder="กรอกรหัสผ่าน" required
+          autocomplete="current-password" />
+      </div>
+
+      <div class="d-grid">
+        <button type="submit" class="btn btn-primary btn-lg">
+          <i class="fas fa-sign-in-alt me-2"></i>เข้าสู่ระบบ
+        </button>
+      </div>
+    </form>
+  </div>
+  <!-- </div> -->
+  <!-- </div> -->
+</div>
+
+<style>
+  .card {
+    border-radius: 15px;
+  }
+
+  .form-control {
+    border-radius: 10px;
+    padding: 12px;
+  }
+
+  .btn {
+    border-radius: 10px;
+    padding: 12px;
+  }
+
+  .container {
+    min-height: calc(100vh - 200px);
+    display: flex;
+    align-items: center;
+  }
+</style>
 {% endblock %}

@@ -1,0 +1,252 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h3>
+    {% if is_edit %}
+      แก้ไขข้อมูลพัสดุ
+    {% else %}
+      เพิ่มข้อมูลพัสดุใหม่
+    {% endif %}
+  </h3>
+  <a href="{{ url_for('inventory_control') }}" class="btn btn-secondary">
+    <i class="bi bi-arrow-left"></i> กลับ
+  </a>
+</div>
+
+<form method="POST" class="needs-validation" novalidate>
+  <div class="card">
+    <div class="card-header">
+      <h5 class="card-title mb-0">ข้อมูลพัสดุ</h5>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <!-- วันที่ -->
+        <div class="col-md-3">
+          <label for="date" class="form-label">วันที่ <span class="text-danger">*</span></label>
+          <input type="date" class="form-control" id="date" name="date"
+                 value="{{ record.date if record else '' }}" required>
+          <div class="invalid-feedback">
+            กรุณาระบุวันที่
+          </div>
+        </div>
+
+        <!-- หลักฐาน -->
+        <div class="col-md-3">
+          <label for="evidence" class="form-label">หลักฐาน <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="evidence" name="evidence"
+                 value="{{ record.evidence if record else '' }}"
+                 placeholder="เช่น ใบเสร็จ, ใบส่งของ" required>
+          <div class="invalid-feedback">
+            กรุณาระบุหลักฐาน
+          </div>
+        </div>
+
+        <!-- ลายมือชื่อ -->
+        <div class="col-md-3">
+          <label for="signature" class="form-label">ลายมือชื่อ <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="signature" name="signature"
+                 value="{{ record.signature if record else '' }}"
+                 placeholder="ชื่อผู้รับผิดชอบ" required>
+          <div class="invalid-feedback">
+            กรุณาระบุลายมือชื่อ
+          </div>
+        </div>
+
+        <!-- คงคลัง -->
+        <div class="col-md-3">
+          <label for="remainingStock" class="form-label">คงคลัง <span class="text-danger">*</span></label>
+          <input type="number" class="form-control" id="remainingStock" name="remainingStock"
+                 value="{{ record.remainingStock if record else '' }}"
+                 min="0" required>
+          <div class="invalid-feedback">
+            กรุณาระบุจำนวนคงคลัง
+          </div>
+        </div>
+      </div>
+
+      <hr class="my-4">
+
+      <div class="row">
+        <!-- ชื่อพัสดุ -->
+        <div class="col-md-6">
+          <label for="itemName" class="form-label">ชื่อพัสดุ <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="itemName" name="itemName"
+                 value="{{ record.itemName if record else '' }}"
+                 placeholder="ระบุชื่อพัสดุ" required>
+          <div class="invalid-feedback">
+            กรุณาระบุชื่อพัสดุ
+          </div>
+        </div>
+
+        <!-- หมายเลขพัสดุ -->
+        <div class="col-md-3">
+          <label for="itemNumber" class="form-label">หมายเลขพัสดุ</label>
+          <input type="text" class="form-control" id="itemNumber" name="itemNumber"
+                 value="{{ record.itemNumber if record else '' }}"
+                 placeholder="ระบุหมายเลข">
+        </div>
+
+        <!-- หน่วยนับ -->
+        <div class="col-md-3">
+          <label for="unit" class="form-label">หน่วยนับ <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="unit" name="unit"
+                 value="{{ record.unit if record else '' }}"
+                 placeholder="เช่น ชิ้น, เครื่อง, กล่อง" required>
+          <div class="invalid-feedback">
+            กรุณาระบุหน่วยนับ
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-3">
+        <!-- อัตรา -->
+        <div class="col-md-3">
+          <label for="rate" class="form-label">อัตรา</label>
+          <input type="number" class="form-control" id="rate" name="rate"
+                 value="{{ record.rate if record else '' }}"
+                 step="0.01" min="0" placeholder="0.00">
+        </div>
+      </div>
+
+      <hr class="my-4">
+      <h5 class="text-primary">ข้อมูลการรับ</h5>
+
+      <div class="row">
+        <!-- วิธีการได้มา -->
+        <div class="col-md-3">
+          <label for="acquisitionMethod" class="form-label">วิธีการได้มา <span class="text-danger">*</span></label>
+          <select class="form-control" id="acquisitionMethod" name="acquisitionMethod" required>
+            <option value="">เลือกวิธีการ</option>
+            <option value="ซื้อ" {{ 'selected' if record and record.acquisitionMethod == 'ซื้อ' else '' }}>ซื้อ</option>
+            <option value="รับบริจาค" {{ 'selected' if record and record.acquisitionMethod == 'รับบริจาค' else '' }}>รับบริจาค</option>
+            <option value="รับโอน" {{ 'selected' if record and record.acquisitionMethod == 'รับโอน' else '' }}>รับโอน</option>
+            <option value="ผลิตเอง" {{ 'selected' if record and record.acquisitionMethod == 'ผลิตเอง' else '' }}>ผลิตเอง</option>
+          </select>
+          <div class="invalid-feedback">
+            กรุณาเลือกวิธีการได้มา
+          </div>
+        </div>
+
+        <!-- ประเภทเงิน -->
+        <div class="col-md-3">
+          <label for="budgetType" class="form-label">ประเภทเงิน <span class="text-danger">*</span></label>
+          <select class="form-control" id="budgetType" name="budgetType" required>
+            <option value="">เลือกประเภทเงิน</option>
+            <option value="งบประมาณ" {{ 'selected' if record and record.budgetType == 'งบประมาณ' else '' }}>งบประมาณ</option>
+            <option value="เงินรายได้" {{ 'selected' if record and record.budgetType == 'เงินรายได้' else '' }}>เงินรายได้</option>
+            <option value="เงินบริจาค" {{ 'selected' if record and record.budgetType == 'เงินบริจาค' else '' }}>เงินบริจาค</option>
+            <option value="อื่นๆ" {{ 'selected' if record and record.budgetType == 'อื่นๆ' else '' }}>อื่นๆ</option>
+          </select>
+          <div class="invalid-feedback">
+            กรุณาเลือกประเภทเงิน
+          </div>
+        </div>
+
+        <!-- ราคาต่อหน่วย -->
+        <div class="col-md-3">
+          <label for="pricePerUnit" class="form-label">ราคาต่อหน่วย <span class="text-danger">*</span></label>
+          <input type="number" class="form-control" id="pricePerUnit" name="pricePerUnit"
+                 value="{{ record.pricePerUnit if record else '' }}"
+                 step="0.01" min="0" placeholder="0.00" required>
+          <div class="invalid-feedback">
+            กรุณาระบุราคาต่อหน่วย
+          </div>
+        </div>
+
+        <!-- จำนวนรับ -->
+        <div class="col-md-3">
+          <label for="receiveQuantity" class="form-label">จำนวนรับ <span class="text-danger">*</span></label>
+          <input type="number" class="form-control" id="receiveQuantity" name="receiveQuantity"
+                 value="{{ record.receiveQuantity if record else '' }}"
+                 min="0" required>
+          <div class="invalid-feedback">
+            กรุณาระบุจำนวนรับ
+          </div>
+        </div>
+      </div>
+
+      <hr class="my-4">
+      <h5 class="text-success">ข้อมูลการจ่าย</h5>
+
+      <div class="row">
+        <!-- ความต้องการขั้นต้น -->
+        <div class="col-md-3">
+          <label for="primaryNeed" class="form-label">ความต้องการขั้นต้น</label>
+          <select class="form-control" id="primaryNeed" name="primaryNeed">
+            <option value="">ไม่มี</option>
+            <option value="1" {{ 'selected' if record and record.primaryNeed else '' }}>มี</option>
+          </select>
+        </div>
+
+        <!-- ความต้องการทดแทน -->
+        <div class="col-md-3">
+          <label for="replacementNeed" class="form-label">ความต้องการทดแทน</label>
+          <select class="form-control" id="replacementNeed" name="replacementNeed">
+            <option value="">ไม่มี</option>
+            <option value="1" {{ 'selected' if record and record.replacementNeed else '' }}>มี</option>
+          </select>
+        </div>
+
+        <!-- จำนวนจ่าย -->
+        <div class="col-md-3">
+          <label for="distributeQuantity" class="form-label">จำนวนจ่าย</label>
+          <input type="number" class="form-control" id="distributeQuantity" name="distributeQuantity"
+                 value="{{ record.distributeQuantity if record else '0' }}"
+                 min="0">
+        </div>
+      </div>
+    </div>
+
+    <div class="card-footer">
+      <div class="d-flex justify-content-end gap-2">
+        <a href="{{ url_for('inventory_control') }}" class="btn btn-secondary">ยกเลิก</a>
+        <button type="submit" class="btn btn-primary">
+          {% if is_edit %}
+            อัปเดตข้อมูล
+          {% else %}
+            บันทึกข้อมูล
+          {% endif %}
+        </button>
+      </div>
+    </div>
+  </div>
+</form>
+
+<script>
+// Bootstrap form validation
+(function() {
+  'use strict';
+  window.addEventListener('load', function() {
+    var forms = document.getElementsByClassName('needs-validation');
+    var validation = Array.prototype.filter.call(forms, function(form) {
+      form.addEventListener('submit', function(event) {
+        if (form.checkValidity() === false) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      }, false);
+    });
+  }, false);
+})();
+
+// Auto calculate remaining stock
+document.addEventListener('DOMContentLoaded', function() {
+  const receiveQuantity = document.getElementById('receiveQuantity');
+  const distributeQuantity = document.getElementById('distributeQuantity');
+  const remainingStock = document.getElementById('remainingStock');
+
+  function calculateRemaining() {
+    const receive = parseInt(receiveQuantity.value) || 0;
+    const distribute = parseInt(distributeQuantity.value) || 0;
+    const remaining = receive - distribute;
+    remainingStock.value = remaining >= 0 ? remaining : 0;
+  }
+
+  receiveQuantity.addEventListener('input', calculateRemaining);
+  distributeQuantity.addEventListener('input', calculateRemaining);
+});
+</script>
+
+{% endblock %}

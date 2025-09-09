@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="card-title mb-0 text-center">
+                    {% if is_edit %}
+                    แก้ไขข้อมูลทะเบียนใบเบิกเอกสาร
+                    {% else %}
+                    เพิ่มข้อมูลทะเบียนใบเบิกเอกสาร
+                    {% endif %}
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="sequenceNo" class="form-label">ลำดับที่</label>
+                                {% if is_edit %}
+                                <input type="text" class="form-control" id="sequenceNo" name="sequenceNo"
+                                    value="{{ record.sequenceNo if record else '' }}" readonly>
+                                {% else %}
+                                <input type="text" class="form-control" id="sequenceNo" name="sequenceNo"
+                                    value="(สร้างอัตโนมัติ)" readonly>
+                                <small class="form-text text-muted">ลำดับที่จะถูกสร้างอัตโนมัติ</small>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="registerNo" class="form-label">ทะเบียนที่</label>
+                                <input type="text" class="form-control" id="registerNo" name="registerNo"
+                                    value="{{ record.registerNo if record else '' }}" {% if is_edit %}readonly{% endif
+                                    %} required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="registerDate" class="form-label">วันที่ลงทะเบียน</label>
+                                <input type="date" class="form-control" id="registerDate" name="registerDate"
+                                    value="{{ record.registerDate if record else '' }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="filedDate" class="form-label">วันที่เก็บเข้าแฟ้ม</label>
+                                <input type="date" class="form-control" id="filedDate" name="filedDate"
+                                    value="{{ record.filedDate if record else '' }}" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="documentName" class="form-label">เอกสาร</label>
+                        <input type="text" class="form-control" id="documentName" name="documentName"
+                            placeholder="ชื่อเอกสาร" value="{{ record.documentName if record else '' }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="senderReceiver" class="form-label">ถึง หรือ จาก</label>
+                        <input type="text" class="form-control" id="senderReceiver" name="senderReceiver"
+                            placeholder="ชื่อผู้ส่ง/ผู้รับ" value="{{ record.senderReceiver if record else '' }}"
+                            required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="firstItem" class="form-label">รายการแรกในเอกสาร</label>
+                        <textarea class="form-control" id="firstItem" name="firstItem" rows="3"
+                            placeholder="รายละเอียดรายการแรกในเอกสาร"
+                            required>{{ record.firstItem if record else '' }}</textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="relatedDocumentNo" class="form-label">เลขที่เอกสารที่เกี่ยวข้อง</label>
+                        <input type="text" class="form-control" id="relatedDocumentNo" name="relatedDocumentNo"
+                            placeholder="เลขที่เอกสารที่เกี่ยวข้อง"
+                            value="{{ record.relatedDocumentNo if record else '' }}">
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('withdrawal') }}" class="btn btn-secondary me-md-2">ยกเลิก</a>
+                        <button type="submit" class="btn btn-primary">
+                            {% if is_edit %}
+                            อัปเดต
+                            {% else %}
+                            บันทึก
+                            {% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ตั้งค่าวันที่เป็นวันปัจจุบันเฉพาะเมื่อเป็นการเพิ่มข้อมูลใหม่
+    document.addEventListener('DOMContentLoaded', function () {
+        {% if not is_edit %}
+        const today = new Date().toISOString().split('T')[0];
+        if (!document.getElementById('registerDate').value) {
+            document.getElementById('registerDate').value = today;
+        }
+        if (!document.getElementById('filedDate').value) {
+            document.getElementById('filedDate').value = today;
+        }
+        {% endif %}
+    });
+</script>
+{% endblock %}
