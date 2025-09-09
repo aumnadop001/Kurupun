@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card shadow w-100">
+  <div class="card-body">
+    <div class="text-center mb-4">
+      <img src="{{ url_for('static', filename='logo.png') }}" alt="โลโก้" height="80" class="mb-3" />
+      <h3 class="card-title">ลงทะเบียน</h3>
+      <p class="text-muted">กรุณากรอกข้อมูลเพื่อการลงทะเบียน</p>
+    </div>
+
+    {% if error %}
+    <div class="alert alert-danger" role="alert">
+      <i class="fas fa-exclamation-circle me-2"></i>{{ error }}
+    </div>
+    {% endif %}
+
+    <form method="post">
+      <div class="mb-3">
+        <label for="full_name" class="form-label">
+          <i class="fas fa-id-card me-1"></i>ชื่อ-นามสกุล:
+        </label>
+        <input class="form-control" type="text" id="full_name" name="full_name"
+               placeholder="กรอกชื่อ-นามสกุล" required
+               value="{{ form_data.full_name if form_data else '' }}" />
+      </div>
+
+      <div class="mb-3">
+        <label for="username" class="form-label">
+          <i class="fas fa-user me-1"></i>ชื่อผู้ใช้:
+        </label>
+        <input class="form-control" type="text" id="username" name="username"
+               placeholder="กรอกชื่อผู้ใช้ (อย่างน้อย 3 ตัวอักษร)" required
+               value="{{ form_data.username if form_data else '' }}" />
+        <div class="form-text">ชื่อผู้ใช้ต้องมีอย่างน้อย 3 ตัวอักษร</div>
+      </div>
+
+      <div class="mb-3">
+        <label for="email" class="form-label">
+          <i class="fas fa-envelope me-1"></i>อีเมล:
+        </label>
+        <input class="form-control" type="email" id="email" name="email"
+               placeholder="กรอกอีเมล" required
+               value="{{ form_data.email if form_data else '' }}" />
+      </div>
+
+      <div class="mb-3">
+        <label for="password" class="form-label">
+          <i class="fas fa-lock me-1"></i>รหัสผ่าน:
+        </label>
+        <input class="form-control" type="password" id="password" name="password"
+               placeholder="กรอกรหัสผ่าน (อย่างน้อย 6 ตัวอักษร)" required />
+        <div class="form-text">รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร</div>
+      </div>
+
+      <div class="mb-3">
+        <label for="confirm_password" class="form-label">
+          <i class="fas fa-lock me-1"></i>ยืนยันรหัสผ่าน:
+        </label>
+        <input class="form-control" type="password" id="confirm_password" name="confirm_password"
+               placeholder="ยืนยันรหัสผ่าน" required />
+      </div>
+
+      <div class="d-grid gap-2">
+        <button type="submit" class="btn btn-success btn-lg">
+          <i class="fas fa-user-plus me-2"></i>ลงทะเบียน
+        </button>
+        <a href="{{ url_for('login') }}" class="btn btn-outline-primary">
+          <i class="fas fa-sign-in-alt me-2"></i>กลับไปหน้าเข้าสู่ระบบ
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+  .card {
+    border-radius: 15px;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .form-control {
+    border-radius: 10px;
+    padding: 12px;
+  }
+
+  .btn {
+    border-radius: 10px;
+    padding: 12px;
+  }
+
+  .container {
+    min-height: calc(100vh - 200px);
+    display: flex;
+    align-items: center;
+  }
+
+  .form-text {
+    font-size: 0.85rem;
+    color: #6c757d;
+  }
+</style>
+
+<script>
+  // ตรวจสอบรหัsผ่านตรงกันหรือไม่
+  document.addEventListener('DOMContentLoaded', function() {
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('confirm_password');
+
+    function checkPasswordMatch() {
+      if (password.value !== confirmPassword.value) {
+        confirmPassword.setCustomValidity('รหัสผ่านไม่ตรงกัน');
+      } else {
+        confirmPassword.setCustomValidity('');
+      }
+    }
+
+    password.addEventListener('input', checkPasswordMatch);
+    confirmPassword.addEventListener('input', checkPasswordMatch);
+  });
+</script>
+{% endblock %}

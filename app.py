@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request, render_template, redirect, url_for, f
 from pymongo import MongoClient
 from datetime import datetime
 from functools import wraps
-from modules.login import authenticate_user, validate_login_data
+from modules.login import authenticate_user, validate_login_data, register_user, validate_register_data
 from dotenv import load_dotenv
 import os
 load_dotenv()
@@ -413,6 +413,61 @@ def api_login():
         }), 500
 
 
+# API สำหรับสมัครสมาชิกผ่าน JSON
+@app.route('/api/register', methods=['POST'])
+def api_register():
+    try:
+        # ตรวจสอบ Content-Type
+        if not request.is_json:
+            return jsonify({
+                'success': False,
+                'message': 'Content-Type ต้องเป็น application/json'
+            }), 400
+
+        data = request.get_json()
+        if not data:
+            return jsonify({
+                'success': False,
+                'message': 'ไม่พบข้อมูล JSON'
+            }), 400
+
+        username = data.get('username', '').strip()
+        password = data.get('password', '').strip()
+        confirm_password = data.get('confirm_password', '').strip()
+        email = data.get('email', '').strip()
+        full_name = data.get('full_name', '').strip()
+
+        # ตรวจสอบความถูกต้องของข้อมูล
+        is_valid, error_message = validate_register_data(
+            username, password, confirm_password, email, full_name
+        )
+        if not is_valid:
+            return jsonify({
+                'success': False,
+                'message': error_message
+            }), 400
+
+        # สมัครสมาชิก
+        result = register_user(username, password, email, full_name)
+
+        if result['success']:
+            return jsonify({
+                'success': True,
+                'message': 'สมัครสมาชิกสำเร็จ'
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'message': result['message']
+            }), 400
+
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': f'เกิดข้อผิดพลาด: {str(e)}'
+        }), 500
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     # ถ้า user login แล้ว ให้ redirect ไปหน้าแรก
@@ -448,6 +503,54 @@ def login():
             return render_template('login.html', error=f"เกิดข้อผิดพลาด: {str(e)}")
 
     return render_template('login.html')
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    # ถ้า user login แล้ว ให้ redirect ไปหน้าแรก
+    if 'logged_in' in session and session['logged_in']:
+        return redirect(url_for('index'))
+
+    if request.method == 'POST':
+        try:
+            username = request.form.get('username', '').strip()
+            password = request.form.get('password', '').strip()
+            confirm_password = request.form.get('confirm_password', '').strip()
+            email = request.form.get('email', '').strip()
+            full_name = request.form.get('full_name', '').strip()
+
+            # ตรวจสอบความถูกต้องของข้อมูล
+            is_valid, error_message = validate_register_data(
+                username, password, confirm_password, email, full_name
+            )
+            if not is_valid:
+                return render_template('register.html',
+                                     error=error_message,
+                                     form_data={
+                                         'username': username,
+                                         'email': email,
+                                         'full_name': full_name
+                                     })
+
+            # สมัครสมาชิก
+            result = register_user(username, password, email, full_name)
+
+            if result['success']:
+                flash('สมัครสมาชิกสำเร็จ กรุณาเข้าสู่ระบบ', 'success')
+                return redirect(url_for('login'))
+            else:
+                return render_template('register.html',
+                                     error=result['message'],
+                                     form_data={
+                                         'username': username,
+                                         'email': email,
+                                         'full_name': full_name
+                                     })
+
+        except Exception as e:
+            return render_template('register.html', error=f"เกิดข้อผิดพลาด: {str(e)}")
+
+    return render_template('register.html')
 
 
 @app.route('/logout')

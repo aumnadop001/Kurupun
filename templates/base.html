@@ -145,9 +145,14 @@
       </a>
     </div>
     {% else %}
-    <a href="{{ url_for('login') }}" class="btn btn-primary">
-      <i class="fas fa-sign-in-alt me-1"></i>เข้าสู่ระบบ
-    </a>
+    <div style="display: flex; align-items: center; gap: 15px;">
+      <a href="{{ url_for('register') }}" class="btn btn-success">
+        <i class="fas fa-user-plus me-1"></i>ลงทะเบียน
+      </a>
+      <a href="{{ url_for('login') }}" class="btn btn-primary">
+        <i class="fas fa-sign-in-alt me-1"></i>เข้าสู่ระบบ
+      </a>
+    </div>
     {% endif %}
   </header>
 
