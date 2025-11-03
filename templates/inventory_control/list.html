@@ -3,7 +3,7 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
   <p class="h3 mb-0">บัญชีคุมพัสดุ (ครุภัณฑ์)</p>
   <div>
-    <a href="{{ url_for('add_inventory') }}" class="btn btn-primary">
+    <a href="{{ url_for('inventory_control.add') }}" class="btn btn-primary">
       <i class="bi bi-plus-circle"></i> เพิ่มข้อมูล
     </a>
   </div>
@@ -27,7 +27,7 @@
       </button>
       {% if request.args.get('q') %}
       <a
-        href="{{ url_for('inventory_control') }}"
+        href="{{ url_for('inventory_control.list') }}"
         class="btn btn-outline-danger ms-2"
         >ล้าง</a
       >
@@ -100,14 +100,14 @@
         <td>
           <div class="btn-group-vertical btn-group-sm" role="group">
             <a
-              href="{{ url_for('edit_inventory', item_id=item.itemId) }}"
+              href="{{ url_for('inventory_control.edit', item_id=item.itemId) }}"
               class="btn btn-warning btn-sm mb-1"
             >
               <i class="bi bi-pencil"></i> แก้ไข
             </a>
             <form
               method="POST"
-              action="{{ url_for('delete_inventory', item_id=item.itemId) }}"
+              action="{{ url_for('inventory_control.delete', item_id=item.itemId) }}"
               style="display: inline"
               onsubmit="return confirm('คุณแน่ใจหรือไม่ที่จะลบข้อมูลนี้?')"
             >

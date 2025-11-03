@@ -5,7 +5,7 @@
     {% if is_edit %} แก้ไขข้อมูลบัญชีคุมครุภัณฑ์จ่ายให้หน่วย {% else %}
     เพิ่มข้อมูลบัญชีคุมครุภัณฑ์จ่ายให้หน่วย {% endif %}
   </h3>
-  <a href="{{ url_for('asset_distribute_list') }}" class="btn btn-secondary">
+  <a href="{{ url_for('asset_distribute.list') }}" class="btn btn-secondary">
     <i class="bi bi-arrow-left"></i> กลับ
   </a>
 </div>
@@ -176,20 +176,40 @@
     </div>
 
     <div class="card-footer">
-      <div class="d-flex justify-content-end gap-2">
-        <a
-          href="{{ url_for('asset_distribute_list') }}"
-          class="btn btn-secondary"
-          >ยกเลิก</a
-        >
-        <button type="submit" class="btn btn-primary">
-          {% if is_edit %} อัปเดตข้อมูล {% else %} บันทึกข้อมูล {% endif %}
+      <div class="d-flex justify-content-between">
+        {% if is_edit %}
+        <button type="button" class="btn btn-danger" onclick="confirmDelete()">
+          <i class="bi bi-trash"></i> ลบข้อมูล
         </button>
+        {% else %}
+        <div></div>
+        {% endif %}
+        
+        <div class="d-flex gap-2">
+          <a href="{{ url_for('asset_distribute.list') }}" class="btn btn-secondary">
+            <i class="bi bi-x-circle"></i> ยกเลิก
+          </a>
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-check-circle"></i>
+            {% if is_edit %} 
+              อัปเดตข้อมูล 
+            {% else %} 
+              บันทึกข้อมูล 
+            {% endif %}
+          </button>
+        </div>
       </div>
     </div>
   </div>
 </form>
 
+<!-- Hidden form สำหรับลบข้อมูล -->
+{% if is_edit %}
+<form id="deleteForm" method="POST" action="{{ url_for('asset_distribute.delete', register_no=record.registerNo if record else '') }}" style="display: none;">
+</form>
+{% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
   // Bootstrap form validation
   (function () {
@@ -215,6 +235,35 @@
       false
     );
   })();
+
+  // Delete confirmation function
+  {% if is_edit %}
+  function confirmDelete() {
+    Swal.fire({
+      title: 'ต้องการลบข้อมูลหรือไม่?',
+      text: 'ทะเบียนที่: {{ record.registerNo if record else "" }}',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'ลบ',
+      cancelButtonText: 'ยกเลิก',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        document.getElementById('deleteForm').submit();
+      }
+    });
+  }
+  {% endif %}
+
+  // Auto-focus first input
+  document.addEventListener('DOMContentLoaded', function() {
+    const firstInput = document.querySelector('input[required]');
+    if (firstInput) {
+      firstInput.focus();
+    }
+  });
 </script>
 
 {% endblock %}
