@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   mongo:
@@ -9,7 +9,7 @@ services:
     environment:
       MONGO_INITDB_DATABASE: pasadu2025
     ports:
-      - '27017:27017'
+      - "27017:27017"
     networks:
       - kurupun-network
 
@@ -18,11 +18,9 @@ services:
     container_name: kurupun-mongo-express
     restart: always
     environment:
-      # ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      # ME_CONFIG_MONGODB_ADMINPASSWORD: example
       ME_CONFIG_MONGODB_SERVER: mongo
     ports:
-      - '4444:8081'
+      - "4444:8081"
     depends_on:
       - mongo
     networks:

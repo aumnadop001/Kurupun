@@ -346,11 +346,180 @@ def fixed_asset():
 def asset_distribute():
     return render_template('asset_distribute.html')
 
-
 @app.route('/asset_control')
 @login_required
 def asset_control():
-    return render_template('asset_control.html')
+    requisitionRegisterCol = db["asset_control"]
+
+    # รับค่าการค้นหาจาก query parameter
+    search_query = request.args.get('q', '').strip()
+
+    # สร้าง filter สำหรับการค้นหา
+    if search_query:
+        # ค้นหาโดยใช้ documentName
+        filter_criteria = {
+            # case-insensitive search
+            "documentName": {"$regex": search_query, "$options": "i"}
+        }
+    else:
+        filter_criteria = {}
+
+    # จัดเรียงตามลำดับที่ (sequenceNo) จากน้อยไปมาก
+    # data = list(requisitionRegisterCol.find(
+    #     filter_criteria, {'_id': 0}).sort("sequenceNo", 1))
+    # for record in data:
+    #     if 'registerDate' in record:
+    #         record['registerDate'] = record['registerDate'].strftime(
+    #             '%Y-%m-%d')  # format 2023-06-19
+    #     if 'filedDate' in record:
+    #         record['filedDate'] = record['filedDate'].strftime(
+    #             '%Y-%m-%d')  # format 2023-06-19
+    return render_template('asset_control/list.html', data=[])
+
+@app.route('/asset_control/add', methods=['GET', 'POST'])
+@login_required
+def add_asset_control():
+    return asset_control()
+
+def asset_control(register_no=None):
+    assetControlCol = db["asset_control_register"]
+
+    # ถ้าเป็นการแก้ไข ให้ดึงข้อมูลเดิมมา
+    record = None
+    if register_no:
+        record = assetControlCol.find_one(
+            {"registerNo": register_no}, {'_id': 0})
+        if record:
+            # แปลง datetime เป็น string สำหรับแสดงในฟอร์ม
+            if 'registerDate' in record:
+                record['registerDate'] = record['registerDate'].strftime('%Y-%m-%d')
+            if 'filedDate' in record:
+                record['filedDate'] = record['filedDate'].strftime('%Y-%m-%d')
+
+    if request.method == 'POST':
+        registerNo = request.form['registerNo']
+        registerDate = datetime.strptime(request.form['registerDate'], '%Y-%m-%d')
+        assetName = request.form['assetName']
+        assetUnit = request.form['assetUnit']
+        quantity = request.form['quantity']
+        filedDate = datetime.strptime(request.form['filedDate'], '%Y-%m-%d')
+        relatedDocumentNo = request.form['relatedDocumentNo']
+
+        # สำหรับการเพิ่มข้อมูลใหม่ ให้ generate sequenceNo แบบ auto increment
+        if not register_no:
+            last_record = assetControlCol.find_one(
+                {}, {"sequenceNo": 1}, sort=[("sequenceNo", -1)]
+            )
+            if last_record and 'sequenceNo' in last_record:
+                try:
+                    next_seq = int(last_record['sequenceNo']) + 1
+                except (ValueError, TypeError):
+                    next_seq = 1
+            else:
+                next_seq = 1
+            sequenceNo = str(next_seq)
+        else:
+            sequenceNo = record['sequenceNo'] if record else "1"
+
+        record_data = {
+            "sequenceNo": sequenceNo,
+            "registerNo": registerNo,
+            "registerDate": registerDate,
+            "assetName": assetName,
+            "assetUnit": assetUnit,
+            "quantity": quantity,
+            "filedDate": filedDate,
+            "relatedDocumentNo": relatedDocumentNo
+        }
+
+        if register_no:  # อัปเดตข้อมูลเดิม
+            assetControlCol.update_one(
+                {"registerNo": register_no},
+                {"$set": record_data}
+            )
+            flash('อัปเดตข้อมูลครุภัณฑ์สำเร็จ!', 'success')
+        else:  # เพิ่มข้อมูลใหม่
+            assetControlCol.insert_one(record_data)
+            flash('บันทึกข้อมูลครุภัณฑ์สำเร็จ!', 'success')
+
+        return redirect(url_for('asset_control_list'))
+
+    return render_template('asset_control/form.html', record=record, is_edit=(register_no is not None))
+
+def asset_distribute(register_no=None):
+    assetDistributeCol = db["asset_distribute_register"]
+
+    # ถ้าเป็นการแก้ไข ให้ดึงข้อมูลเดิมมา
+    record = None
+    if register_no:
+        record = assetDistributeCol.find_one(
+            {"registerNo": register_no}, {'_id': 0})
+        if record:
+            # แปลง datetime เป็น string สำหรับแสดงในฟอร์ม
+            if 'registerDate' in record:
+                record['registerDate'] = record['registerDate'].strftime('%Y-%m-%d')
+            if 'distributeDate' in record:
+                record['distributeDate'] = record['distributeDate'].strftime('%Y-%m-%d')
+
+    if request.method == 'POST':
+        registerNo = request.form['registerNo']
+        registerDate = datetime.strptime(request.form['registerDate'], '%Y-%m-%d')
+        assetName = request.form['assetName']
+        assetNumber = request.form['assetNumber']
+        receivingUnit = request.form['receivingUnit']
+        receiveEvidence = request.form['receiveEvidence']
+        distributeEvidence = request.form['distributeEvidence']
+        quantity = request.form['quantity']
+        distributeDate = datetime.strptime(request.form['distributeDate'], '%Y-%m-%d')
+
+        # สำหรับการเพิ่มข้อมูลใหม่ ให้ generate sequenceNo แบบ auto increment
+        if not register_no:
+            last_record = assetDistributeCol.find_one(
+                {}, {"sequenceNo": 1}, sort=[("sequenceNo", -1)]
+            )
+            if last_record and 'sequenceNo' in last_record:
+                try:
+                    next_seq = int(last_record['sequenceNo']) + 1
+                except (ValueError, TypeError):
+                    next_seq = 1
+            else:
+                next_seq = 1
+            sequenceNo = str(next_seq)
+        else:
+            sequenceNo = record['sequenceNo'] if record else "1"
+
+        record_data = {
+            "sequenceNo": sequenceNo,
+            "registerNo": registerNo,
+            "registerDate": registerDate,
+            "assetName": assetName,
+            "assetNumber": assetNumber,
+            "receivingUnit": receivingUnit,
+            "receiveEvidence": receiveEvidence,
+            "distributeEvidence": distributeEvidence,
+            "quantity": quantity,
+            "distributeDate": distributeDate
+        }
+
+        if register_no:  # อัปเดตข้อมูลเดิม
+            assetDistributeCol.update_one(
+                {"registerNo": register_no},
+                {"$set": record_data}
+            )
+            flash('อัปเดตข้อมูลบัญชีคุมครุภัณฑ์จ่ายสำเร็จ!', 'success')
+        else:  # เพิ่มข้อมูลใหม่
+            assetDistributeCol.insert_one(record_data)
+            flash('บันทึกข้อมูลบัญชีคุมครุภัณฑ์จ่ายสำเร็จ!', 'success')
+
+        return redirect(url_for('asset_distribute_list'))
+
+    return render_template('asset_distribute/form.html', record=record, is_edit=(register_no is not None))
+
+
+# @app.route('/asset_control')
+# @login_required
+# def asset_control():
+#     return render_template('asset_control.html')
 
 # หน้า Login
 
