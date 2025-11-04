@@ -71,7 +71,7 @@ def create_crud_routes(app, db, login_required):
             collection = self.db[collection_name]
 
             # List route
-            @self.app.route(f"/{route_name}")
+            @self.app.route(f"/{route_name}", endpoint=f"{route_name}_list")
             @self.login_required
             def list_view():
                 search_query = request.args.get("q", "").strip()
@@ -98,11 +98,8 @@ def create_crud_routes(app, db, login_required):
 
                 return render_template(f"{template_folder}/list.html", data=data)
 
-            # ตั้งชื่อ function ให้ unique
-            list_view.__name__ = f"{route_name}_list"
-
             # Add route
-            @self.app.route(f"/{route_name}/add", methods=["GET", "POST"])
+            @self.app.route(f"/{route_name}/add", methods=["GET", "POST"], endpoint=f"{route_name}_add")
             @self.login_required
             def add_view():
                 return self._form_handler(
@@ -117,10 +114,8 @@ def create_crud_routes(app, db, login_required):
                     route_name,
                 )
 
-            add_view.__name__ = f"{route_name}_add"
-
             # Edit route
-            @self.app.route(f"/{route_name}/edit/<id_value>", methods=["GET", "POST"])
+            @self.app.route(f"/{route_name}/edit/<id_value>", methods=["GET", "POST"], endpoint=f"{route_name}_edit")
             @self.login_required
             def edit_view(id_value):
                 return self._form_handler(
@@ -135,10 +130,8 @@ def create_crud_routes(app, db, login_required):
                     route_name,
                 )
 
-            edit_view.__name__ = f"{route_name}_edit"
-
             # Delete route
-            @self.app.route(f"/{route_name}/delete/<id_value>", methods=["POST"])
+            @self.app.route(f"/{route_name}/delete/<id_value>", methods=["POST"], endpoint=f"{route_name}_delete")
             @self.login_required
             def delete_view(id_value):
                 record = collection.find_one({id_field: id_value}, {"_id": 0})
@@ -153,8 +146,6 @@ def create_crud_routes(app, db, login_required):
                     flash("ไม่พบข้อมูลที่ต้องการลบ!", "error")
 
                 return redirect(url_for(f"{route_name}_list"))
-
-            delete_view.__name__ = f"{route_name}_delete"
 
         def _form_handler(
             self,
