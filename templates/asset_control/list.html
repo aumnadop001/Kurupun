@@ -1,80 +1,90 @@
 {% extends "base.html" %} {% block content %}
-<p class="h3 text-center">บัญชีคุมครุภัณฑ์</p>
-<div><p class="h6 text-end">แบบ พ. 3103-3</p></div>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-  <p class="h3 mb-0">บัญชีคุมพัสดุ (ครุภัณฑ์)</p>
+  <p class="h3 mb-0">บัญชีคุมครุภัณฑ์</p>
   <div>
     <a href="{{ url_for('add_asset_control') }}" class="btn btn-primary">
       <i class="bi bi-plus-circle"></i> เพิ่มข้อมูล
     </a>
   </div>
 </div>
-<div class="container mt-4">
-  <div class="table-responsive">
-    <table class="table table-bordered text-center align-middle">
-      <thead class="table-primary">
-        <tr>
-          <th colspan="5">
-            หน่วย
-            <div class="small text-muted">Unit Information</div>
-          </th>
-          <th colspan="4">
-            หมายเลขพัสดุ
-            <div class="small text-muted">Asset Number</div>
-          </th>
-        </tr>
-        <tr>
-          <th colspan="5">
-            ครุภัณฑ์
-            <div class="small text-muted">Equipment</div>
-          </th>
-          <th colspan="4" rowspan="2">
-            ขนาด
-            <div class="small text-muted">Size</div>
-          </th>
-        </tr>
-        <tr>
-          <th colspan="2">
-            หน่วยนับ
-            <div class="small text-muted">Unit</div>
-          </th>
-          <th colspan="2">
-            จำนวนอัตรา
-            <div class="small text-muted">Quantity Rate</div>
-          </th>
-          <th>
-            หมายเลขอัตรา
-            <div class="small text-muted">Rate Number</div>
-          </th>
-        </tr>
-        <tr>
-          <th>ว.ด.ป.</th>
-          <th>ที่เอกสาร</th>
-          <th>รับ</th>
-          <th>ส่งคืน</th>
-          <th>ราคา</th>
-          <th>คงเหลือ</th>
-          <th>ว.ด.ป.</th>
-          <th>จำนวน</th>
-          <th>หน่วย</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>01/01/2568</td>
-          <td>Doc-01</td>
-          <td>5</td>
-          <td>1</td>
-          <td>500</td>
-          <td>4</td>
-          <td>01/01/2568</td>
-          <td>10</td>
-          <td>ชิ้น</td>
-        </tr>
-      </tbody>
-    </table>
+
+<div>
+  <p class="h6 text-end">แบบ พ. 3103-3</p>
+</div>
+
+<!-- Search Form -->
+<div class="row mb-3">
+  <div class="col-md-6">
+    <form method="GET" class="d-flex">
+      <input type="text" name="q" class="form-control" placeholder="ค้นหาชื่อครุภัณฑ์..."
+        value="{{ request.args.get('q', '') }}" />
+      <button type="submit" class="btn btn-outline-secondary ms-2">
+        ค้นหา
+      </button>
+      {% if request.args.get('q') %}
+      <a href="{{ url_for('asset_control') }}" class="btn btn-outline-danger ms-2">ล้าง</a>
+      {% endif %}
+    </form>
   </div>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-bordered text-center align-middle">
+    <thead class="table-primary">
+      <tr>
+        <th rowspan="2">เลขที่ทะเบียน</th>
+        <th rowspan="2">วันที่ทะเบียน<br><small>(ว.ด.ป.)</small></th>
+        <th rowspan="2">ชื่อครุภัณฑ์</th>
+        <th rowspan="2">หน่วยนับ</th>
+        <th rowspan="2">จำนวน</th>
+        <th rowspan="2">วันที่ยื่นเอกสาร<br><small>(ว.ด.ป.)</small></th>
+        <th rowspan="2">เลขที่เอกสาร<br>ที่เกี่ยวข้อง</th>
+        <th rowspan="2">จัดการ</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if data %} {% for item in data %}
+      <tr>
+        <td>{{ item.registerNo }}</td>
+        <td>
+          {{ item.registerDate.strftime('%d/%m/%Y') if item.registerDate else '' }}
+        </td>
+        <td>{{ item.assetName }}</td>
+        <td>{{ item.assetUnit }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>
+          {{ item.filedDate.strftime('%d/%m/%Y') if item.filedDate else '' }}
+        </td>
+        <td>{{ item.relatedDocumentNo }}</td>
+        <td>
+          <div class="btn-group-vertical btn-group-sm" role="group">
+            <a href="{{ url_for('edit_asset_control', item_id=item.registerNo) }}" class="btn btn-warning btn-sm mb-1">
+              <i class="bi bi-pencil"></i> แก้ไข
+            </a>
+            <form method="POST" action="{{ url_for('delete_asset_control', item_id=item.registerNo) }}"
+              style="display: inline" onsubmit="return confirm('คุณแน่ใจหรือไม่ที่จะลบข้อมูลนี้?')">
+              <button type="submit" class="btn btn-danger btn-sm">
+                <i class="bi bi-trash"></i> ลบ
+              </button>
+            </form>
+          </div>
+        </td>
+      </tr>
+      {% endfor %} {% else %}
+      <tr>
+        <td colspan="8" class="text-muted">ไม่มีข้อมูล</td>
+      </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+
+<!-- แสดงจำนวนข้อมูลทั้งหมด -->
+<div class="mt-3">
+  <small class="text-muted">
+    {% if data %} แสดงข้อมูลทั้งหมด {{ data|length }} รายการ {% endif %}
+  </small>
 </div>
 
 {% endblock %}

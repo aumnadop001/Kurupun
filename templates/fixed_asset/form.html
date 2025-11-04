@@ -12,127 +12,85 @@
 
 <form method="POST" class="needs-validation" novalidate>
   <div class="card">
-    <div class="card-header">
-      <h5 class="card-title mb-0">ข้อมูลเลขลำดับครุภัณฑ์</h5>
+    <div class="card-header bg-primary text-white">
+      <h5 class="card-title mb-0">บัญชีคุมเลขลำดับครุภัณฑ์ - แบบ พ. 3107</h5>
     </div>
 
     <div class="card-body">
+      <!-- ข้อมูลพัสดุหลัก -->
+      <h5 class="text-primary border-bottom pb-2 mb-3">
+        <i class="bi bi-box-seam"></i> ข้อมูลพัสดุ
+      </h5>
       <div class="row">
-        <!-- เลขลำดับครุภัณฑ์ -->
-        <div class="col-md-3">
-          <label for="assetSequenceNo" class="form-label"
-            >เลขลำดับครุภัณฑ์ <span class="text-danger">*</span></label
-          >
-          <input
-            type="text"
-            class="form-control"
-            id="assetSequenceNo"
-            name="assetSequenceNo"
-            value="{{ record.assetSequenceNo if record else '' }}"
-            placeholder="ระบุเลขลำดับครุภัณฑ์"
-            required
-          />
-          <div class="invalid-feedback">กรุณาระบุเลขลำดับครุภัณฑ์</div>
-        </div>
-
         <!-- ชื่อพัสดุ -->
-        <div class="col-md-5">
-          <label for="assetName" class="form-label"
-            >ชื่อพัสดุ <span class="text-danger">*</span></label
-          >
-          <input
-            type="text"
-            class="form-control"
-            id="assetName"
-            name="assetName"
-            value="{{ record.assetName if record else '' }}"
-            placeholder="ระบุชื่อพัสดุ"
-            required
-          />
+        <div class="col-md-6">
+          <label for="assetName" class="form-label">ชื่อพัสดุ <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="assetName" name="assetName"
+            value="{{ record.assetName if record else '' }}" placeholder="ระบุชื่อพัสดุ" required />
           <div class="invalid-feedback">กรุณาระบุชื่อพัสดุ</div>
+          <div class="form-text">รายละเอียดเพิ่มเติมเกี่ยวกับชื่อพัสดุ</div>
         </div>
 
         <!-- หมายเลขพัสดุ -->
-        <div class="col-md-4">
+        <div class="col-md-6">
           <label for="assetNumber" class="form-label">หมายเลขพัสดุ</label>
-          <input
-            type="text"
-            class="form-control"
-            id="assetNumber"
-            name="assetNumber"
-            value="{{ record.assetNumber if record else '' }}"
-            placeholder="เช่น FA-001-2568"
-          />
+          <input type="text" class="form-control" id="assetNumber" name="assetNumber"
+            value="{{ record.assetNumber if record else '' }}" placeholder="เช่น FA-001-2568" />
+          <div class="form-text">รายละเอียดเพิ่มเติมเกี่ยวกับหมายเลขพัสดุ</div>
         </div>
       </div>
 
-      <div class="row mt-3">
+      <hr class="my-4">
+
+      <!-- ข้อมูลครุภัณฑ์ -->
+      <h5 class="text-info border-bottom pb-2 mb-3">
+        <i class="bi bi-list-ol"></i> ข้อมูลครุภัณฑ์
+      </h5>
+      <div class="row">
+        <!-- เลขลำดับครุภัณฑ์ -->
+        <div class="col-md-4">
+          <label for="assetSequenceNo" class="form-label">เลขลำดับครุภัณฑ์ <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="assetSequenceNo" name="assetSequenceNo"
+            value="{{ record.assetSequenceNo if record else '' }}" placeholder="ระบุเลขลำดับครุภัณฑ์" required />
+          <div class="invalid-feedback">กรุณาระบุเลขลำดับครุภัณฑ์</div>
+        </div>
+
         <!-- หลักฐานรับ -->
         <div class="col-md-4">
-          <label for="receiveEvidence" class="form-label"
-            >หลักฐานรับ <span class="text-danger">*</span></label
-          >
-          <input
-            type="text"
-            class="form-control"
-            id="receiveEvidence"
-            name="receiveEvidence"
-            value="{{ record.receiveEvidence if record else '' }}"
-            placeholder="เช่น ใบรับของ, หนังสือรับ"
-            required
-          />
+          <label for="receiveEvidence" class="form-label">หลักฐานรับ <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="receiveEvidence" name="receiveEvidence"
+            value="{{ record.receiveEvidence if record else '' }}" placeholder="เช่น ใบรับของ, หนังสือรับ" required />
           <div class="invalid-feedback">กรุณาระบุหลักฐานรับ</div>
         </div>
 
         <!-- จ่ายให้ -->
         <div class="col-md-4">
           <label for="issuedTo" class="form-label">จ่ายให้หน่วย/บุคคล</label>
-          <input
-            type="text"
-            class="form-control"
-            id="issuedTo"
-            name="issuedTo"
-            value="{{ record.issuedTo if record else '' }}"
-            placeholder="เช่น หน่วยงาน ก หรือ นายสมชาย"
-          />
-        </div>
-
-        <!-- หลักฐานจ่าย -->
-        <div class="col-md-4">
-          <label for="issueEvidence" class="form-label">หลักฐานจ่าย</label>
-          <input
-            type="text"
-            class="form-control"
-            id="issueEvidence"
-            name="issueEvidence"
-            value="{{ record.issueEvidence if record else '' }}"
-            placeholder="เช่น ใบเบิกของ, หนังสือโอน"
-          />
+          <input type="text" class="form-control" id="issuedTo" name="issuedTo"
+            value="{{ record.issuedTo if record else '' }}" placeholder="เช่น หน่วยงาน ก หรือ นายสมชาย" />
         </div>
       </div>
 
       <div class="row mt-3">
+        <!-- หลักฐานจ่าย -->
+        <div class="col-md-6">
+          <label for="issueEvidence" class="form-label">หลักฐานจ่าย</label>
+          <input type="text" class="form-control" id="issueEvidence" name="issueEvidence"
+            value="{{ record.issueEvidence if record else '' }}" placeholder="เช่น ใบเบิกของ, หนังสือโอน" />
+        </div>
+
         <!-- หมายเหตุ -->
-        <div class="col-md-12">
+        <div class="col-md-6">
           <label for="remark" class="form-label">หมายเหตุ</label>
-          <textarea
-            class="form-control"
-            id="remark"
-            name="remark"
-            rows="2"
-            placeholder="ระบุหมายเหตุเพิ่มเติม"
-          >
-{{ record.remark if record else '' }}</textarea
-          >
+          <textarea class="form-control" id="remark" name="remark" rows="2"
+            placeholder="ระบุหมายเหตุเพิ่มเติม">{{ record.remark if record else '' }}</textarea>
         </div>
       </div>
     </div>
 
     <div class="card-footer">
       <div class="d-flex justify-content-end gap-2">
-        <a href="{{ url_for('fixed_asset_list') }}" class="btn btn-secondary"
-          >ยกเลิก</a
-        >
+        <a href="{{ url_for('fixed_asset_list') }}" class="btn btn-secondary">ยกเลิก</a>
         <button type="submit" class="btn btn-primary">
           {% if is_edit %} อัปเดตข้อมูล {% else %} บันทึกข้อมูล {% endif %}
         </button>

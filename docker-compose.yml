@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  flask-app:
+    build: .
+    container_name: flask-app
+    ports:
+      - "5001:5000"
+    volumes:
+      - .:/app
+    environment:
+      - FLASK_ENV=development
+    restart: always
+    networks:
+      - kurupun-network
+
+networks:
+  kurupun-network:
+    driver: bridge
+    name: kurupun-network

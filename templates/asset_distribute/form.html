@@ -12,164 +12,102 @@
 
 <form method="POST" class="needs-validation" novalidate>
   <div class="card">
-    <div class="card-header">
-      <h5 class="card-title mb-0">ข้อมูลการจ่ายครุภัณฑ์</h5>
+    <div class="card-header bg-primary text-white">
+      <h5 class="card-title mb-0">บัญชีคุมครุภัณฑ์จ่ายให้หน่วย - แบบ พ. 3108</h5>
     </div>
 
     <div class="card-body">
+      <!-- ข้อมูลทะเบียน -->
+      <h5 class="text-info border-bottom pb-2 mb-3">
+        <i class="bi bi-file-text"></i> ข้อมูลทะเบียน
+      </h5>
       <div class="row">
-        <!-- วันที่ทะเบียน -->
-        <div class="col-md-3">
-          <label for="registerDate" class="form-label"
-            >วันที่ทะเบียน <span class="text-danger">*</span></label
-          >
-          <input
-            type="date"
-            class="form-control"
-            id="registerDate"
-            name="registerDate"
-            value="{{ record.registerDate if record else '' }}"
-            required
-          />
-          <div class="invalid-feedback">กรุณาระบุวันที่ทะเบียน</div>
-        </div>
-
         <!-- เลขที่ทะเบียน -->
         <div class="col-md-3">
-          <label for="registerNo" class="form-label"
-            >เลขที่ทะเบียน <span class="text-danger">*</span></label
-          >
-          <input
-            type="text"
-            class="form-control"
-            id="registerNo"
-            name="registerNo"
-            value="{{ record.registerNo if record else '' }}"
-            placeholder="เช่น AC-2025-001"
-            required
-          />
+          <label for="registerNo" class="form-label">เลขที่ทะเบียน <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="registerNo" name="registerNo"
+            value="{{ record.registerNo if record else '' }}" placeholder="เช่น AC-2025-001" required />
           <div class="invalid-feedback">กรุณาระบุเลขที่ทะเบียน</div>
+        </div>
+
+        <!-- วันที่ทะเบียน -->
+        <div class="col-md-3">
+          <label for="registerDate" class="form-label">วันที่ทะเบียน <span class="text-danger">*</span></label>
+          <input type="date" class="form-control" id="registerDate" name="registerDate"
+            value="{{ record.registerDate if record else '' }}" required />
+          <div class="invalid-feedback">กรุณาระบุวันที่ทะเบียน</div>
         </div>
 
         <!-- วันที่จ่าย -->
         <div class="col-md-3">
-          <label for="distributeDate" class="form-label"
-            >วันที่จ่าย <span class="text-danger">*</span></label
-          >
-          <input
-            type="date"
-            class="form-control"
-            id="distributeDate"
-            name="distributeDate"
-            value="{{ record.distributeDate if record else '' }}"
-            required
-          />
+          <label for="distributeDate" class="form-label">วันที่จ่าย <span class="text-danger">*</span></label>
+          <input type="date" class="form-control" id="distributeDate" name="distributeDate"
+            value="{{ record.distributeDate if record else '' }}" required />
           <div class="invalid-feedback">กรุณาระบุวันที่จ่าย</div>
         </div>
 
         <!-- หน่วยที่รับ -->
         <div class="col-md-3">
-          <label for="receivingUnit" class="form-label"
-            >หน่วยที่รับ <span class="text-danger">*</span></label
-          >
-          <input
-            type="text"
-            class="form-control"
-            id="receivingUnit"
-            name="receivingUnit"
-            value="{{ record.receivingUnit if record else '' }}"
-            placeholder="เช่น ฝ่ายบัญชี, แผนกไอที"
-            required
-          />
+          <label for="receivingUnit" class="form-label">หน่วยที่รับ <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="receivingUnit" name="receivingUnit"
+            value="{{ record.receivingUnit if record else '' }}" placeholder="เช่น ฝ่ายบัญชี, แผนกไอที" required />
           <div class="invalid-feedback">กรุณาระบุหน่วยที่รับ</div>
         </div>
       </div>
 
       <hr class="my-4" />
 
+      <!-- ข้อมูลครุภัณฑ์ -->
+      <h5 class="text-success border-bottom pb-2 mb-3">
+        <i class="bi bi-box-seam"></i> ข้อมูลครุภัณฑ์
+      </h5>
       <div class="row">
         <!-- ชื่อครุภัณฑ์ -->
         <div class="col-md-4">
-          <label for="assetName" class="form-label"
-            >ชื่อครุภัณฑ์ <span class="text-danger">*</span></label
-          >
-          <input
-            type="text"
-            class="form-control"
-            id="assetName"
-            name="assetName"
-            value="{{ record.assetName if record else '' }}"
-            placeholder="ระบุชื่อครุภัณฑ์"
-            required
-          />
+          <label for="assetName" class="form-label">ชื่อครุภัณฑ์ <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="assetName" name="assetName"
+            value="{{ record.assetName if record else '' }}" placeholder="ระบุชื่อครุภัณฑ์" required />
           <div class="invalid-feedback">กรุณาระบุชื่อครุภัณฑ์</div>
         </div>
 
         <!-- หมายเลขพัสดุ -->
         <div class="col-md-4">
           <label for="assetNumber" class="form-label">หมายเลขพัสดุ</label>
-          <input
-            type="text"
-            class="form-control"
-            id="assetNumber"
-            name="assetNumber"
-            value="{{ record.assetNumber if record else '' }}"
-            placeholder="ระบุหมายเลขพัสดุ"
-          />
+          <input type="text" class="form-control" id="assetNumber" name="assetNumber"
+            value="{{ record.assetNumber if record else '' }}" placeholder="ระบุหมายเลขพัสดุ" />
         </div>
 
         <!-- จำนวน -->
         <div class="col-md-4">
-          <label for="quantity" class="form-label"
-            >จำนวน <span class="text-danger">*</span></label
-          >
-          <input
-            type="number"
-            class="form-control"
-            id="quantity"
-            name="quantity"
-            value="{{ record.quantity if record else '' }}"
-            min="1"
-            required
-          />
+          <label for="quantity" class="form-label">จำนวน <span class="text-danger">*</span></label>
+          <input type="number" class="form-control" id="quantity" name="quantity"
+            value="{{ record.quantity if record else '' }}" min="1" required />
           <div class="invalid-feedback">กรุณาระบุจำนวน</div>
         </div>
       </div>
 
       <hr class="my-4" />
 
+      <!-- หลักฐาน -->
+      <h5 class="text-warning border-bottom pb-2 mb-3">
+        <i class="bi bi-file-earmark-text"></i> หลักฐาน
+      </h5>
       <div class="row">
         <!-- หลักฐานรับ -->
         <div class="col-md-6">
-          <label for="receiveEvidence" class="form-label"
-            >หลักฐานรับ <span class="text-danger">*</span></label
-          >
-          <input
-            type="text"
-            class="form-control"
-            id="receiveEvidence"
-            name="receiveEvidence"
-            value="{{ record.receiveEvidence if record else '' }}"
-            placeholder="เช่น ใบรับของจากหน่วยงานปลายทาง"
-            required
-          />
+          <label for="receiveEvidence" class="form-label">หลักฐานรับ <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="receiveEvidence" name="receiveEvidence"
+            value="{{ record.receiveEvidence if record else '' }}" placeholder="เช่น ใบรับของจากหน่วยงานปลายทาง"
+            required />
           <div class="invalid-feedback">กรุณาระบุหลักฐานรับ</div>
         </div>
 
         <!-- หลักฐานจ่าย -->
         <div class="col-md-6">
-          <label for="distributeEvidence" class="form-label"
-            >หลักฐานจ่าย <span class="text-danger">*</span></label
-          >
-          <input
-            type="text"
-            class="form-control"
-            id="distributeEvidence"
-            name="distributeEvidence"
-            value="{{ record.distributeEvidence if record else '' }}"
-            placeholder="เช่น ใบส่งของ, เอกสารเบิกจ่าย"
-            required
-          />
+          <label for="distributeEvidence" class="form-label">หลักฐานจ่าย <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="distributeEvidence" name="distributeEvidence"
+            value="{{ record.distributeEvidence if record else '' }}" placeholder="เช่น ใบส่งของ, เอกสารเบิกจ่าย"
+            required />
           <div class="invalid-feedback">กรุณาระบุหลักฐานจ่าย</div>
         </div>
       </div>
@@ -177,11 +115,7 @@
 
     <div class="card-footer">
       <div class="d-flex justify-content-end gap-2">
-        <a
-          href="{{ url_for('asset_distribute_list') }}"
-          class="btn btn-secondary"
-          >ยกเลิก</a
-        >
+        <a href="{{ url_for('asset_distribute_list') }}" class="btn btn-secondary">ยกเลิก</a>
         <button type="submit" class="btn btn-primary">
           {% if is_edit %} อัปเดตข้อมูล {% else %} บันทึกข้อมูล {% endif %}
         </button>
