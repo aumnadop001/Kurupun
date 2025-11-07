@@ -9,7 +9,7 @@
     เพิ่มข้อมูลพัสดุใหม่
     {% endif %}
   </h3>
-  <a href="{{ url_for('inventory_control') }}" class="btn btn-secondary">
+  <a href="{{ url_for('inventory_control_list') }}" class="btn btn-secondary">
     <i class="bi bi-arrow-left"></i> กลับ
   </a>
 </div>
@@ -221,7 +221,7 @@
 
     <div class="card-footer">
       <div class="d-flex justify-content-end gap-2">
-        <a href="{{ url_for('inventory_control') }}" class="btn btn-secondary">ยกเลิก</a>
+        <a href="{{ url_for('inventory_control_list') }}" class="btn btn-secondary">ยกเลิก</a>
         <button type="submit" class="btn btn-primary">
           {% if is_edit %}
           อัปเดตข้อมูล

@@ -92,14 +92,23 @@ def create_crud_routes(app, db, login_required):
                 for record in data:
                     for date_field in date_fields:
                         if date_field in record and record[date_field]:
-                            record[date_field] = record[date_field].strftime(
-                                display_date_format
-                            )
-
+                            # ตรวจสอบว่าเป็น datetime object ก่อนแปลง
+                            if hasattr(record[date_field], "strftime"):
+                                record[date_field] = record[date_field].strftime(
+                                    display_date_format
+                                )
+                            # ถ้าเป็น string อยู่แล้ว ไม่ต้องแปลง
+                            elif isinstance(record[date_field], str):
+                                record[date_field] = record[date_field]
+                print("record ->", data)
                 return render_template(f"{template_folder}/list.html", data=data)
 
             # Add route
-            @self.app.route(f"/{route_name}/add", methods=["GET", "POST"], endpoint=f"{route_name}_add")
+            @self.app.route(
+                f"/{route_name}/add",
+                methods=["GET", "POST"],
+                endpoint=f"{route_name}_add",
+            )
             @self.login_required
             def add_view():
                 return self._form_handler(
@@ -115,7 +124,11 @@ def create_crud_routes(app, db, login_required):
                 )
 
             # Edit route
-            @self.app.route(f"/{route_name}/edit/<id_value>", methods=["GET", "POST"], endpoint=f"{route_name}_edit")
+            @self.app.route(
+                f"/{route_name}/edit/<id_value>",
+                methods=["GET", "POST"],
+                endpoint=f"{route_name}_edit",
+            )
             @self.login_required
             def edit_view(id_value):
                 return self._form_handler(
@@ -131,7 +144,11 @@ def create_crud_routes(app, db, login_required):
                 )
 
             # Delete route
-            @self.app.route(f"/{route_name}/delete/<id_value>", methods=["POST"], endpoint=f"{route_name}_delete")
+            @self.app.route(
+                f"/{route_name}/delete/<id_value>",
+                methods=["POST"],
+                endpoint=f"{route_name}_delete",
+            )
             @self.login_required
             def delete_view(id_value):
                 record = collection.find_one({id_field: id_value}, {"_id": 0})
@@ -168,9 +185,14 @@ def create_crud_routes(app, db, login_required):
                 if record:
                     for date_field in date_fields:
                         if date_field in record and record[date_field]:
-                            record[date_field] = record[date_field].strftime(
-                                date_format
-                            )
+                            # ตรวจสอบว่าเป็น datetime object ก่อนแปลง
+                            if hasattr(record[date_field], "strftime"):
+                                record[date_field] = record[date_field].strftime(
+                                    date_format
+                                )
+                            # ถ้าเป็น string อยู่แล้ว ไม่ต้องแปลง
+                            elif isinstance(record[date_field], str):
+                                record[date_field] = record[date_field]
 
             # POST: บันทึกข้อมูล
             if request.method == "POST":

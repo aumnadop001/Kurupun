@@ -12,6 +12,8 @@ services:
       - "27017:27017"
     networks:
       - kurupun-network
+    volumes:
+      - ./mongo-data:/data/db
 
   mongo-express:
     image: mongo-express:latest
@@ -30,3 +32,6 @@ networks:
   kurupun-network:
     driver: bridge
     name: kurupun-network
+
+volumes:
+  mongo-data:
