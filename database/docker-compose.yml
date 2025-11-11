@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:17
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: kurupun
+      POSTGRES_PASSWORD: kurupun
+      POSTGRES_DB: kurupun
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+
+  pgAdming:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@kurupun.com
+      PGADMIN_DEFAULT_PASSWORD: kurupun
+    ports:
+      - "4444:80"
+
+volumes:
+  postgres_data:

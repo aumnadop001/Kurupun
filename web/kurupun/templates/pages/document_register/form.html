@@ -1,0 +1,155 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}ทะเบียนเอกสาร - ฟอร์ม{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Ensure form inputs inside the table are responsive */
+  #entries-table td input,
+  #entries-table td textarea,
+  #entries-table td select {
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Make file inputs wrap nicely */
+  #entries-table td input[type="file"] {
+    padding: .25rem .5rem;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1 class="mb-3">{% if instance %}แก้ไขทะเบียนเอกสาร{% else %}สร้างทะเบียนเอกสารใหม่{% endif %}</h1>
+
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row">
+      <div class="col-md-6">
+        <div class="mb-3">
+          {{ form.reg_no.label_tag }}
+          {{ form.reg_no }}
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="mb-3">
+          {{ form.reg_date.label_tag }}
+          {{ form.reg_date }}
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="mb-3">
+          {{ form.filed_date.label_tag }}
+          {{ form.filed_date }}
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="mb-3">
+          {{ form.related_doc_no.label_tag }}
+          {{ form.related_doc_no }}
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="mb-3">
+          {{ form.withdrawal_set_no.label_tag }}
+          {{ form.withdrawal_set_no }}
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      {{ form.notes.label_tag }}
+      {{ form.notes }}
+    </div>
+
+    <hr />
+
+    <h5>รายการเอกสาร</h5>
+
+    {{ formset.management_form }}
+
+    <!-- responsive table wrapper: allows horizontal scroll on small screens -->
+    <div class="table-responsive">
+      <table class="table table-sm table-bordered" id="entries-table">
+        <thead>
+          <tr>
+            <th class="text-nowrap">ลำดับ</th>
+            <th>หัวข้อ/ชื่อเอกสาร</th>
+            <th>คำอธิบาย</th>
+            <th>ไฟล์</th>
+            <th class="text-center">ลบ</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for form in formset.forms %}
+            <tr class="entry-row">
+              <td class="text-nowrap">{{ form.order }}</td>
+              <td>{{ form.title }}</td>
+              <td>{{ form.content }}</td>
+              <td>{{ form.attached_file }}</td>
+              <td class="text-center">{{ form.DELETE }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mb-3">
+      <button type="button" id="add-entry" class="btn btn-outline-primary btn-sm">เพิ่มรายการ</button>
+    </div>
+
+    <div class="mt-4 d-grid gap-2 d-sm-flex">
+      <button type="submit" class="btn btn-primary me-sm-2">บันทึก</button>
+      <a href="{% url 'document_register' %}" class="btn btn-secondary">ยกเลิก</a>
+    </div>
+  </form>
+</div>
+
+<script>
+// Minimal JS to duplicate the last form row for adding new entries.
+document.addEventListener('DOMContentLoaded', function () {
+  const addBtn = document.getElementById('add-entry');
+  const table = document.getElementById('entries-table').getElementsByTagName('tbody')[0];
+  addBtn && addBtn.addEventListener('click', function () {
+    const totalForms = document.querySelector('[name="' + '{{ formset.management_form.TOTAL_FORMS.name }}' + '"]');
+    if (!totalForms) return;
+    const currentCount = parseInt(totalForms.value, 10);
+    const emptyRow = table.querySelector('.entry-row');
+    if (!emptyRow) return;
+    const newRow = emptyRow.cloneNode(true);
+
+    // Clear input values and update name/index attributes
+    newRow.querySelectorAll('input, textarea, select').forEach(function (el) {
+      if (el.type === 'file') {
+        el.value = null;
+      } else if (el.type === 'checkbox' || el.type === 'radio') {
+        el.checked = false;
+      } else {
+        el.value = '';
+      }
+
+      // Update names and ids to the new index
+      if (el.name) {
+        el.name = el.name.replace(/-\d+-/, '-' + currentCount + '-');
+      }
+      if (el.id) {
+        el.id = el.id.replace(/_\d+_/, '_' + currentCount + '_');
+      }
+    });
+
+    // Hide DELETE checkbox for new rows (if present)
+    newRow.querySelectorAll('input[type=checkbox]').forEach(function (cb) { cb.checked = false; });
+
+    table.appendChild(newRow);
+    totalForms.value = currentCount + 1;
+  });
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,162 @@
+/* iOS Theme with Bootstrap */
+:root {
+  --ios-blue: #007AFF;
+  --ios-gray: #8E8E93;
+  --ios-light-gray: #F2F2F7;
+  --ios-separator: #C6C6C8;
+  --ios-background: #FFFFFF;
+  --ios-secondary-background: #F2F2F7;
+  --ios-radius: 10px;
+  --ios-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+@font-face {
+  font-family: 'Sarabun';
+  src: url('../fonts/Sarabun/Sarabun-Regular.ttf') format('trueType');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Sarabun';
+  src: url('../fonts/Sarabun/Sarabun/Sarabun-Bold.ttf') format('trueType');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Sarabun';
+  src: url('.../fonts/Sarabun/Sarabun/Sarabun-Light.ttf') format('trueType');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Sarabun';
+  src: url('../fonts/Sarabun/Sarabun/Sarabun-Medium.ttf') format('trueType');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Sarabun';
+  src: url('../fonts/Sarabun/Sarabun/Sarabun-SemiBold.ttf') format('trueType');
+  font-weight: 600;
+  font-style: normal;
+}
+
+body {
+  font-family: 'Sarabun';
+  background-color: var(--ios-secondary-background);
+  color: #000000;
+}
+
+/* iOS-style Cards */
+.card {
+  border: none;
+  border-radius: var(--ios-radius);
+  box-shadow: var(--ios-shadow);
+  background-color: var(--ios-background);
+  margin-bottom: 20px;
+}
+
+.card-header {
+  background-color: transparent;
+  border-bottom: 1px solid var(--ios-separator);
+  font-weight: 600;
+}
+
+/* iOS-style Buttons */
+.btn-primary {
+  background-color: var(--ios-blue);
+  border: none;
+  border-radius: var(--ios-radius);
+  font-weight: 500;
+  padding: 12px 20px;
+  transition: opacity 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: var(--ios-blue);
+  opacity: 0.8;
+}
+
+.btn-secondary {
+  background-color: var(--ios-light-gray);
+  color: var(--ios-blue);
+  border: none;
+  border-radius: var(--ios-radius);
+  font-weight: 500;
+}
+
+/* iOS-style Form Controls */
+.form-control {
+  border: 1px solid var(--ios-separator);
+  border-radius: var(--ios-radius);
+  padding: 12px 16px;
+  font-size: 16px;
+}
+
+.form-control:focus {
+  border-color: var(--ios-blue);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+}
+
+/* iOS-style List Group */
+.list-group-item {
+  border: none;
+  border-bottom: 1px solid var(--ios-separator);
+  padding: 16px;
+  background-color: var(--ios-background);
+}
+
+.list-group-item:first-child {
+  border-top-left-radius: var(--ios-radius);
+  border-top-right-radius: var(--ios-radius);
+}
+
+.list-group-item:last-child {
+  border-bottom: none;
+  border-bottom-left-radius: var(--ios-radius);
+  border-bottom-right-radius: var(--ios-radius);
+}
+
+/* iOS-style Navigation */
+.navbar {
+  background-color: var(--ios-background);
+  border-bottom: 1px solid var(--ios-separator);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.nav-link {
+  color: var(--ios-blue);
+  font-weight: 500;
+}
+
+/* iOS-style Modal */
+.modal-content {
+  border: none;
+  border-radius: var(--ios-radius);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* iOS-style Badge */
+.badge {
+  border-radius: 12px;
+  padding: 4px 8px;
+  font-weight: 600;
+}
+
+/* iOS-style Switch (for Bootstrap form-check) */
+.form-switch .form-check-input {
+  width: 51px;
+  height: 31px;
+  background-color: var(--ios-separator);
+  border: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='white'/%3e%3c/svg%3e");
+}
+
+.form-switch .form-check-input:checked {
+  background-color: var(--ios-blue);
+}

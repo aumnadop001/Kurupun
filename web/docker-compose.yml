@@ -1,0 +1,8 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    command: bash -c " python manage.py migrate && python manage.py runserver 0.0.0.0:5001"
+    ports:
+      - "5001:5001"
