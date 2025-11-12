@@ -5,6 +5,7 @@ import DocumentRegistry from '../pages/DocumentRegistry';
 import FormDocumentRegistry from '../pages/DocumentRegistry/form';
 import { RequireAuth } from '../hooks/useAuth';
 import Loader from '../components/Loader';
+import SidebarLayout from '../components/Sidebar';
 
 const Router: React.FC = () => {
   return (
@@ -14,11 +15,29 @@ const Router: React.FC = () => {
           <Route path="/login" element={<LoginPage />} />
           <Route
             path="/"
-            element={<DocumentRegistry />}
+            element={
+              <SidebarLayout>
+                <DocumentRegistry />
+              </SidebarLayout>
+            }
           />
           <Route
-            path="/:id"
-            element={<RequireAuth><FormDocumentRegistry /></RequireAuth>}
+            path="/document-registries/create"
+            element={
+              <RequireAuth>
+                <SidebarLayout>
+                  <FormDocumentRegistry />
+                </SidebarLayout>
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/document-registries/:id"
+            element={
+              <SidebarLayout>
+                <FormDocumentRegistry />
+              </SidebarLayout>
+            }
           />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

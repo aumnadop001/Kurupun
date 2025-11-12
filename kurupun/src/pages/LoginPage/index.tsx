@@ -59,110 +59,256 @@ const LoginPage: React.FC = () => {
   });
 
   return (
-    <Container maxWidth="lg">
-      <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center' }}>
-        <Box
-          sx={{
-            width: '100%',
-            display: 'flex',
-            flexDirection: { xs: 'column', md: 'row' },
-            alignItems: 'stretch',
-          }}
-        >
+    <Box
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        // background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        position: 'relative',
+        overflow: 'hidden',
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3), transparent 50%), radial-gradient(circle at 80% 80%, rgba(255, 135, 135, 0.2), transparent 50%)',
+          zIndex: 0,
+        }
+      }}
+    >
+      <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
+        <Box sx={{ 
+          minHeight: '100vh', 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center',
+          py: { xs: 4, md: 0 } 
+        }}>
           <FadeIn>
-            <Box
-              sx={{
-                flex: 1,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                background: 'linear-gradient(135deg, #f5f7ff 0%, #e6f0ff 100%)',
-                p: 4,
+            <Paper 
+              elevation={24} 
+              sx={{ 
+                borderRadius: 4,
+                overflow: 'hidden',
+                maxWidth: 1000,
+                width: '100%',
+                background: 'rgba(255, 255, 255, 0.98)',
+                backdropFilter: 'blur(20px)',
               }}
             >
-              <Box sx={{ maxWidth: 420, textAlign: { xs: 'center', md: 'left' } }}>
-                <Typography variant="h3" component="h1" gutterBottom sx={{ fontWeight: 700 }}>
-                  ยินดีต้อนรับกลับ
-                </Typography>
-                <Typography color="text.secondary" sx={{ mb: 3 }}>
-                  เข้าสู่ระบบเพื่อจัดการเอกสารของคุณอย่างปลอดภัยและรวดเร็ว
-                </Typography>
-
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: { xs: 'column', md: 'row' },
+                  minHeight: { md: '600px' },
+                }}
+              >
+                {/* Left Side - Branding */}
                 <Box
-                  component="img"
-                  src="/assets/illustration-login.svg"
-                  alt="Login illustration"
-                  sx={{ width: '100%', maxWidth: 360, mt: 2, display: { xs: 'none', md: 'block' } }}
-                />
-              </Box>
-            </Box>
+                  sx={{
+                    flex: 1,
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    p: { xs: 4, sm: 5, md: 6 },
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    color: 'white',
+                    position: 'relative',
+                    '&::before': {
+                      content: '""',
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      background: 'radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.1), transparent 60%)',
+                    }
+                  }}
+                >
+                  <Box sx={{ position: 'relative', zIndex: 1, textAlign: 'center', width: '100%' }}>
+                    <Box
+                      component="img"
+                      src="/images/logo.png"
+                      alt="Logo"
+                      sx={{ 
+                        width: '100%', 
+                        maxWidth: { xs: 140, sm: 180, md: 200 }, 
+                        mb: 3,
+                        mx: 'auto'
+                      }}
+                    />
+                    
+                    <Typography 
+                      variant="h3" 
+                      component="h1"
+                      sx={{ 
+                        fontWeight: 700,
+                        fontSize: { xs: '1.75rem', sm: '2.25rem', md: '2.5rem' },
+                        mb: 2,
+                        textShadow: '0 2px 10px rgba(0,0,0,0.2)'
+                      }}
+                    >
+                      ยินดีต้อนรับ
+                    </Typography>
+                    
+                    <Typography 
+                      sx={{ 
+                        fontSize: { xs: '0.95rem', sm: '1.05rem', md: '1.1rem' },
+                        lineHeight: 1.6,
+                        opacity: 0.95,
+                        maxWidth: 360,
+                        mx: 'auto'
+                      }}
+                    >
+                      ระบบทะเบียนคุมเอกสาร<br/>และบัญชีคุมวัสดุ
+                    </Typography>
 
-            <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', p: 4 }}>
-              <Paper elevation={6} sx={{ width: '100%', maxWidth: 420, p: { xs: 3, sm: 4 } }}>
-                <Typography variant="h5" component="h2" gutterBottom textAlign="center" sx={{ fontWeight: 600 }}>
-                  เข้าสู่ระบบ
-                </Typography>
-                <form onSubmit={formik.handleSubmit}>
-                  <TextField
-                    fullWidth
-                    id="username"
-                    name="username"
-                    label="ชื่อผู้ใช้"
-                    value={formik.values.username}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.username && Boolean(formik.errors.username)}
-                    helperText={formik.touched.username && formik.errors.username}
-                    sx={{ mb: 2 }}
-                  />
-
-                  <TextField
-                    fullWidth
-                    id="password"
-                    name="password"
-                    label="รหัสผ่าน"
-                    type={showPassword ? 'text' : 'password'}
-                    value={formik.values.password}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.password && Boolean(formik.errors.password)}
-                    helperText={formik.touched.password && formik.errors.password}
-                    sx={{ mb: 1.5 }}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label={showPassword ? 'ซ่อนรหัสผ่าน' : 'แสดงรหัสผ่าน'}
-                            onClick={() => setShowPassword((s) => !s)}
-                            edge="end"
-                          >
-                            {showPassword ? (
-                              <VisibilityIcon />
-                            ) : (
-                              <VisibilityOffIcon />
-                            )}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                    <Button variant="text" size="small">
-                      ลืมรหัสผ่าน?
-                    </Button>
+                    <Box sx={{ mt: 4, opacity: 0.7 }}>
+                      <Typography variant="caption" sx={{ fontSize: '0.85rem' }}>
+                        เข้าสู่ระบบเพื่อเริ่มการทำงาน
+                      </Typography>
+                    </Box>
                   </Box>
+                </Box>
 
-                  <Button fullWidth type="submit" variant="contained" size="large" sx={{ mb: 2 }}>
-                    เข้าสู่ระบบ
-                  </Button>
-                </form>
-              </Paper>
-            </Box>
+                {/* Right Side - Login Form */}
+                <Box sx={{ 
+                  flex: 1, 
+                  p: { xs: 4, sm: 5, md: 6 },
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center'
+                }}>
+                  <Box sx={{ maxWidth: 400, width: '100%', mx: 'auto' }}>
+                    <Typography 
+                      variant="h4" 
+                      component="h2" 
+                      sx={{ 
+                        fontWeight: 700,
+                        mb: 1,
+                        fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' },
+                        color: 'primary.main'
+                      }}
+                    >
+                      เข้าสู่ระบบ
+                    </Typography>
+                    
+                    <Typography 
+                      color="text.secondary" 
+                      sx={{ mb: 4, fontSize: { xs: '0.875rem', sm: '0.95rem' } }}
+                    >
+                      กรุณากรอกข้อมูลเพื่อเข้าใช้งาน
+                    </Typography>
+
+                    <form onSubmit={formik.handleSubmit}>
+                      <TextField
+                        fullWidth
+                        size='medium'
+                        id="username"
+                        name="username"
+                        label="ชื่อผู้ใช้"
+                        value={formik.values.username}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={formik.touched.username && Boolean(formik.errors.username)}
+                        helperText={formik.touched.username && formik.errors.username}
+                        sx={{ 
+                          mb: 3,
+                          '& .MuiOutlinedInput-root': {
+                            borderRadius: 2,
+                          }
+                        }}
+                        autoComplete="username"
+                      />
+
+                      <TextField
+                        fullWidth
+                        size='medium'
+                        id="password"
+                        name="password"
+                        label="รหัสผ่าน"
+                        type={showPassword ? 'text' : 'password'}
+                        value={formik.values.password}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={formik.touched.password && Boolean(formik.errors.password)}
+                        helperText={formik.touched.password && formik.errors.password}
+                        sx={{ 
+                          mb: 2,
+                          '& .MuiOutlinedInput-root': {
+                            borderRadius: 2,
+                          }
+                        }}
+                        autoComplete="current-password"
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton
+                                aria-label={showPassword ? 'ซ่อนรหัสผ่าน' : 'แสดงรหัสผ่าน'}
+                                onClick={() => setShowPassword((s) => !s)}
+                                edge="end"
+                              >
+                                {showPassword ? (
+                                  <VisibilityIcon />
+                                ) : (
+                                  <VisibilityOffIcon />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+
+                      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 3 }}>
+                        <Button 
+                          variant="text" 
+                          size="small"
+                          sx={{ 
+                            textTransform: 'none',
+                            fontSize: '0.875rem',
+                            '&:hover': {
+                              background: 'transparent',
+                              textDecoration: 'underline'
+                            }
+                          }}
+                        >
+                          ลืมรหัสผ่าน?
+                        </Button>
+                      </Box>
+
+                      <Button 
+                        fullWidth 
+                        type="submit" 
+                        variant="contained" 
+                        size="large"
+                        sx={{ 
+                          py: 1.5,
+                          borderRadius: 2,
+                          fontSize: '1rem',
+                          fontWeight: 600,
+                          textTransform: 'none',
+                          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                          boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)',
+                          '&:hover': {
+                            background: 'linear-gradient(135deg, #5568d3 0%, #6a4190 100%)',
+                            boxShadow: '0 6px 20px rgba(102, 126, 234, 0.5)',
+                          }
+                        }}
+                      >
+                        เข้าสู่ระบบ
+                      </Button>
+                    </form>
+                  </Box>
+                </Box>
+              </Box>
+            </Paper>
           </FadeIn>
         </Box>
-      </Box>
-    </Container>
+      </Container>
+    </Box>
   );
 };
 

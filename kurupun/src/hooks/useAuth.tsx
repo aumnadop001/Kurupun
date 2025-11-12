@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-
+import { store } from '../stores/store';
 type UseAuthResult = {
   token: string | null;
   isAuthenticated: boolean;
@@ -9,10 +9,12 @@ type UseAuthResult = {
 };
 
 export const useAuth = (): UseAuthResult => {
-  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-
+  const user = store.getState().auth;
+  console.log(user);
+  
+  const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
   const login = (t: string) => {
-    localStorage.setItem('token', t);
+    localStorage.setItem('accessToken', t);
     // If you have additional user info, save it here
   };
 
@@ -22,7 +24,7 @@ export const useAuth = (): UseAuthResult => {
 
   return {
     token,
-    isAuthenticated: !!token,
+    isAuthenticated: user.isLoggedIn,
     login,
     logout,
   };
