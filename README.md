@@ -45,11 +45,27 @@ cd database
 docker-compose up --build -d
 ```
 
-## Start App
+## Start Backend
 
 ```bash
-cd web
+cd api
 
-# รัน Docker Compose เพื่อ start web
+# รัน Docker Compose เพื่อ start backend
 docker-compose up --build -d
+```
+
+## Start Frontend
+
+```bash
+cd kurupun
+```
+
+```bash
+# ติดตั้ง dependencies
+yarn
+```
+
+```bash
+# start frontend
+yarn dev
 ```
