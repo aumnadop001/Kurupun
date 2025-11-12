@@ -7,7 +7,7 @@ function App() {
   return (
     <ThemeProvider theme={themes}>
       <CssBaseline />
-      <Toaster />
+      <Toaster position='top-right' />
       <Router />
     </ThemeProvider>
   );

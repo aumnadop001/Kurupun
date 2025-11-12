@@ -1,4 +1,4 @@
-import { callPost } from "../call-api"
+import { callGet, callPost } from "../call-api"
 
 export const Login = async (credentials: { username: string; password: string; }) => {
   try {
@@ -12,7 +12,7 @@ export const Login = async (credentials: { username: string; password: string; }
 
 export const getProfile = async () => {
   try {
-    const response = await callPost("/api/auth/profile/");
+    const response = await callGet("/api/auth/profile/");
     return response;
   } catch (error) {
     console.error("Get profile failed:", error);

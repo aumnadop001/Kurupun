@@ -4,6 +4,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   user: null,  // เก็บข้อมูล user
   accessToken: null, // เก็บ JWT token
+  refreshToken: null,
   isLoggedIn: false,
 };
 
@@ -12,9 +13,14 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     loginSuccess: (state, action) => {
-      state.user = action.payload.user;
-      state.accessToken = action.payload.access;
+      console.log('here ->', action.payload);
+
+      state.accessToken = action.payload.accessToken;
+      state.refreshToken = action.payload.refreshToken;
       state.isLoggedIn = true;
+    },
+    profileLogin: (state, action) => {
+      state.user = action.payload.user;
     },
     logout: (state) => {
       state.user = null;
@@ -24,5 +30,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { loginSuccess, logout } = authSlice.actions;
+export const { loginSuccess, profileLogin, logout } = authSlice.actions;
 export default authSlice.reducer;

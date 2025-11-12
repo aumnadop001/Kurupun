@@ -26,7 +26,7 @@ const theme = createTheme({
     borderRadius: 12,        // โค้งมน
   },
   typography: {
-    fontFamily: `'Roboto', 'Helvetica', 'Arial', sans-serif`,
+    fontFamily: `Sarabun`,
     button: {
       textTransform: 'none',
     },
