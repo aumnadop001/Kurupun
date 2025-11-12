@@ -14,8 +14,12 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 
-# โหด environment variables จากไฟล์ .env
-load_dotenv()
+# โหลด environment variables จากไฟล์ .env
+# load .env.local ก่อนถ้ามี
+if os.path.exists(os.path.join(Path(__file__).resolve().parent, '.env.local')):
+    load_dotenv(os.path.join(Path(__file__).resolve().parent, '.env.local'))
+else:
+    load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
