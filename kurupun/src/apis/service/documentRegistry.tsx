@@ -1,9 +1,14 @@
 import { callGet, callPost } from "../call-api"
 
+interface Params {
+  page?: number;
+  page_size?: number;
+  search?: string;
+}
 
-export const fetchDocumentRegistries = async () => {
+export const fetchDocumentRegistries = async (params?: Params) => {
   try {
-    const response = await callGet("/api/document-registries/");
+    const response = await callGet("/api/document-registries/", params);
     return response;
   } catch (error) {
     console.error("Fetch document registries failed:", error);
@@ -41,7 +46,7 @@ export const updateDocumentRegistry = async (id: string, data: any) => {
   }
 }
 
-export const deleteDocumentRegistry = async (id: string) => {
+export const deleteDocumentRegistry = async (id: number) => {
   try {
     const response = await callPost(`/api/document-registries/${id}/delete/`);
     return response;

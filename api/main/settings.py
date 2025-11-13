@@ -11,13 +11,13 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-import os
+import os, sys
 from dotenv import load_dotenv
 
 # โหลด environment variables จากไฟล์ .env
 # load .env.local ก่อนถ้ามี
-if os.path.exists(os.path.join(Path(__file__).resolve().parent, '.env.local')):
-    load_dotenv(os.path.join(Path(__file__).resolve().parent, '.env.local'))
+if os.path.exists(os.path.join(Path(__file__).resolve().parent, ".env.local")):
+    load_dotenv(os.path.join(Path(__file__).resolve().parent, ".env.local"))
 else:
     load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -28,7 +28,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-4b64yht1jm3agxgyhsp&+wtd_tb!00e_+e(710lbzfhx=olcm*"
+secret = os.getenv("SECRET_KEY")
+SECRET_KEY = secret
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -45,9 +46,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
     # แอปพลิเคชันที่สร้างขึ้น
     "corsheaders",
+    "django_filters",
     "rest_framework",
     "src.authentication",
     "src.documentRegistry",
@@ -70,8 +71,8 @@ CORS_ALLOW_CREDENTIALS = True
 
 # ✅ Django REST Framework config
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
 }
 
@@ -158,14 +159,21 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # ✅ JWT Token อายุ (optional)
 from datetime import timedelta
+
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
-    'ROTATE_REFRESH_TOKENS': False,
-    'BLACKLIST_AFTER_ROTATION': True,
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": False,
+    "BLACKLIST_AFTER_ROTATION": True,
 }
+
+if not os.path.exists(os.path.join(BASE_DIR, "static")):
+    os.makedirs(os.path.join(BASE_DIR, "static"))
+
+if not os.path.exists(os.path.join(BASE_DIR, "media")):
+    os.makedirs(os.path.join(BASE_DIR, "media"))
 
 STATIC_URL = "static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")

@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import {
-  Container,
-  Paper,
-  TextField,
-  Button,
-  Typography,
-  Box,
-  Stack,
-  Alert,
-} from '@mui/material';
+
+import Container from '@mui/material/Container';
+import Paper from '@mui/material/Paper';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
+import Alert from '@mui/material/Alert';
+
 import toast from 'react-hot-toast';
 import { useAuth } from '../../../hooks/useAuth';
+import { createDocumentRegistry, updateDocumentRegistry, fetchDocumentRegistryById, fetchDocumentRegistries } from '../../../apis/service/documentRegistry';
 
 interface DocumentRegistryFormData {
   registry_number: string;
@@ -23,7 +24,8 @@ interface DocumentRegistryFormData {
   related_document_number: string;
   withdrawal_set_number: string;
 }
-import { createDocumentRegistry, updateDocumentRegistry, fetchDocumentRegistryById, fetchDocumentRegistries } from '../../../apis/service/documentRegistry';
+
+
 const FormDocumentRegistry: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -187,7 +189,7 @@ const FormDocumentRegistry: React.FC = () => {
             คุณกำลังดูข้อมูลในโหมดอ่านอย่างเดียว กรุณาเข้าสู่ระบบเพื่อแก้ไขข้อมูล
           </Alert>
         )}
-
+        <Typography variant="h6" component="h2">ค้นหา</Typography>
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <Stack spacing={3}>
             <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>

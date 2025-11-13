@@ -1,72 +1,64 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router';
-import {
-  Container,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-  Box,
-  Button,
-} from '@mui/material';
-import { Link } from 'react-router';
-import { fetchDocumentRegistries } from '../../apis/service/documentRegistry';
+import { useNavigate, Link } from 'react-router';
+
+import Container from '@mui/material/Container';
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TablePagination from '@mui/material/TablePagination';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
+
+import { fetchDocumentRegistries, deleteDocumentRegistry } from '../../apis/service/documentRegistry';
 import { useAuth } from '../../hooks/useAuth';
 import moment from 'moment-timezone'
+import { Select } from '@mui/material';
+import { toast } from 'react-hot-toast';
+import { mappingMonthToThai } from '../../utils/mappingMouth';
+import { DocumentRegistryDataType } from '../../types/DocumentRegistry';
 
 // ตั้งค่า timezone และภาษา
 moment.tz.setDefault('Asia/Bangkok')
 moment.locale('th')
-interface DocumentRegistryData {
-  id: number;
-  registry_number: string;
-  registration_date: string;
-  document_title: string;
-  sender: string;
-  first_item: string;
-  storage_date: string;
-  related_document_number: string;
-  withdrawal_set_number: string;
-}
 
-const mappingMonthToThai = (month: string) => {
-  const monthMap: { [key: string]: string } = {
-    '01': 'มกราคม',
-    '02': 'กุมภาพันธ์',
-    '03': 'มีนาคม',
-    '04': 'เมษายน',
-    '05': 'พฤษภาคม',
-    '06': 'มิถุนายน',
-    '07': 'กรกฎาคม',
-    '08': 'สิงหาคม',
-    '09': 'กันยายน',
-    '10': 'ตุลาคม',
-    '11': 'พฤศจิกายน',
-    '12': 'ธันวาคม',
-  };
-  return monthMap[month] || month;
-}
+
+
 
 const DocumentRegistry: React.FC = () => {
-  const [data, setData] = useState<DocumentRegistryData[]>([]);
+  const [data, setData] = useState<DocumentRegistryDataType>({ count: 0, results: [], next: null, previous: null });
+  const [searchBy, setSearchBy] = useState<string>('registry_number');
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const handleChangePage = (_event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        const response = await fetchDocumentRegistries();
-        setData(response.results);
+        const response = await fetchDocumentRegistries({ page: page + 1, page_size: rowsPerPage });
+        setData(response);
       } catch (error) {
         console.error("Error fetching document registries:", error);
       }
     }
     loadData();
-  }, [])
+  }, [page, rowsPerPage]);
 
   const handleEdit = (id: number) => {
     if (isAuthenticated) {
@@ -85,12 +77,12 @@ const DocumentRegistry: React.FC = () => {
     if (window.confirm('คุณต้องการลบทะเบียนเอกสารนี้ใช่หรือไม่?')) {
       try {
         // TODO: Delete API call
-        // await deleteDocumentRegistry(id);
-        setData(data.filter(item => item.id !== id));
-        // toast.success('ลบข้อมูลสำเร็จ');
+        await deleteDocumentRegistry(id);
+        setData({ ...data, results: data.results.filter(item => item.id !== id) });
+        toast.success('ลบข้อมูลสำเร็จ');
       } catch (error) {
         console.error('Error deleting document registry:', error);
-        // toast.error('เกิดข้อผิดพลาดในการลบข้อมูล');
+        toast.error('เกิดข้อผิดพลาดในการลบข้อมูล');
       }
     }
   };
@@ -102,6 +94,11 @@ const DocumentRegistry: React.FC = () => {
       navigate('/login', { state: { from: '/document-registries/create' } });
     }
   };
+
+  const handleSearch = async (searchBy: string, searchValue: string) => {
+    const response = await fetchDocumentRegistries({ page: page + 1, page_size: rowsPerPage, [searchBy]: searchValue });
+    setData(response);
+  }
   return (
     <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
       <Box sx={{ mb: 3 }}>
@@ -112,7 +109,34 @@ const DocumentRegistry: React.FC = () => {
           {isAuthenticated ? 'เพิ่มทะเบียนเอกสาร' : 'เข้าสู่ระบบเพื่อเพิ่มทะเบียน'}
         </Button>
       </Box>
-
+      <form onSubmit={(e) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        const searchValue = formData.get('searchValue') as string;
+        handleSearch(searchBy, searchValue);
+      }}>
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap', mb: 3 }}>
+          <Typography>ค้นหาโดย</Typography>
+          <Select
+            value={searchBy}
+            onChange={(e) => setSearchBy(e.target.value)}
+            sx={{ minWidth: 150 }}
+            size="small"
+          >
+            <option value="registry_number">ทะเบียนที่</option>
+            <option value="document_title">เอกสาร</option>
+            <option value="sender">จาก</option>
+          </Select>
+          <Autocomplete
+            disablePortal
+            options={data.results.map((option) => option[searchBy as keyof typeof option] as string)}
+            sx={{ width: 300 }}
+            size="small"
+            renderInput={(params) => <TextField {...params} name="searchValue" />}
+          />
+          <Button type='submit' variant="contained" color="primary">ค้นหา</Button>
+        </Box>
+      </form>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="document registry table">
           <TableHead>
@@ -149,7 +173,7 @@ const DocumentRegistry: React.FC = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.length === 0 ? (
+            {data.count === 0 ? (
               <TableRow>
                 <TableCell colSpan={isAuthenticated ? 9 : 8} align="center">
                   <Typography variant="body2" color="text.secondary">
@@ -158,7 +182,7 @@ const DocumentRegistry: React.FC = () => {
                 </TableCell>
               </TableRow>
             ) : (
-              data.map((row) => (
+              data.results.map((row) => (
                 <TableRow
                   key={row.id}
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -208,6 +232,19 @@ const DocumentRegistry: React.FC = () => {
             )}
           </TableBody>
         </Table>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25, { label: 'ทั้งหมด', value: -1 }]}
+          component="div"
+          count={data.count}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          labelRowsPerPage="แถวต่อหน้า:"
+          labelDisplayedRows={({ from, to, count }) =>
+            `${from}-${to} จาก ${count !== -1 ? count : `มากกว่า ${to}`}`
+          }
+        />
       </TableContainer>
     </Container>
   );

@@ -23,6 +23,7 @@ const authSlice = createSlice({
     logout: (state) => {
       state.user = null;
       state.accessToken = null;
+      state.refreshToken = null;
       state.isLoggedIn = false;
     },
   },
