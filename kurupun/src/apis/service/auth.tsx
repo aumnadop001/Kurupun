@@ -10,6 +10,16 @@ export const Login = async (credentials: { username: string; password: string; }
   }
 }
 
+export const register = async (data: { username: string; password: string; email: string; }) => {
+  try {
+    const response = await callPost("/api/auth/register/", data);
+    return response;
+  } catch (error) {
+    console.error("Registration failed:", error);
+    throw error;
+  }
+}
+
 export const getProfile = async () => {
   try {
     const response = await callGet("/api/auth/profile/");

@@ -17,43 +17,47 @@ import InputAdornment from '@mui/material/InputAdornment'
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 
-import { Login, getProfile } from '../../apis/service/auth';
-import { loginSuccess, profileLogin } from '../../stores/services/authSlice';
-import { store } from '../../stores/store';
+import { register } from '../../apis/service/auth';
 import toast from 'react-hot-toast';
 
 const validationSchema = yup.object({
   username: yup.string().required('กรุณากรอก Username'),
-  password: yup.string().required('กรุณากรอกรหัสผ่าน'),
+  email: yup.string().email('รูปแบบอีเมลไม่ถูกต้อง').required('กรุณากรอกอีเมล'),
+  password: yup.string().min(6, 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร').required('กรุณากรอกรหัสผ่าน'),
+  confirmPassword: yup.string()
+    .oneOf([yup.ref('password')], 'รหัสผ่านไม่ตรงกัน')
+    .required('กรุณายืนยันรหัสผ่าน'),
 });
 
-const LoginPage: React.FC = () => {
+const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const formik = useFormik({
     initialValues: {
       username: '',
+      email: '',
       password: '',
+      confirmPassword: '',
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       try {
-        const response = await Login({ username: values.username, password: values.password });
-        if (response && response.access) {
-          store.dispatch(loginSuccess({ accessToken: response.access, refreshToken: response.refresh }));
-
-          const profile = await getProfile();
-          store.dispatch(profileLogin({ user: profile }));
-          toast.success('Login successful!')
-          navigate('/');
+        const response = await register({ 
+          username: values.username, 
+          email: values.email,
+          password: values.password 
+        });
+        if (response) {
+          toast.success('ลงทะเบียนสำเร็จ! กรุณาเข้าสู่ระบบ');
+          navigate('/login');
         } else {
-          console.error('Login failed: No token received');
-          toast.error('Login failed: No token received');
+          toast.error('การลงทะเบียนล้มเหลว');
         }
       } catch (error) {
-        console.error('Login error:', error);
-        toast.error(`Login failed: ${error}`);
+        console.error('Registration error:', error);
+        toast.error(`การลงทะเบียนล้มเหลว: ${error}`);
       }
     },
   });
@@ -63,7 +67,6 @@ const LoginPage: React.FC = () => {
       sx={{
         minHeight: '100vh',
         display: 'flex',
-        // background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
         position: 'relative',
         overflow: 'hidden',
         '&::before': {
@@ -79,17 +82,17 @@ const LoginPage: React.FC = () => {
       }}
     >
       <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
-        <Box sx={{
-          minHeight: '100vh',
-          display: 'flex',
-          alignItems: 'center',
+        <Box sx={{ 
+          minHeight: '100vh', 
+          display: 'flex', 
+          alignItems: 'center', 
           justifyContent: 'center',
-          py: { xs: 4, md: 0 }
+          py: { xs: 4, md: 0 } 
         }}>
           <FadeIn>
-            <Paper
-              elevation={24}
-              sx={{
+            <Paper 
+              elevation={24} 
+              sx={{ 
                 borderRadius: 4,
                 overflow: 'hidden',
                 maxWidth: 1000,
@@ -133,29 +136,29 @@ const LoginPage: React.FC = () => {
                       component="img"
                       src="/images/logo.png"
                       alt="Logo"
-                      sx={{
-                        width: '100%',
-                        maxWidth: { xs: 140, sm: 180, md: 200 },
+                      sx={{ 
+                        width: '100%', 
+                        maxWidth: { xs: 140, sm: 180, md: 200 }, 
                         mb: 3,
                         mx: 'auto'
                       }}
                     />
-
-                    <Typography
-                      variant="h3"
+                    
+                    <Typography 
+                      variant="h3" 
                       component="h1"
-                      sx={{
+                      sx={{ 
                         fontWeight: 700,
                         fontSize: { xs: '1.75rem', sm: '2.25rem', md: '2.5rem' },
                         mb: 2,
                         textShadow: '0 2px 10px rgba(0,0,0,0.2)'
                       }}
                     >
-                      ยินดีต้อนรับ
+                      ลงทะเบียน
                     </Typography>
-
-                    <Typography
-                      sx={{
+                    
+                    <Typography 
+                      sx={{ 
                         fontSize: { xs: '0.95rem', sm: '1.05rem', md: '1.1rem' },
                         lineHeight: 1.6,
                         opacity: 0.95,
@@ -163,44 +166,44 @@ const LoginPage: React.FC = () => {
                         mx: 'auto'
                       }}
                     >
-                      ระบบทะเบียนคุมเอกสาร<br />และบัญชีคุมวัสดุ
+                      ระบบทะเบียนคุมเอกสาร<br/>และบัญชีคุมวัสดุ
                     </Typography>
 
                     <Box sx={{ mt: 4, opacity: 0.7 }}>
                       <Typography variant="caption" sx={{ fontSize: '0.85rem' }}>
-                        เข้าสู่ระบบเพื่อเริ่มการทำงาน
+                        สร้างบัญชีใหม่เพื่อเริ่มใช้งาน
                       </Typography>
                     </Box>
                   </Box>
                 </Box>
 
-                {/* Right Side - Login Form */}
-                <Box sx={{
-                  flex: 1,
+                {/* Right Side - Register Form */}
+                <Box sx={{ 
+                  flex: 1, 
                   p: { xs: 4, sm: 5, md: 6 },
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'center'
                 }}>
                   <Box sx={{ maxWidth: 400, width: '100%', mx: 'auto' }}>
-                    <Typography
-                      variant="h4"
-                      component="h2"
-                      sx={{
+                    <Typography 
+                      variant="h4" 
+                      component="h2" 
+                      sx={{ 
                         fontWeight: 700,
                         mb: 1,
                         fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' },
                         color: 'primary.main'
                       }}
                     >
-                      เข้าสู่ระบบ
+                      สร้างบัญชีใหม่
                     </Typography>
-
-                    <Typography
-                      color="text.secondary"
+                    
+                    <Typography 
+                      color="text.secondary" 
                       sx={{ mb: 4, fontSize: { xs: '0.875rem', sm: '0.95rem' } }}
                     >
-                      กรุณากรอกข้อมูลเพื่อเข้าใช้งาน
+                      กรุณากรอกข้อมูลเพื่อลงทะเบียน
                     </Typography>
 
                     <form onSubmit={formik.handleSubmit}>
@@ -215,13 +218,34 @@ const LoginPage: React.FC = () => {
                         onBlur={formik.handleBlur}
                         error={formik.touched.username && Boolean(formik.errors.username)}
                         helperText={formik.touched.username && formik.errors.username}
-                        sx={{
+                        sx={{ 
                           mb: 3,
                           '& .MuiOutlinedInput-root': {
                             borderRadius: 2,
                           }
                         }}
                         autoComplete="username"
+                      />
+
+                      <TextField
+                        fullWidth
+                        size='medium'
+                        id="email"
+                        name="email"
+                        label="อีเมล"
+                        type="email"
+                        value={formik.values.email}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={formik.touched.email && Boolean(formik.errors.email)}
+                        helperText={formik.touched.email && formik.errors.email}
+                        sx={{ 
+                          mb: 3,
+                          '& .MuiOutlinedInput-root': {
+                            borderRadius: 2,
+                          }
+                        }}
+                        autoComplete="email"
                       />
 
                       <TextField
@@ -236,13 +260,13 @@ const LoginPage: React.FC = () => {
                         onBlur={formik.handleBlur}
                         error={formik.touched.password && Boolean(formik.errors.password)}
                         helperText={formik.touched.password && formik.errors.password}
-                        sx={{
-                          mb: 2,
+                        sx={{ 
+                          mb: 3,
                           '& .MuiOutlinedInput-root': {
                             borderRadius: 2,
                           }
                         }}
-                        autoComplete="current-password"
+                        autoComplete="new-password"
                         InputProps={{
                           endAdornment: (
                             <InputAdornment position="end">
@@ -261,12 +285,51 @@ const LoginPage: React.FC = () => {
                           ),
                         }}
                       />
-                      <Button
+
+                      <TextField
                         fullWidth
-                        type="submit"
-                        variant="contained"
+                        size='medium'
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        label="ยืนยันรหัสผ่าน"
+                        type={showConfirmPassword ? 'text' : 'password'}
+                        value={formik.values.confirmPassword}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)}
+                        helperText={formik.touched.confirmPassword && formik.errors.confirmPassword}
+                        sx={{ 
+                          mb: 3,
+                          '& .MuiOutlinedInput-root': {
+                            borderRadius: 2,
+                          }
+                        }}
+                        autoComplete="new-password"
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton
+                                aria-label={showConfirmPassword ? 'ซ่อนรหัสผ่าน' : 'แสดงรหัสผ่าน'}
+                                onClick={() => setShowConfirmPassword((s) => !s)}
+                                edge="end"
+                              >
+                                {showConfirmPassword ? (
+                                  <VisibilityIcon />
+                                ) : (
+                                  <VisibilityOffIcon />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+
+                      <Button 
+                        fullWidth 
+                        type="submit" 
+                        variant="contained" 
                         size="large"
-                        sx={{
+                        sx={{ 
                           py: 1.5,
                           borderRadius: 2,
                           fontSize: '1rem',
@@ -274,30 +337,38 @@ const LoginPage: React.FC = () => {
                           textTransform: 'none',
                           background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                           boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)',
+                          mb: 2,
                           '&:hover': {
                             background: 'linear-gradient(135deg, #5568d3 0%, #6a4190 100%)',
                             boxShadow: '0 6px 20px rgba(102, 126, 234, 0.5)',
                           }
                         }}
                       >
-                        เข้าสู่ระบบ
+                        ลงทะเบียน
                       </Button>
-                      <Button
-                        fullWidth
-                        onClick={() => navigate('/register')}
-                        variant="contained"
-                        size="large"
-                        sx={{
-                          py: 1.5,
-                          mt: 2,
-                          borderRadius: 2,
-                          fontSize: '1rem',
-                          fontWeight: 600,
-                          textTransform: 'none',
-                        }}
-                      >
-                        สร้างบัญชีใหม่
-                      </Button>
+
+                      <Box sx={{ textAlign: 'center' }}>
+                        <Typography variant="body2" color="text.secondary" component="span">
+                          มีบัญชีอยู่แล้ว?{' '}
+                        </Typography>
+                        <Button 
+                          variant="text"
+                          onClick={() => navigate('/login')}
+                          sx={{ 
+                            textTransform: 'none',
+                            fontSize: '0.875rem',
+                            fontWeight: 600,
+                            p: 0,
+                            minWidth: 'auto',
+                            '&:hover': {
+                              background: 'transparent',
+                              textDecoration: 'underline'
+                            }
+                          }}
+                        >
+                          เข้าสู่ระบบ
+                        </Button>
+                      </Box>
                     </form>
                   </Box>
                 </Box>
@@ -310,4 +381,4 @@ const LoginPage: React.FC = () => {
   );
 };
 
-export default LoginPage;
+export default RegisterPage;

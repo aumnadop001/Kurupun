@@ -25,7 +25,7 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import { store } from '../../stores/store';
 import { useNavigate, useLocation } from 'react-router-dom';
 import ConfirmDialog from '../ConfirmDialog';
-
+import { logout } from '../../stores/services/authSlice';
 const DRAWER_WIDTH = 220;
 
 interface SidebarLayoutProps {
@@ -55,9 +55,9 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
   };
 
   const handleLogoutConfirm = () => {
-    localStorage.removeItem('token');
+    store.dispatch(logout());
     setLogoutDialogOpen(false);
-    window.location.href = '/login';
+    navigate('/');
   };
 
   const handleLogoutCancel = () => {
