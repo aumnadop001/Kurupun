@@ -59,8 +59,8 @@ const DocumentRegistry: React.FC = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const registries = await fetchDocumentRegistries();
-        setData(registries);
+        const response = await fetchDocumentRegistries();
+        setData(response.results);
       } catch (error) {
         console.error("Error fetching document registries:", error);
       }

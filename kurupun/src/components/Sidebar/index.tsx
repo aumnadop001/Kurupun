@@ -22,11 +22,14 @@ import MenuIcon from '@mui/icons-material/Menu';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LoginIcon from '@mui/icons-material/Login';
 import DescriptionIcon from '@mui/icons-material/Description';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { store } from '../../stores/store';
 import { useNavigate, useLocation } from 'react-router-dom';
 import ConfirmDialog from '../ConfirmDialog';
 import { logout } from '../../stores/services/authSlice';
 const DRAWER_WIDTH = 220;
+const DRAWER_WIDTH_COLLAPSED = 70;
 
 interface SidebarLayoutProps {
   children: React.ReactNode;
@@ -34,6 +37,7 @@ interface SidebarLayoutProps {
 
 const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -42,8 +46,14 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
   const user = store.getState().auth.user as { username: string; staff?: boolean } | null | undefined;
   const isAuthenticated = !!user;
 
+  const drawerWidth = collapsed ? DRAWER_WIDTH_COLLAPSED : DRAWER_WIDTH;
+
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
+  };
+
+  const handleCollapseToggle = () => {
+    setCollapsed(!collapsed);
   };
 
   const handleAuth = () => {
@@ -90,20 +100,52 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
           justifyContent: 'center',
         }}
       >
-        <Typography
-          variant="h5"
-          component="div"
-          sx={{
-            fontWeight: 700,
-            color: 'primary.main',
-            letterSpacing: 1,
-          }}
-        >
-          KURUPUN
-        </Typography>
+        {!collapsed && (
+          <Typography
+            variant="h5"
+            component="div"
+            sx={{
+              fontWeight: 700,
+              color: 'primary.main',
+              letterSpacing: 1,
+            }}
+          >
+            KURUPUN
+          </Typography>
+        )}
+        {collapsed && (
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{
+              fontWeight: 700,
+              color: 'primary.main',
+            }}
+          >
+            KP
+          </Typography>
+        )}
       </Box>
 
       <Divider />
+
+      {/* Collapse/Expand Button - Desktop only */}
+      {!isMobile && (
+        <Box sx={{ px: 1, pt: 1 }}>
+          <IconButton
+            onClick={handleCollapseToggle}
+            sx={{
+              width: '100%',
+              borderRadius: 2,
+              '&:hover': {
+                bgcolor: 'action.hover',
+              },
+            }}
+          >
+            {collapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+          </IconButton>
+        </Box>
+      )}
 
       {/* Menu Items */}
       <Box sx={{ flexGrow: 1, overflowY: 'auto' }}>
@@ -117,6 +159,7 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
                   selected={isActive}
                   sx={{
                     borderRadius: 2,
+                    justifyContent: collapsed ? 'center' : 'flex-start',
                     '&.Mui-selected': {
                       bgcolor: 'primary.main',
                       color: 'primary.contrastText',
@@ -132,18 +175,21 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
                   <ListItemIcon
                     sx={{
                       color: isActive ? 'inherit' : 'text.secondary',
-                      minWidth: 40,
+                      minWidth: collapsed ? 'unset' : 40,
+                      justifyContent: 'center',
                     }}
                   >
                     {item.icon}
                   </ListItemIcon>
-                  <ListItemText
-                    primary={item.text}
-                    primaryTypographyProps={{
-                      fontSize: '0.875rem',
-                      fontWeight: isActive ? 600 : 400,
-                    }}
-                  />
+                  {!collapsed && (
+                    <ListItemText
+                      primary={item.text}
+                      primaryTypographyProps={{
+                        fontSize: '0.875rem',
+                        fontWeight: isActive ? 600 : 400,
+                      }}
+                    />
+                  )}
                 </ListItemButton>
               </ListItem>
             );
@@ -165,6 +211,7 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
                 p: 1.5,
                 borderRadius: 2,
                 bgcolor: 'action.hover',
+                justifyContent: collapsed ? 'center' : 'flex-start',
               }}
             >
               <Avatar
@@ -176,35 +223,55 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
               >
                 {user?.username?.[0]?.toUpperCase() || 'U'}
               </Avatar>
-              <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    fontWeight: 600,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {user?.username || 'Guest'}
-                </Typography>
-                <Typography variant="caption" color="text.secondary">
-                  {user?.staff ? 'เจ้าหน้าที่' : 'ผู้ใช้งานทั่วไป'}
-                </Typography>
-              </Box>
+              {!collapsed && (
+                <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontWeight: 600,
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {user?.username || 'Guest'}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    {user?.staff ? 'เจ้าหน้าที่' : 'ผู้ใช้งานทั่วไป'}
+                  </Typography>
+                </Box>
+              )}
             </Box>
           )}
-
-          <Button
-            fullWidth
-            variant={isAuthenticated ? 'outlined' : 'contained'}
-            color={isAuthenticated ? 'error' : 'primary'}
-            startIcon={isAuthenticated ? <LogoutIcon /> : <LoginIcon />}
-            onClick={handleAuth}
-            sx={{ py: 1 }}
-          >
-            {isAuthenticated ? 'Logout' : 'Login'}
-          </Button>
+          
+          {collapsed ? (
+            <IconButton
+              color={isAuthenticated ? 'error' : 'primary'}
+              onClick={handleAuth}
+              sx={{
+                width: '100%',
+                borderRadius: 2,
+                border: 1,
+                borderColor: isAuthenticated ? 'error.main' : 'primary.main',
+                '&:hover': {
+                  bgcolor: isAuthenticated ? 'error.light' : 'primary.light',
+                },
+              }}
+            >
+              {isAuthenticated ? <LogoutIcon /> : <LoginIcon />}
+            </IconButton>
+          ) : (
+            <Button
+              fullWidth
+              variant={isAuthenticated ? 'outlined' : 'contained'}
+              color={isAuthenticated ? 'error' : 'primary'}
+              startIcon={isAuthenticated ? <LogoutIcon /> : <LoginIcon />}
+              onClick={handleAuth}
+              sx={{ py: 1 }}
+            >
+              {isAuthenticated ? 'Logout' : 'Login'}
+            </Button>
+          )}
         </Stack>
       </Box>
     </Box>
@@ -254,13 +321,17 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
           <Drawer
             variant="permanent"
             sx={{
-              width: DRAWER_WIDTH,
+              width: drawerWidth,
               flexShrink: 0,
               '& .MuiDrawer-paper': {
-                width: DRAWER_WIDTH,
+                width: drawerWidth,
                 boxSizing: 'border-box',
                 borderRight: '1px solid',
                 borderColor: 'divider',
+                transition: theme.transitions.create('width', {
+                  easing: theme.transitions.easing.sharp,
+                  duration: theme.transitions.duration.enteringScreen,
+                }),
               },
             }}
           >
@@ -294,8 +365,12 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
           sx={{
             flexGrow: 1,
             p: 3,
-            width: { md: `calc(100% - ${DRAWER_WIDTH}px)` },
+            width: { md: `calc(100% - ${drawerWidth}px)` },
             mt: isMobile ? 8 : 0,
+            transition: theme.transitions.create(['width', 'margin'], {
+              easing: theme.transitions.easing.sharp,
+              duration: theme.transitions.duration.enteringScreen,
+            }),
           }}
         >
           {children}

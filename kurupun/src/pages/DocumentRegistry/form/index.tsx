@@ -23,40 +23,14 @@ interface DocumentRegistryFormData {
   related_document_number: string;
   withdrawal_set_number: string;
 }
-import { createDocumentRegistry, updateDocumentRegistry, fetchDocumentRegistryById } from '../../../apis/service/documentRegistry';
+import { createDocumentRegistry, updateDocumentRegistry, fetchDocumentRegistryById, fetchDocumentRegistries } from '../../../apis/service/documentRegistry';
 const FormDocumentRegistry: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { isAuthenticated } = useAuth();
   const isEditMode = !!id && isAuthenticated;
   const isViewMode = !!id && !isAuthenticated;
-
-  //   {
-  //     "registry_number": [
-  //         "This field is required."
-  //     ],
-  //     "registration_date": [
-  //         "This field is required."
-  //     ],
-  //     "document_title": [
-  //         "This field is required."
-  //     ],
-  //     "sender": [
-  //         "This field is required."
-  //     ],
-  //     "first_item": [
-  //         "This field is required."
-  //     ],
-  //     "storage_date": [
-  //         "This field is required."
-  //     ],
-  //     "related_document_number": [
-  //         "This field is required."
-  //     ],
-  //     "withdrawal_set_number": [
-  //         "This field is required."
-  //     ]
-  // }
+  const [nextSequenceNumber, setNextSequenceNumber] = useState<number>(1);
   const [formData, setFormData] = useState<DocumentRegistryFormData>({
     registry_number: '',
     registration_date: '',
@@ -67,6 +41,59 @@ const FormDocumentRegistry: React.FC = () => {
     related_document_number: '',
     withdrawal_set_number: '',
   });
+
+  // ฟังก์ชันสร้างเลขทะเบียนจากวันที่
+  const generateRegistryNumber = (date: string, sequence?: number) => {
+    if (!date) return '0000-69';
+
+    const year = new Date(date).getFullYear();
+    const buddhistYear = year + 543;
+    const yearSuffix = buddhistYear.toString().slice(-2);
+    const sequenceStr = (sequence || nextSequenceNumber).toString().padStart(4, '0');
+
+    return `${sequenceStr}-${yearSuffix}`;
+  };
+
+  useEffect(() => {
+    const fetchLatestRegistry = async () => {
+      try {
+        const res = await fetchDocumentRegistries();
+        const { count, results } = res;
+
+        let latestSequence = 0;
+
+        if (count && results.length > 0) {
+          const latestRegistry = results[count - 1];
+          const sequencePart = latestRegistry.registry_number.split('-')[0];
+          latestSequence = parseInt(sequencePart, 10);
+        }
+
+        setNextSequenceNumber(latestSequence + 1);
+
+        // อัพเดทเลขทะเบียนถ้ามีวันที่อยู่แล้ว
+        if (formData.registration_date) {
+          const newRegistryNumber = generateRegistryNumber(formData.registration_date, latestSequence + 1);
+          setFormData(prev => ({
+            ...prev,
+            registry_number: newRegistryNumber,
+          }));
+        } else {
+          // ถ้ายังไม่มีวันที่ ให้แสดง default
+          setFormData(prev => ({
+            ...prev,
+            registry_number: `${(latestSequence + 1).toString().padStart(4, '0')}-69`,
+          }));
+        }
+      } catch (error) {
+        console.error("Error fetching latest registry:", error);
+        setNextSequenceNumber(1);
+      }
+    };
+
+    if (!isEditMode) {
+      fetchLatestRegistry();
+    }
+  }, []);
 
   useEffect(() => {
     if (isEditMode) {
@@ -86,10 +113,26 @@ const FormDocumentRegistry: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+
+    if (name === 'registration_date') {
+      const newRegistryNumber = generateRegistryNumber(value);
+      setFormData((prev) => ({
+        ...prev,
+        registration_date: value,
+        registry_number: newRegistryNumber,
+      }));
+    } else if (name === 'registry_number') {
+      // อนุญาตให้แก้ไขเลขลำดับได้
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
