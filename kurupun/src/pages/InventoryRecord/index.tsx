@@ -17,24 +17,66 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 
-import { fetchDocumentRegistries, deleteDocumentRegistry } from '../../apis/service/documentRegistry';
+import { fetchInventoryRecords, deleteInventoryRecord } from '../../apis/service/inventory';
+import { fetchDocumentRegistries } from '../../apis/service/documentRegistry';
 import { useAuth } from '../../hooks/useAuth';
-import moment from 'moment-timezone'
+import moment from 'moment-timezone';
 import { Select } from '@mui/material';
 import { toast } from 'react-hot-toast';
 import { mappingMonthToThai } from '../../utils/mappingMouth';
-import { DocumentRegistryDataType } from '../../types/DocumentRegistry';
 import ConfirmDialog from '../../components/ConfirmDialog';
+
 // ตั้งค่า timezone และภาษา
-moment.tz.setDefault('Asia/Bangkok')
-moment.locale('th')
+moment.tz.setDefault('Asia/Bangkok');
+moment.locale('th');
 
+interface InventoryRecordType {
+  id: number;
+  document_registry: number;
+  document_registry_display?: string;
+  order_criteria: string;
+  reorder_point: string;
+  safety_stock: string;
+  related_equipment: string;
+  remark: string;
+  doc_date_left: string;
+  evidence_left: string;
+  unit_left: string;
+  qty_left: number;
+  pending_receive_1: number;
+  pending_receive_2: number;
+  pending_receive_3: number;
+  pending_receive_4: number;
+  doc_date_right: string;
+  received_qty: number;
+  price_per_unit: string;
+  evidence_right: string;
+  demand_initial: number;
+  demand_replace: number;
+  issued_qty: number;
+  total_borrowed: number;
+  stock_balance: number;
+  signature: string;
+  created_at: string;
+}
 
+interface InventoryRecordDataType {
+  count: number;
+  results: InventoryRecordType[];
+  next: string | null;
+  previous: string | null;
+}
 
+interface DocumentRegistry {
+  id: number;
+  registry_number: string;
+  document_title: string;
+}
 
-const DocumentRegistry: React.FC = () => {
-  const [data, setData] = useState<DocumentRegistryDataType>({ count: 0, results: [], next: null, previous: null });
-  const [searchBy, setSearchBy] = useState<string>('registry_number');
+const InventoryRecord: React.FC = () => {
+  const [data, setData] = useState<InventoryRecordDataType>({ count: 0, results: [], next: null, previous: null });
+  const [documentRegistries, setDocumentRegistries] = useState<DocumentRegistry[]>([]);
+  const [searchBy, setSearchBy] = useState<string>('document_registry');
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const [page, setPage] = useState(0);
@@ -42,21 +84,35 @@ const DocumentRegistry: React.FC = () => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<number | null>(null);
 
+  // Load document registries for mapping
+  useEffect(() => {
+    const loadDocumentRegistries = async () => {
+      try {
+        const response = await fetchDocumentRegistries({ page_size: 1000 });
+        setDocumentRegistries(response.results || []);
+      } catch (error) {
+        console.error("Error fetching document registries:", error);
+      }
+    };
+    loadDocumentRegistries();
+  }, []);
+
   const confirmDelete = async () => {
     if (deleteId === null) return;
 
     try {
-      await deleteDocumentRegistry(deleteId);
+      await deleteInventoryRecord(deleteId);
       setData({ ...data, results: data.results.filter(item => item.id !== deleteId) });
       toast.success('ลบข้อมูลสำเร็จ');
     } catch (error) {
-      console.error('Error deleting document registry:', error);
+      console.error('Error deleting inventory record:', error);
       toast.error('เกิดข้อผิดพลาดในการลบข้อมูล');
     } finally {
       setConfirmOpen(false);
       setDeleteId(null);
     }
-  }
+  };
+
   const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);
   };
@@ -69,64 +125,58 @@ const DocumentRegistry: React.FC = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const response = await fetchDocumentRegistries({ page: page + 1, page_size: rowsPerPage });
+        const response = await fetchInventoryRecords({ page: page + 1, page_size: rowsPerPage });
         setData(response);
       } catch (error) {
-        console.error("Error fetching document registries:", error);
+        console.error("Error fetching inventory records:", error);
       }
-    }
+    };
     loadData();
   }, [page, rowsPerPage]);
 
   const handleEdit = (id: number) => {
     if (isAuthenticated) {
-      navigate(`/document-registries/${id}`);
+      navigate(`/inventory-records/${id}`);
     } else {
-      navigate('/login', { state: { from: `/document-registries/${id}` } });
+      navigate('/login', { state: { from: `/inventory-records/${id}` } });
     }
   };
 
   const handleDelete = async (id: number) => {
-
     if (!isAuthenticated) {
       navigate('/login');
       return;
     }
     setDeleteId(id);
     setConfirmOpen(true);
-    // if (window.confirm('คุณต้องการลบทะเบียนเอกสารนี้ใช่หรือไม่?')) {
-    //   try {
-    //     // TODO: Delete API call
-    //     await deleteDocumentRegistry(id);
-    //     setData({ ...data, results: data.results.filter(item => item.id !== id) });
-    //     toast.success('ลบข้อมูลสำเร็จ');
-    //   } catch (error) {
-    //     console.error('Error deleting document registry:', error);
-    //     toast.error('เกิดข้อผิดพลาดในการลบข้อมูล');
-    //   }
-    // }
   };
 
   const handleCreate = () => {
     if (isAuthenticated) {
-      navigate("/document-registries/create");
+      navigate("/inventory-records/create");
     } else {
-      navigate('/login', { state: { from: '/document-registries/create' } });
+      navigate('/login', { state: { from: '/inventory-records/create' } });
     }
   };
 
   const handleSearch = async (searchBy: string, searchValue: string) => {
-    const response = await fetchDocumentRegistries({ page: page + 1, page_size: rowsPerPage, [searchBy]: searchValue });
+    const response = await fetchInventoryRecords({ page: page + 1, page_size: rowsPerPage, [searchBy]: searchValue });
     setData(response);
-  }
+  };
+
+  const getDocumentRegistryDisplay = (documentRegistryId: number) => {
+    const doc = documentRegistries.find(d => d.id === documentRegistryId);
+    return doc ? `${doc.registry_number} - ${doc.document_title}` : documentRegistryId.toString();
+  };
+
   return (
     <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
       <Box sx={{ mb: 3 }}>
         <Typography variant="h4" component="h1" gutterBottom>
-          ทะเบียนเอกสาร
+          บันทึกรายการพัสดุ
         </Typography>
         <Button variant="contained" color="primary" onClick={handleCreate}>
-          {isAuthenticated ? 'เพิ่มทะเบียนเอกสาร' : 'เข้าสู่ระบบเพื่อเพิ่มทะเบียน'}
+          {isAuthenticated ? 'เพิ่มบันทึกรายการพัสดุ' : 'เข้าสู่ระบบเพื่อเพิ่มบันทึก'}
         </Button>
       </Box>
       <form onSubmit={(e) => {
@@ -143,15 +193,19 @@ const DocumentRegistry: React.FC = () => {
             sx={{ minWidth: 150 }}
             size="small"
           >
-            <MenuItem value="registry_number">ทะเบียนที่</MenuItem>
-            <MenuItem value="document_title">เอกสาร</MenuItem>
-            <MenuItem value="sender">จาก</MenuItem>
+            <MenuItem value="document_registry">รายการ (ทะเบียนเอกสาร)</MenuItem>
+            <MenuItem value="unit_left">หน่วย</MenuItem>
+            <MenuItem value="evidence_left">หลักฐานซ้าย</MenuItem>
+            <MenuItem value="evidence_right">หลักฐานขวา</MenuItem>
           </Select>
           <Autocomplete
             disablePortal
             options={Array.from(new Set(
               data.results
                 .map((option) => {
+                  if (searchBy === 'document_registry') {
+                    return getDocumentRegistryDisplay(option.document_registry);
+                  }
                   const value = option[searchBy as keyof typeof option];
                   return value ? String(value) : '';
                 })
@@ -165,32 +219,32 @@ const DocumentRegistry: React.FC = () => {
         </Box>
       </form>
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="document registry table">
+        <Table sx={{ minWidth: 650 }} aria-label="inventory record table">
           <TableHead>
             <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
               <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-                ทะเบียนที่
+                ID
               </TableCell>
               <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-                วันที่ลงทะเบียน
+                รายการ (ทะเบียนเอกสาร)
               </TableCell>
               <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-                เอกสาร
+                หน่วย
               </TableCell>
               <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-                จาก
+                จำนวน
               </TableCell>
               <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-                รายการแรกในเอกสาร
+                รับ
               </TableCell>
               <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-                วันที่เก็บเข้าแฟ้ม
+                จ่าย
               </TableCell>
               <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-                เลขที่เอกสารที่เกี่ยวข้อง
+                คงคลัง
               </TableCell>
               <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-                เลขที่ชุดเบิก
+                วันที่สร้าง
               </TableCell>
               {isAuthenticated && (
                 <TableCell align="center" sx={{ fontWeight: 'bold' }}>
@@ -216,22 +270,22 @@ const DocumentRegistry: React.FC = () => {
                   hover
                 >
                   <TableCell align="center">
-                    <Link to={`/document-registries/${row.id}`} style={{ textDecoration: 'none', color: 'inherit', textDecorationLine: 'underline' }}>
-                      {row.registry_number}
+                    <Link to={`/inventory-records/${row.id}`} style={{ textDecoration: 'none', color: 'inherit', textDecorationLine: 'underline' }}>
+                      {row.id}
                     </Link>
                   </TableCell>
+                  <TableCell>{getDocumentRegistryDisplay(row.document_registry)}</TableCell>
+                  <TableCell align="center">{row.unit_left || '-'}</TableCell>
+                  <TableCell align="center">{row.qty_left || 0}</TableCell>
+                  <TableCell align="center">{row.received_qty || 0}</TableCell>
+                  <TableCell align="center">{row.issued_qty || 0}</TableCell>
+                  <TableCell align="center">{row.stock_balance || 0}</TableCell>
                   <TableCell align="center">{(() => {
-                    const date = moment(row.registration_date).locale('th')
-                    const buddhistYear = date.year() + 543
-                    const month = mappingMonthToThai(date.format('MM'))
-                    return date.format(`DD`) + ' ' + month + ' ' + buddhistYear
+                    const date = moment(row.created_at).locale('th');
+                    const buddhistYear = date.year() + 543;
+                    const month = mappingMonthToThai(date.format('MM'));
+                    return date.format(`DD`) + ' ' + month + ' ' + buddhistYear;
                   })()}</TableCell>
-                  <TableCell>{row.document_title}</TableCell>
-                  <TableCell>{row.sender}</TableCell>
-                  <TableCell>{row.first_item}</TableCell>
-                  <TableCell align="center">{row.storage_date}</TableCell>
-                  <TableCell align="center">{row.related_document_number}</TableCell>
-                  <TableCell align="center">{row.withdrawal_set_number}</TableCell>
                   {isAuthenticated && (
                     <TableCell align="center">
                       <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
@@ -284,4 +338,4 @@ const DocumentRegistry: React.FC = () => {
   );
 };
 
-export default DocumentRegistry;
+export default InventoryRecord;

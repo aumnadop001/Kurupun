@@ -1,4 +1,4 @@
-import { callGet, callPost } from "../call-api"
+import { callDelete, callGet, callPost, callPut } from "../call-api"
 
 interface Params {
   page?: number;
@@ -38,7 +38,7 @@ export const createDocumentRegistry = async (data: any) => {
 
 export const updateDocumentRegistry = async (id: string, data: any) => {
   try {
-    const response = await callPost(`/api/document-registries/${id}/`, data);
+    const response = await callPut(`/api/document-registries/${id}/`, data);
     return response;
   } catch (error) {
     console.error("Update document registry failed:", error);
@@ -48,7 +48,7 @@ export const updateDocumentRegistry = async (id: string, data: any) => {
 
 export const deleteDocumentRegistry = async (id: number) => {
   try {
-    const response = await callPost(`/api/document-registries/${id}/delete/`);
+    const response = await callDelete(`/api/document-registries/${id}/`);
     return response;
   } catch (error) {
     console.error("Delete document registry failed:", error);

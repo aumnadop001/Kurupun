@@ -10,7 +10,6 @@ type UseAuthResult = {
 
 export const useAuth = (): UseAuthResult => {
   const user = store.getState().auth;
-  console.log(user);
   
   const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
   const login = (t: string) => {

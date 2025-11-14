@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 
 import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
@@ -9,10 +9,20 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Alert from '@mui/material/Alert';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Divider from '@mui/material/Divider';
+import DownloadIcon from '@mui/icons-material/Download';
 
 import toast from 'react-hot-toast';
 import { useAuth } from '../../../hooks/useAuth';
 import { createDocumentRegistry, updateDocumentRegistry, fetchDocumentRegistryById, fetchDocumentRegistries } from '../../../apis/service/documentRegistry';
+import { fetchInventoryRecords, deleteInventoryRecord } from '../../../apis/service/inventory';
+import moment from 'moment-timezone';
 
 interface DocumentRegistryFormData {
   registry_number: string;
@@ -25,6 +35,17 @@ interface DocumentRegistryFormData {
   withdrawal_set_number: string;
 }
 
+interface InventoryRecordType {
+  id: number;
+  document_registry: number;
+  order_criteria: string;
+  unit_left: string;
+  qty_left: number;
+  received_qty: number;
+  issued_qty: number;
+  stock_balance: number;
+  created_at: string;
+}
 
 const FormDocumentRegistry: React.FC = () => {
   const navigate = useNavigate();
@@ -33,6 +54,7 @@ const FormDocumentRegistry: React.FC = () => {
   const isEditMode = !!id && isAuthenticated;
   const isViewMode = !!id && !isAuthenticated;
   const [nextSequenceNumber, setNextSequenceNumber] = useState<number>(1);
+  const [inventoryRecords, setInventoryRecords] = useState<InventoryRecordType[]>([]);
   const [formData, setFormData] = useState<DocumentRegistryFormData>({
     registry_number: '',
     registration_date: '',
@@ -113,6 +135,41 @@ const FormDocumentRegistry: React.FC = () => {
     }
   }, [id, isEditMode]);
 
+  // Load inventory records if viewing or editing
+  useEffect(() => {
+    if (id) {
+      const fetchInventories = async () => {
+        try {
+          const response = await fetchInventoryRecords({ document_registry: id, page_size: 100 });
+          setInventoryRecords(response.results || []);
+        } catch (error) {
+          console.error("Error fetching inventory records:", error);
+        }
+      };
+      fetchInventories();
+    }
+  }, [id]);
+
+  // Reload inventory records when navigating back from inventory form
+  useEffect(() => {
+    const handleFocus = () => {
+      if (id) {
+        const fetchInventories = async () => {
+          try {
+            const response = await fetchInventoryRecords({ document_registry: id, page_size: 100 });
+            setInventoryRecords(response.results || []);
+          } catch (error) {
+            console.error("Error fetching inventory records:", error);
+          }
+        };
+        fetchInventories();
+      }
+    };
+
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, [id]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
@@ -165,6 +222,18 @@ const FormDocumentRegistry: React.FC = () => {
     navigate('/login', { state: { from: `/document-registries/${id}` } });
   };
 
+  const handleDownloadExcel = () => {
+    if (!id) {
+      toast.error('ไม่สามารถดาวน์โหลดได้ กรุณาบันทึกข้อมูลก่อน');
+      return;
+    }
+
+    // Open download link in new window
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+    window.open(`${apiUrl}/api/export-inventory/${id}/`, '_blank');
+    toast.success('กำลังดาวน์โหลดไฟล์ Excel...');
+  };
+
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Paper elevation={3} sx={{ p: 4 }}>
@@ -189,7 +258,6 @@ const FormDocumentRegistry: React.FC = () => {
             คุณกำลังดูข้อมูลในโหมดอ่านอย่างเดียว กรุณาเข้าสู่ระบบเพื่อแก้ไขข้อมูล
           </Alert>
         )}
-        <Typography variant="h6" component="h2">ค้นหา</Typography>
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <Stack spacing={3}>
             <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
@@ -359,6 +427,102 @@ const FormDocumentRegistry: React.FC = () => {
           </Stack>
         </Box>
       </Paper>
+
+      {/* Inventory Records Section */}
+      {id && (
+        <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+            <Typography variant="h5" component="h2">
+              บันทึกรายการพัสดุที่เกี่ยวข้อง
+            </Typography>
+            <Box sx={{ display: 'flex', gap: 2 }}>
+              {inventoryRecords.length > 0 && (
+                <Button
+                  variant="outlined"
+                  color="success"
+                  startIcon={<DownloadIcon />}
+                  onClick={handleDownloadExcel}
+                >
+                  ดาวน์โหลด Excel
+                </Button>
+              )}
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => navigate(`/inventory-records/create?document_registry=${id}`)}
+              >
+                เพิ่มบันทึกรายการพัสดุ
+              </Button>
+            </Box>
+          </Box>
+
+          <Divider sx={{ mb: 3 }} />
+
+          {inventoryRecords.length === 0 ? (
+            <Alert severity="info">ยังไม่มีบันทึกรายการพัสดุที่เกี่ยวข้อง</Alert>
+          ) : (
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
+                    <TableCell align="center" sx={{ fontWeight: 'bold' }}>ID</TableCell>
+                    <TableCell align="center" sx={{ fontWeight: 'bold' }}>เกณฑ์สั่ง</TableCell>
+                    <TableCell align="center" sx={{ fontWeight: 'bold' }}>หน่วย</TableCell>
+                    <TableCell align="center" sx={{ fontWeight: 'bold' }}>จำนวน</TableCell>
+                    <TableCell align="center" sx={{ fontWeight: 'bold' }}>รับ</TableCell>
+                    <TableCell align="center" sx={{ fontWeight: 'bold' }}>จ่าย</TableCell>
+                    <TableCell align="center" sx={{ fontWeight: 'bold' }}>คงคลัง</TableCell>
+                    <TableCell align="center" sx={{ fontWeight: 'bold' }}>วันที่สร้าง</TableCell>
+                    <TableCell align="center" colSpan={2} sx={{ fontWeight: 'bold' }}>จัดการ</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {inventoryRecords.map((record) => (
+                    <TableRow key={record.id} hover>
+                      <TableCell align="center">
+                        <Link
+                          to={`/inventory-records/${record.id}`}
+                          style={{ textDecoration: 'underline', color: 'inherit' }}
+                        >
+                          {record.id}
+                        </Link>
+                      </TableCell>
+                      <TableCell>{record.order_criteria || '-'}</TableCell>
+                      <TableCell align="center">{record.unit_left || '-'}</TableCell>
+                      <TableCell align="center">{record.qty_left || 0}</TableCell>
+                      <TableCell align="center">{record.received_qty || 0}</TableCell>
+                      <TableCell align="center">{record.issued_qty || 0}</TableCell>
+                      <TableCell align="center">{record.stock_balance || 0}</TableCell>
+                      <TableCell align="center">
+                        {moment(record.created_at).format('DD/MM/YYYY HH:mm')}
+                      </TableCell>
+                      <TableCell align="center">
+                        <Button
+                          variant="contained"
+                          size="small"
+                          onClick={() => navigate(`/inventory-records/${record.id}`)}
+                        >
+                          ดูรายละเอียด
+                        </Button>
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          color="error"
+                          onClick={() => deleteInventoryRecord(record.id)}
+                        >
+                          ลบ
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+        </Paper>
+      )}
     </Container>
   );
 };
