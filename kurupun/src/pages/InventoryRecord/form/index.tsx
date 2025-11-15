@@ -11,12 +11,7 @@ import Stack from '@mui/material/Stack';
 import Alert from '@mui/material/Alert';
 import Divider from '@mui/material/Divider';
 import Autocomplete from '@mui/material/Autocomplete';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
+// use responsive grid cards instead of wide table to avoid horizontal scroll
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
@@ -395,128 +390,116 @@ const FormInventoryRecord: React.FC = () => {
                   )}
                 </Box>
 
-              <TableContainer sx={{ maxHeight: 600, overflowX: 'auto' }}>
-                <Table stickyHeader size="small">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell sx={{ minWidth: 50, fontWeight: 'bold', bgcolor: '#f5f5f5' }}>ลำดับ</TableCell>
-                      <TableCell sx={{ minWidth: 150, fontWeight: 'bold', bgcolor: '#f5f5f5' }}>เกณฑ์สั่ง</TableCell>
-                      <TableCell sx={{ minWidth: 150, fontWeight: 'bold', bgcolor: '#f5f5f5' }}>จุดสั่งเพิ่มเติม</TableCell>
-                      <TableCell sx={{ minWidth: 150, fontWeight: 'bold', bgcolor: '#f5f5f5' }}>เกณฑ์ปลอดภัย</TableCell>
-                      <TableCell sx={{ minWidth: 100, fontWeight: 'bold', bgcolor: '#f5f5f5' }}>หน่วย</TableCell>
-                      <TableCell sx={{ minWidth: 100, fontWeight: 'bold', bgcolor: '#f5f5f5' }}>จำนวน</TableCell>
-                      <TableCell sx={{ minWidth: 100, fontWeight: 'bold', bgcolor: '#f5f5f5' }}>รับ</TableCell>
-                      <TableCell sx={{ minWidth: 120, fontWeight: 'bold', bgcolor: '#f5f5f5' }}>ราคาต่อหน่วย</TableCell>
-                      <TableCell sx={{ minWidth: 100, fontWeight: 'bold', bgcolor: '#f5f5f5' }}>จ่าย</TableCell>
-                      <TableCell sx={{ minWidth: 100, fontWeight: 'bold', bgcolor: '#f5f5f5' }}>คงคลัง</TableCell>
-                      <TableCell sx={{ minWidth: 150, fontWeight: 'bold', bgcolor: '#f5f5f5' }}>หลักฐาน</TableCell>
-                      <TableCell sx={{ minWidth: 100, fontWeight: 'bold', bgcolor: '#f5f5f5' }}>จัดการ</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {records.map((record, index) => (
-                      <TableRow key={record.id}>
-                        <TableCell>{index + 1}</TableCell>
-                        <TableCell>
-                          <TextField
-                            size="small"
-                            value={record.order_criteria}
-                            onChange={(e) => handleRecordChange(record.id!, 'order_criteria', e.target.value)}
-                            fullWidth
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <TextField
-                            size="small"
-                            value={record.reorder_point}
-                            onChange={(e) => handleRecordChange(record.id!, 'reorder_point', e.target.value)}
-                            fullWidth
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <TextField
-                            size="small"
-                            value={record.safety_stock}
-                            onChange={(e) => handleRecordChange(record.id!, 'safety_stock', e.target.value)}
-                            fullWidth
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <TextField
-                            size="small"
-                            value={record.unit_left}
-                            onChange={(e) => handleRecordChange(record.id!, 'unit_left', e.target.value)}
-                            fullWidth
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <TextField
-                            size="small"
-                            type="number"
-                            value={record.qty_left}
-                            onChange={(e) => handleRecordChange(record.id!, 'qty_left', e.target.value)}
-                            fullWidth
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <TextField
-                            size="small"
-                            type="number"
-                            value={record.received_qty}
-                            onChange={(e) => handleRecordChange(record.id!, 'received_qty', e.target.value)}
-                            fullWidth
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <TextField
-                            size="small"
-                            type="number"
-                            inputProps={{ step: "0.01" }}
-                            value={record.price_per_unit}
-                            onChange={(e) => handleRecordChange(record.id!, 'price_per_unit', e.target.value)}
-                            fullWidth
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <TextField
-                            size="small"
-                            type="number"
-                            value={record.issued_qty}
-                            onChange={(e) => handleRecordChange(record.id!, 'issued_qty', e.target.value)}
-                            fullWidth
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <TextField
-                            size="small"
-                            type="number"
-                            value={record.stock_balance}
-                            onChange={(e) => handleRecordChange(record.id!, 'stock_balance', e.target.value)}
-                            fullWidth
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <TextField
-                            size="small"
-                            value={record.evidence_right}
-                            onChange={(e) => handleRecordChange(record.id!, 'evidence_right', e.target.value)}
-                            fullWidth
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <IconButton
-                            color="error"
-                            onClick={() => handleRemoveRecord(record.id!)}
-                            disabled={records.length === 1 || isEditMode}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
+              <Box sx={{ display: 'grid', gap: 2, gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', alignItems: 'start' }}>
+                {records.map((record, index) => (
+                  <Paper key={record.id} variant="outlined" sx={{ p: 2, position: 'relative' }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                      <Typography variant="subtitle1">รายการ {index + 1}</Typography>
+                      <IconButton
+                        color="error"
+                        onClick={() => handleRemoveRecord(record.id!)}
+                        disabled={records.length === 1 || isEditMode}
+                        size="small"
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Box>
+
+                    <Stack spacing={1}>
+                      <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                        <TextField
+                          size="small"
+                          label="เกณฑ์สั่ง"
+                          value={record.order_criteria}
+                          onChange={(e) => handleRecordChange(record.id!, 'order_criteria', e.target.value)}
+                          fullWidth
+                        />
+                        <TextField
+                          size="small"
+                          label="จุดสั่งเพิ่มเติม"
+                          value={record.reorder_point}
+                          onChange={(e) => handleRecordChange(record.id!, 'reorder_point', e.target.value)}
+                          fullWidth
+                        />
+                      </Box>
+
+                      <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                        <TextField
+                          size="small"
+                          label="เกณฑ์ปลอดภัย"
+                          value={record.safety_stock}
+                          onChange={(e) => handleRecordChange(record.id!, 'safety_stock', e.target.value)}
+                          fullWidth
+                        />
+                        <TextField
+                          size="small"
+                          label="หน่วย"
+                          value={record.unit_left}
+                          onChange={(e) => handleRecordChange(record.id!, 'unit_left', e.target.value)}
+                          fullWidth
+                        />
+                      </Box>
+
+                      <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                        <TextField
+                          size="small"
+                          label="จำนวน"
+                          type="number"
+                          value={record.qty_left}
+                          onChange={(e) => handleRecordChange(record.id!, 'qty_left', e.target.value)}
+                          fullWidth
+                        />
+                        <TextField
+                          size="small"
+                          label="รับ"
+                          type="number"
+                          value={record.received_qty}
+                          onChange={(e) => handleRecordChange(record.id!, 'received_qty', e.target.value)}
+                          fullWidth
+                        />
+                      </Box>
+
+                      <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                        <TextField
+                          size="small"
+                          label="ราคาต่อหน่วย"
+                          type="number"
+                          inputProps={{ step: '0.01' }}
+                          value={record.price_per_unit}
+                          onChange={(e) => handleRecordChange(record.id!, 'price_per_unit', e.target.value)}
+                          fullWidth
+                        />
+                        <TextField
+                          size="small"
+                          label="จ่าย"
+                          type="number"
+                          value={record.issued_qty}
+                          onChange={(e) => handleRecordChange(record.id!, 'issued_qty', e.target.value)}
+                          fullWidth
+                        />
+                      </Box>
+
+                      <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                        <TextField
+                          size="small"
+                          label="คงคลัง"
+                          type="number"
+                          value={record.stock_balance}
+                          onChange={(e) => handleRecordChange(record.id!, 'stock_balance', e.target.value)}
+                          fullWidth
+                        />
+                        <TextField
+                          size="small"
+                          label="หลักฐาน"
+                          value={record.evidence_right}
+                          onChange={(e) => handleRecordChange(record.id!, 'evidence_right', e.target.value)}
+                          fullWidth
+                        />
+                      </Box>
+                    </Stack>
+                  </Paper>
+                ))}
+              </Box>
             </Box>
 
             {/* Buttons */}

@@ -23,6 +23,7 @@ import { useAuth } from '../../../hooks/useAuth';
 import { createDocumentRegistry, updateDocumentRegistry, fetchDocumentRegistryById, fetchDocumentRegistries } from '../../../apis/service/documentRegistry';
 import { fetchInventoryRecords, deleteInventoryRecord } from '../../../apis/service/inventory';
 import moment from 'moment-timezone';
+import ConfirmDialog from '../../../components/ConfirmDialog';
 
 interface DocumentRegistryFormData {
   registry_number: string;
@@ -220,6 +221,48 @@ const FormDocumentRegistry: React.FC = () => {
 
   const handleEdit = () => {
     navigate('/login', { state: { from: `/document-registries/${id}` } });
+  };
+
+  const handleDeleteInventoryRecord = async (recordId: number) => {
+    try {
+      await deleteInventoryRecord(recordId);
+      toast.success('ลบบันทึกรายการพัสดุสำเร็จ');
+      // Refresh inventory records
+      if (id) {
+        const response = await fetchInventoryRecords({ document_registry: id, page_size: 100 });
+        setInventoryRecords(response.results || []);
+      }
+    } catch (error) {
+      console.error('Error deleting inventory record:', error);
+      toast.error('เกิดข้อผิดพลาดในการลบบันทึกรายการพัสดุ');
+    }
+  }
+
+  // Confirm dialog state & handlers for delete
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmTargetId, setConfirmTargetId] = useState<number | null>(null);
+  const confirmTitle = 'ยืนยันการลบ';
+  const [confirmMessage, setConfirmMessage] = useState('คุณแน่ใจหรือไม่ว่าต้องการลบบันทึกรายการพัสดุนี้?');
+
+  const openDeleteConfirm = (recordId: number) => {
+    setConfirmTargetId(recordId);
+    setConfirmMessage('คุณแน่ใจหรือไม่ว่าต้องการลบบันทึกรายการพัสดุนี้?');
+    setConfirmOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (confirmTargetId === null) {
+      setConfirmOpen(false);
+      return;
+    }
+    await handleDeleteInventoryRecord(confirmTargetId);
+    setConfirmOpen(false);
+    setConfirmTargetId(null);
+  };
+
+  const handleCancelDelete = () => {
+    setConfirmOpen(false);
+    setConfirmTargetId(null);
   };
 
   const handleDownloadExcel = () => {
@@ -510,7 +553,7 @@ const FormDocumentRegistry: React.FC = () => {
                           variant="outlined"
                           size="small"
                           color="error"
-                          onClick={() => deleteInventoryRecord(record.id)}
+                          onClick={() => openDeleteConfirm(record.id)}
                         >
                           ลบ
                         </Button>
@@ -523,6 +566,24 @@ const FormDocumentRegistry: React.FC = () => {
           )}
         </Paper>
       )}
+      {/* open,
+  title,
+  message,
+  confirmText = 'ยืนยัน',
+  cancelText = 'ยกเลิก',
+  confirmColor = 'primary',
+  onConfirm,
+  onCancel, */}
+      <ConfirmDialog
+        open={confirmOpen}
+        title={confirmTitle}
+        message={confirmMessage}
+        confirmText="ลบ"
+        cancelText="ยกเลิก"
+        confirmColor="error"
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+      />
     </Container>
   );
 };

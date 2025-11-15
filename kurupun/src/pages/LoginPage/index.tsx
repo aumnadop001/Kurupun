@@ -45,15 +45,15 @@ const LoginPage: React.FC = () => {
 
           const profile = await getProfile();
           store.dispatch(profileLogin({ user: profile }));
-          toast.success('Login successful!')
+          toast.success('เข้าสู่ระบบสำเร็จ');
           navigate('/');
         } else {
           console.error('Login failed: No token received');
-          toast.error('Login failed: No token received');
+          toast.error('เข้าสู่ระบบไม่สำเร็จ: ไม่ได้รับโทเค็น');
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Login error:', error);
-        toast.error(`Login failed: ${error}`);
+        toast.error('ช่องชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
       }
     },
   });
