@@ -1,0 +1,27 @@
+# FROM node:20-slim
+
+# WORKDIR /usr/src/app
+
+# COPY package*.json ./
+
+# RUN yarn
+version: '3.8'
+
+services:
+  kurupun-app:
+    image: node:20-slim
+    container_name: kurupun-app
+    build: .
+    volumes:
+      - ./:/usr/src/app
+      - ./node_modules:/usr/src/app/node_modules
+    ports:
+      - "3000:3000"
+    command: sh -c "yarn dev"
+    networks:
+      - kurupun-networks
+
+networks:
+  kurupun-networks:
+    driver: bridge
+    name: kurupun-networks

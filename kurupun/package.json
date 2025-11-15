@@ -16,6 +16,7 @@
     "@mui/material": "^7.3.5",
     "@mui/x-data-grid": "^8.17.0",
     "@reduxjs/toolkit": "^2.10.1",
+    "@rollup/rollup-linux-arm64-gnu": "^4.53.2",
     "axios": "^1.13.2",
     "formik": "^2.4.9",
     "moment-timezone": "^0.6.0",
