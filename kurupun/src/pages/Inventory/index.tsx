@@ -17,7 +17,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 
-import { fetchInventoryRecords, deleteInventoryRecord } from '../../apis/service/inventoryRecord';
+import { fetchInventory, deleteInventory } from '../../apis/service/inventories';
 import { fetchDocumentRegistries } from '../../apis/service/documentRegistry';
 import { useAuth } from '../../hooks/useAuth';
 import moment from 'moment-timezone';
@@ -73,7 +73,7 @@ interface DocumentRegistry {
   document_title: string;
 }
 
-const InventoryRecord: React.FC = () => {
+const Inventory: React.FC = () => {
   const [data, setData] = useState<InventoryRecordDataType>({ count: 0, results: [], next: null, previous: null });
   const [documentRegistries, setDocumentRegistries] = useState<DocumentRegistry[]>([]);
   const [searchBy, setSearchBy] = useState<string>('document_registry');
@@ -101,7 +101,7 @@ const InventoryRecord: React.FC = () => {
     if (deleteId === null) return;
 
     try {
-      await deleteInventoryRecord(deleteId);
+      await deleteInventory(deleteId);
       setData({ ...data, results: data.results.filter(item => item.id !== deleteId) });
       toast.success('ลบข้อมูลสำเร็จ');
     } catch (error) {
@@ -125,7 +125,7 @@ const InventoryRecord: React.FC = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const response = await fetchInventoryRecords({ page: page + 1, page_size: rowsPerPage });
+        const response = await fetchInventory({ page: page + 1, page_size: rowsPerPage });
         setData(response);
       } catch (error) {
         console.error("Error fetching inventory records:", error);
@@ -136,9 +136,9 @@ const InventoryRecord: React.FC = () => {
 
   const handleEdit = (id: number) => {
     if (isAuthenticated) {
-      navigate(`/inventory-records/${id}`);
+      navigate(`/inventory/${id}`);
     } else {
-      navigate('/login', { state: { from: `/inventory-records/${id}` } });
+      navigate('/login', { state: { from: `/inventory/${id}` } });
     }
   };
 
@@ -153,14 +153,14 @@ const InventoryRecord: React.FC = () => {
 
   const handleCreate = () => {
     if (isAuthenticated) {
-      navigate("/inventory-records/create");
+      navigate("/inventory/create");
     } else {
-      navigate('/login', { state: { from: '/inventory-records/create' } });
+      navigate('/login', { state: { from: '/inventory/create' } });
     }
   };
 
   const handleSearch = async (searchBy: string, searchValue: string) => {
-    const response = await fetchInventoryRecords({ page: page + 1, page_size: rowsPerPage, [searchBy]: searchValue });
+    const response = await fetchInventory({ page: page + 1, page_size: rowsPerPage, [searchBy]: searchValue });
     setData(response);
   };
 
@@ -226,25 +226,22 @@ const InventoryRecord: React.FC = () => {
                 ID
               </TableCell>
               <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-                รายการ (ทะเบียนเอกสาร)
+                รหัสคลังสินค้า
               </TableCell>
               <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-                หน่วย
+                รหัสประเภทพัสดุ
               </TableCell>
               <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-                จำนวน
+                รหัสรายละเอียดพัสดุ
               </TableCell>
               <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-                รับ
+                ชื่อรายละเอียดพัสดุ
               </TableCell>
               <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-                จ่าย
+                รหัสพัสดุตาม กพร.
               </TableCell>
               <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-                คงคลัง
-              </TableCell>
-              <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-                วันที่สร้าง
+                คำค้นหา
               </TableCell>
               {isAuthenticated && (
                 <TableCell align="center" sx={{ fontWeight: 'bold' }}>
@@ -270,7 +267,7 @@ const InventoryRecord: React.FC = () => {
                   hover
                 >
                   <TableCell align="center">
-                    <Link to={`/inventory-records/${row.id}`} style={{ textDecoration: 'none', color: 'inherit', textDecorationLine: 'underline' }}>
+                    <Link to={`/inventory/${row.id}`} style={{ textDecoration: 'none', color: 'inherit', textDecorationLine: 'underline' }}>
                       {index + 1 + page * rowsPerPage}
                     </Link>
                   </TableCell>
@@ -338,4 +335,4 @@ const InventoryRecord: React.FC = () => {
   );
 };
 
-export default InventoryRecord;
+export default Inventory;

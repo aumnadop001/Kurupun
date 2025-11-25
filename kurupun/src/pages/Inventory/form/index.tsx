@@ -29,61 +29,28 @@ interface DocumentRegistry {
   registration_date: string;
 }
 
+
 interface InventoryRecordFormData {
   id?: string; // temporary id for tracking
-  order_criteria: string;
-  reorder_point: string;
-  safety_stock: string;
-  related_equipment: string;
-  remark: string;
-  doc_date_left: string;
-  evidence_left: string;
-  unit_left: string;
-  qty_left: string;
-  pending_receive_1: string;
-  pending_receive_2: string;
-  pending_receive_3: string;
-  pending_receive_4: string;
-  doc_date_right: string;
-  received_qty: string;
-  price_per_unit: string;
-  evidence_right: string;
-  demand_initial: string;
-  demand_replace: string;
-  issued_qty: string;
-  total_borrowed: string;
-  stock_balance: string;
-  signature: string;
+  class_id: string
+  type_id: string
+  des_id: string
+  des_name: string
+  gpsc_id: string
+  keyword: string
 }
 
 const createEmptyRecord = (): InventoryRecordFormData => ({
   id: `temp-${Date.now()}-${Math.random()}`,
-  order_criteria: '',
-  reorder_point: '',
-  safety_stock: '',
-  related_equipment: '',
-  remark: '',
-  doc_date_left: '',
-  evidence_left: '',
-  unit_left: '',
-  qty_left: '',
-  pending_receive_1: '',
-  pending_receive_2: '',
-  pending_receive_3: '',
-  pending_receive_4: '',
-  doc_date_right: '',
-  received_qty: '',
-  price_per_unit: '',
-  evidence_right: '',
-  demand_initial: '',
-  demand_replace: '',
-  issued_qty: '',
-  total_borrowed: '',
-  stock_balance: '',
-  signature: '',
+  class_id: '',
+  type_id: '',
+  des_id: '',
+  des_name: '',
+  gpsc_id: '',
+  keyword: '',
 });
 
-const FormInventoryRecord: React.FC = () => {
+const FormInventory: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
@@ -106,29 +73,12 @@ const FormInventoryRecord: React.FC = () => {
           // Convert fetched data to form data format
           const formData: InventoryRecordFormData = {
             id: data.id,
-            order_criteria: data.order_criteria || '',
-            reorder_point: data.reorder_point || '',
-            safety_stock: data.safety_stock || '',
-            related_equipment: data.related_equipment || '',
-            remark: data.remark || '',
-            doc_date_left: data.doc_date_left || '',
-            evidence_left: data.evidence_left || '',
-            unit_left: data.unit_left || '',
-            qty_left: data.qty_left?.toString() || '',
-            pending_receive_1: data.pending_receive_1?.toString() || '',
-            pending_receive_2: data.pending_receive_2?.toString() || '',
-            pending_receive_3: data.pending_receive_3?.toString() || '',
-            pending_receive_4: data.pending_receive_4?.toString() || '',
-            doc_date_right: data.doc_date_right || '',
-            received_qty: data.received_qty?.toString() || '',
-            price_per_unit: data.price_per_unit?.toString() || '',
-            evidence_right: data.evidence_right || '',
-            demand_initial: data.demand_initial?.toString() || '',
-            demand_replace: data.demand_replace?.toString() || '',
-            issued_qty: data.issued_qty?.toString() || '',
-            total_borrowed: data.total_borrowed?.toString() || '',
-            stock_balance: data.stock_balance?.toString() || '',
-            signature: data.signature || '',
+            class_id: data.class_id || '',
+            type_id: data.type_id || '',
+            des_id: data.des_id || '',
+            des_name: data.des_name || '',
+            gpsc_id: data.gpsc_id || '',
+            keyword: data.keyword || '',
           };
 
           setRecords([formData]);
@@ -180,24 +130,9 @@ const FormInventoryRecord: React.FC = () => {
   };
 
   const handleRecordChange = (recordId: string, field: keyof InventoryRecordFormData, value: string) => {
-    setRecords(prev => prev.map(record => {
-      if (record.id !== recordId) return record;
-
-      const updatedRecord = { ...record, [field]: value };
-
-      // Auto-calculate stock_balance when qty_left, received_qty, or issued_qty changes
-      if (field === 'qty_left' || field === 'received_qty' || field === 'issued_qty') {
-        const qtyLeft = parseFloat(field === 'qty_left' ? value : updatedRecord.qty_left) || 0;
-        const receivedQty = parseFloat(field === 'received_qty' ? value : updatedRecord.received_qty) || 0;
-        const issuedQty = parseFloat(field === 'issued_qty' ? value : updatedRecord.issued_qty) || 0;
-
-        // Formula: stock_balance = qty_left + received_qty - issued_qty
-        const stockBalance = qtyLeft + receivedQty - issuedQty;
-        updatedRecord.stock_balance = stockBalance.toString();
-      }
-
-      return updatedRecord;
-    }));
+    setRecords(prev => prev.map(record =>
+      record.id === recordId ? { ...record, [field]: value } : record
+    ));
   };
 
   const handleAddRecord = () => {
@@ -235,30 +170,12 @@ const FormInventoryRecord: React.FC = () => {
         const record = records[0];
         try {
           const submitData = {
-            document_registry: selectedDocumentRegistry.id,
-            order_criteria: record.order_criteria || null,
-            reorder_point: record.reorder_point || null,
-            safety_stock: record.safety_stock || null,
-            related_equipment: record.related_equipment || null,
-            remark: record.remark || null,
-            doc_date_left: record.doc_date_left || null,
-            evidence_left: record.evidence_left || null,
-            unit_left: record.unit_left || null,
-            qty_left: record.qty_left ? parseInt(record.qty_left) : null,
-            pending_receive_1: record.pending_receive_1 ? parseInt(record.pending_receive_1) : null,
-            pending_receive_2: record.pending_receive_2 ? parseInt(record.pending_receive_2) : null,
-            pending_receive_3: record.pending_receive_3 ? parseInt(record.pending_receive_3) : null,
-            pending_receive_4: record.pending_receive_4 ? parseInt(record.pending_receive_4) : null,
-            doc_date_right: record.doc_date_right || null,
-            received_qty: record.received_qty ? parseInt(record.received_qty) : null,
-            price_per_unit: record.price_per_unit ? parseFloat(record.price_per_unit) : null,
-            evidence_right: record.evidence_right || null,
-            demand_initial: record.demand_initial ? parseInt(record.demand_initial) : null,
-            demand_replace: record.demand_replace ? parseInt(record.demand_replace) : null,
-            issued_qty: record.issued_qty ? parseInt(record.issued_qty) : null,
-            total_borrowed: record.total_borrowed ? parseInt(record.total_borrowed) : null,
-            stock_balance: record.stock_balance ? parseInt(record.stock_balance) : null,
-            signature: record.signature || null,
+            class_id: record.class_id || null,
+            type_id: record.type_id || null,
+            des_id: record.des_id || null,
+            des_name: record.des_name || null,
+            gpsc_id: record.gpsc_id || null,
+            keyword: record.keyword || null,
           };
 
           await updateInventoryRecord(id, submitData);
@@ -268,7 +185,7 @@ const FormInventoryRecord: React.FC = () => {
           if (selectedDocumentRegistry?.id) {
             navigate(`/document-registries/${selectedDocumentRegistry.id}`);
           } else {
-            navigate('/inventory-records');
+            navigate('/inventory');
           }
         } catch (error) {
           console.error('Error updating inventory record:', error);
@@ -279,30 +196,13 @@ const FormInventoryRecord: React.FC = () => {
         for (const record of records) {
           try {
             const submitData = {
+              class_id: record.class_id || null,
+              type_id: record.type_id || null,
+              des_id: record.des_id || null,
+              des_name: record.des_name || null,
+              gpsc_id: record.gpsc_id || null,
+              keyword: record.keyword || null,
               document_registry: selectedDocumentRegistry.id,
-              order_criteria: record.order_criteria || null,
-              reorder_point: record.reorder_point || null,
-              safety_stock: record.safety_stock || null,
-              related_equipment: record.related_equipment || null,
-              remark: record.remark || null,
-              doc_date_left: record.doc_date_left || null,
-              evidence_left: record.evidence_left || null,
-              unit_left: record.unit_left || null,
-              qty_left: record.qty_left ? parseInt(record.qty_left) : null,
-              pending_receive_1: record.pending_receive_1 ? parseInt(record.pending_receive_1) : null,
-              pending_receive_2: record.pending_receive_2 ? parseInt(record.pending_receive_2) : null,
-              pending_receive_3: record.pending_receive_3 ? parseInt(record.pending_receive_3) : null,
-              pending_receive_4: record.pending_receive_4 ? parseInt(record.pending_receive_4) : null,
-              doc_date_right: record.doc_date_right || null,
-              received_qty: record.received_qty ? parseInt(record.received_qty) : null,
-              price_per_unit: record.price_per_unit ? parseFloat(record.price_per_unit) : null,
-              evidence_right: record.evidence_right || null,
-              demand_initial: record.demand_initial ? parseInt(record.demand_initial) : null,
-              demand_replace: record.demand_replace ? parseInt(record.demand_replace) : null,
-              issued_qty: record.issued_qty ? parseInt(record.issued_qty) : null,
-              total_borrowed: record.total_borrowed ? parseInt(record.total_borrowed) : null,
-              stock_balance: record.stock_balance ? parseInt(record.stock_balance) : null,
-              signature: record.signature || null,
             };
 
             await createInventoryRecord(submitData);
@@ -324,7 +224,7 @@ const FormInventoryRecord: React.FC = () => {
             if (selectedDocumentRegistry?.id) {
               navigate(`/document-registries/${selectedDocumentRegistry.id}`);
             } else {
-              navigate('/inventory-records');
+              navigate('/inventory');
             }
           }
         } else {
@@ -341,7 +241,7 @@ const FormInventoryRecord: React.FC = () => {
     if (selectedDocumentRegistry?.id) {
       navigate(`/document-registries/${selectedDocumentRegistry.id}`);
     } else {
-      navigate('/inventory-records');
+      navigate('/inventory');
     }
   };
 
@@ -424,33 +324,16 @@ const FormInventoryRecord: React.FC = () => {
                         <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                           <TextField
                             size="small"
-                            label="เกณฑ์สั่ง"
-                            value={record.order_criteria}
-                            onChange={(e) => handleRecordChange(record.id!, 'order_criteria', e.target.value)}
+                            label="รหัสคลังสินค้า"
+                            value={record.class_id}
+                            onChange={(e) => handleRecordChange(record.id!, 'class_id', e.target.value)}
                             fullWidth
                           />
                           <TextField
                             size="small"
-                            label="จุดสั่งเพิ่มเติม"
-                            value={record.reorder_point}
-                            onChange={(e) => handleRecordChange(record.id!, 'reorder_point', e.target.value)}
-                            fullWidth
-                          />
-                        </Box>
-
-                        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-                          <TextField
-                            size="small"
-                            label="เกณฑ์ปลอดภัย"
-                            value={record.safety_stock}
-                            onChange={(e) => handleRecordChange(record.id!, 'safety_stock', e.target.value)}
-                            fullWidth
-                          />
-                          <TextField
-                            size="small"
-                            label="หน่วย"
-                            value={record.unit_left}
-                            onChange={(e) => handleRecordChange(record.id!, 'unit_left', e.target.value)}
+                            label="รหัสประเภทพัสดุ"
+                            value={record.type_id}
+                            onChange={(e) => handleRecordChange(record.id!, 'type_id', e.target.value)}
                             fullWidth
                           />
                         </Box>
@@ -458,38 +341,16 @@ const FormInventoryRecord: React.FC = () => {
                         <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                           <TextField
                             size="small"
-                            label="จำนวน"
-                            type="number"
-                            value={record.qty_left}
-                            onChange={(e) => handleRecordChange(record.id!, 'qty_left', e.target.value)}
+                            label="รหัสรายละเอียดพัสดุ"
+                            value={record.des_id}
+                            onChange={(e) => handleRecordChange(record.id!, 'des_id', e.target.value)}
                             fullWidth
                           />
                           <TextField
                             size="small"
-                            label="รับ"
-                            type="number"
-                            value={record.received_qty}
-                            onChange={(e) => handleRecordChange(record.id!, 'received_qty', e.target.value)}
-                            fullWidth
-                          />
-                        </Box>
-
-                        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-                          <TextField
-                            size="small"
-                            label="ราคาต่อหน่วย"
-                            type="number"
-                            inputProps={{ step: '0.01' }}
-                            value={record.price_per_unit}
-                            onChange={(e) => handleRecordChange(record.id!, 'price_per_unit', e.target.value)}
-                            fullWidth
-                          />
-                          <TextField
-                            size="small"
-                            label="จ่าย"
-                            type="number"
-                            value={record.issued_qty}
-                            onChange={(e) => handleRecordChange(record.id!, 'issued_qty', e.target.value)}
+                            label="ชื่อรายละเอียดพัสดุ"
+                            value={record.des_name}
+                            onChange={(e) => handleRecordChange(record.id!, 'des_name', e.target.value)}
                             fullWidth
                           />
                         </Box>
@@ -497,21 +358,18 @@ const FormInventoryRecord: React.FC = () => {
                         <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                           <TextField
                             size="small"
-                            label="คงคลัง"
+                            label="รหัสพัสดุตาม กพร."
                             type="number"
-                            value={record.stock_balance}
-                            onChange={(e) => handleRecordChange(record.id!, 'stock_balance', e.target.value)}
+                            value={record.gpsc_id}
+                            onChange={(e) => handleRecordChange(record.id!, 'gpsc_id', e.target.value)}
                             fullWidth
-                            InputProps={{
-                              readOnly: true,
-                            }}
-                            helperText="คำนวณอัตโนมัติ: จำนวน + รับ - จ่าย"
                           />
                           <TextField
                             size="small"
-                            label="หลักฐาน"
-                            value={record.evidence_right}
-                            onChange={(e) => handleRecordChange(record.id!, 'evidence_right', e.target.value)}
+                            label="คำค้นหา"
+                            type="number"
+                            value={record.keyword}
+                            onChange={(e) => handleRecordChange(record.id!, 'keyword', e.target.value)}
                             fullWidth
                           />
                         </Box>
@@ -562,4 +420,4 @@ const FormInventoryRecord: React.FC = () => {
   );
 };
 
-export default FormInventoryRecord;
+export default FormInventory;

@@ -17,11 +17,14 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Divider from '@mui/material/Divider';
 import DownloadIcon from '@mui/icons-material/Download';
-
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../../hooks/useAuth';
 import { createDocumentRegistry, updateDocumentRegistry, fetchDocumentRegistryById, fetchDocumentRegistries } from '../../../apis/service/documentRegistry';
-import { fetchInventoryRecords, deleteInventoryRecord } from '../../../apis/service/inventory';
+import { fetchInventoryRecords, deleteInventoryRecord } from '../../../apis/service/inventoryRecord';
 import moment from 'moment-timezone';
 import ConfirmDialog from '../../../components/ConfirmDialog';
 
@@ -171,7 +174,7 @@ const FormDocumentRegistry: React.FC = () => {
     return () => window.removeEventListener('focus', handleFocus);
   }, [id]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement> | { target: { name: string; value: string } }) => {
     const { name, value } = e.target;
 
     if (name === 'registration_date') {
@@ -277,6 +280,23 @@ const FormDocumentRegistry: React.FC = () => {
     toast.success('กำลังดาวน์โหลดไฟล์ Excel...');
   };
 
+  const DOCUMENT_TITLE_OPTIONS = [
+    'ใบเบิก',
+    'บันทึกข้อความ',
+    'บิลเงินสด',
+    'หนังสือบริจาก',
+    'ใบกำกับภาษี',
+    'ใบกำกับสินค้า',
+    'ใบสำคัญรับเงิน',
+    'ใบส่งของ',
+    'ใบส่งมอบงาน',
+    'ใบส่งมอบสินค้า',
+    'ใบส่งสินค้า',
+    'ใบเสร็จรับเงิน',
+    'ใบแจ้งหนี้',
+    'ใบเบิกสี่สี',
+  ];
+
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Paper elevation={3} sx={{ p: 4 }}>
@@ -338,7 +358,7 @@ const FormDocumentRegistry: React.FC = () => {
               </Box>
             </Box>
 
-            <TextField
+            {/* <TextField
               fullWidth
               required={!isViewMode}
               label="เอกสาร"
@@ -351,8 +371,25 @@ const FormDocumentRegistry: React.FC = () => {
               InputProps={{
                 readOnly: isViewMode,
               }}
-            />
-
+            /> */}
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">เอกสาร</InputLabel>
+              <Select
+                name="document_title"
+                fullWidth
+                required={!isViewMode}
+                disabled={isViewMode}
+                value={formData.document_title}
+                label="Age"
+                onChange={handleChange}
+              >
+                {DOCUMENT_TITLE_OPTIONS.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
             <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
               <Box sx={{ flex: '1 1 45%', minWidth: '250px' }}>
                 <TextField

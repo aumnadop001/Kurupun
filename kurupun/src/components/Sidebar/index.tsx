@@ -80,6 +80,11 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
       icon: <DescriptionIcon />,
       path: '/',
     },
+    {
+      text: 'บันทึกคุมคลัง',
+      icon: <DescriptionIcon />,
+      path: '/inventory',
+    }
   ];
 
   const handleMenuClick = (path: string) => {
@@ -243,7 +248,7 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
               )}
             </Box>
           )}
-          
+
           {collapsed ? (
             <IconButton
               color={isAuthenticated ? 'error' : 'primary'}
