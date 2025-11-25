@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment, Border, Side, PatternFill
 from datetime import datetime
-from src.inventory.models import InventoryRecord
+from src.master.models import InventoryRecord
 from src.inventory.serializers import InventoryRecordSerializer
 
 class InventoryRecordPagination(PageNumberPagination):

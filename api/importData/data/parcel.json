@@ -1,0 +1,38 @@
+[
+  {
+    "detail_id": "1",
+    "receipt_id": "1",
+    "parcel_code": "6730-002-0007",
+    "parcel_item": "683-0001",
+    "parcel_name": "จอ LED หอประชุม",
+    "unit": "ชุด",
+    "price": "2195000.00",
+    "qty": "1",
+    "parcel_type_id": "1",
+    "stock": ""
+  },
+  {
+    "detail_id": "2",
+    "receipt_id": "2",
+    "parcel_code": "7530-013-0002",
+    "parcel_item": "",
+    "parcel_name": "กระดาษสำหรับงานพิมพ์ขนาด A4 นำ้หนัก 80 แกรม",
+    "unit": "รีม",
+    "price": "135.00",
+    "qty": "100",
+    "parcel_type_id": "3",
+    "stock": ""
+  },
+  {
+    "detail_id": "3",
+    "receipt_id": "2",
+    "parcel_code": "7510-002-0001",
+    "parcel_item": "",
+    "parcel_name": "ปากกาน้ำเงิน",
+    "unit": "ด้าม",
+    "price": "10.00",
+    "qty": "345",
+    "parcel_type_id": "",
+    "stock": ""
+  }
+]

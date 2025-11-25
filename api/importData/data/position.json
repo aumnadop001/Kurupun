@@ -1,0 +1,16 @@
+[
+  { "position_id": "1", "position_name": "ผู้อำนวยการ" },
+  { "position_id": "2", "position_name": "รองผู้อำนายการ" },
+  { "position_id": "3", "position_name": "ข้าราชการครู" },
+  { "position_id": "4", "position_name": "ครูผู้ช่วย" },
+  { "position_id": "5", "position_name": "ข้าราชการพลเรือน" },
+  { "position_id": "6", "position_name": "ครูอัตราจ้าง" },
+  { "position_id": "7", "position_name": "ครูพิเศษ" },
+  { "position_id": "8", "position_name": "พนักงานราชการ" },
+  { "position_id": "9", "position_name": "ลูกจ้างประจำ" },
+  { "position_id": "10", "position_name": "เจ้าหน้าที่/ลูกจ้างทั่วไป" },
+  { "position_id": "11", "position_name": "นักการ/ภารโรง/แม่บ้าน/คนงาน" },
+  { "position_id": "12", "position_name": "พนักงานขับรถ" },
+  { "position_id": "13", "position_name": "พนักงานรักษาความปลอดภัย" },
+  { "position_id": "14", "position_name": "ลูกจ้างชั่วคราว" }
+]

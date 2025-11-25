@@ -1,0 +1,8 @@
+[
+  { "buytype_id": "1", "buytype_name": "E-Bidding" },
+  { "buytype_id": "2", "buytype_name": "E-Market" },
+  { "buytype_id": "3", "buytype_name": "เฉพาะเจาะจง" },
+  { "buytype_id": "4", "buytype_name": "บริจาค" },
+  { "buytype_id": "5", "buytype_name": "คัดเลือก" },
+  { "buytype_id": "6", "buytype_name": "สอบราคา" }
+]

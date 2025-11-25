@@ -1,0 +1,16 @@
+[
+  { "category_id": "1", "category_name": "วัสดุสำนักงาน" },
+  { "category_id": "2", "category_name": "วัสดุยานพาหนะและขนส่ง" },
+  { "category_id": "3", "category_name": "วัสดุไฟฟ้าและวิทยุ" },
+  { "category_id": "4", "category_name": "วัสดุโฆษณาและเผยแพร่" },
+  { "category_id": "5", "category_name": "วัสดุการเกษตร" },
+  { "category_id": "6", "category_name": "วัสดุโรงงาน" },
+  { "category_id": "7", "category_name": "วัสดุก่อสร้าง" },
+  { "category_id": "8", "category_name": "วัสดุสำรวจ" },
+  { "category_id": "9", "category_name": "วัสดุวิทยาศาสตร์และการแพทย์" },
+  { "category_id": "10", "category_name": "วัสดุคอมพิวเตอร์" },
+  { "category_id": "11", "category_name": "วัสดุดนตรี" },
+  { "category_id": "12", "category_name": "วัสดุการศึกษา" },
+  { "category_id": "13", "category_name": "วัสดุงานบ้านงานครัว" },
+  { "category_id": "14", "category_name": "วัสดุกีฬา" }
+]

@@ -13,4 +13,5 @@ def api_root(request, format=None):
         'profile': reverse('authentication:profile', request=request, format=format),
         'document_registries': reverse('document_registry:documentregistry-list', request=request, format=format),
         'inventory': reverse('inventory:inventory-list', request=request, format=format),
+        'master': reverse('master:master-list', request=request, format=format),
     })

@@ -1,0 +1,14 @@
+[
+  { "invioc_type": "1", "invioc_name": "ใบเสร็จรับเงิน" },
+  { "invioc_type": "2", "invioc_name": "ใบแจ้งหนี้" },
+  { "invioc_type": "3", "invioc_name": "ใบกำกับภาษี" },
+  { "invioc_type": "4", "invioc_name": "ใบส่งของ" },
+  { "invioc_type": "5", "invioc_name": "ใบส่งมอบงาน" },
+  { "invioc_type": "6", "invioc_name": "ใบส่งมอบสินค้า" },
+  { "invioc_type": "7", "invioc_name": "ใบส่งสินค้า" },
+  { "invioc_type": "8", "invioc_name": "ใบสำคัญรับเงิน" },
+  { "invioc_type": "9", "invioc_name": "บิลเงินสด" },
+  { "invioc_type": "10", "invioc_name": "บันทึกข้อความ" },
+  { "invioc_type": "11", "invioc_name": "ใบกำกับสินค้า" },
+  { "invioc_type": "12", "invioc_name": "หนังสือบริจาค" }
+]

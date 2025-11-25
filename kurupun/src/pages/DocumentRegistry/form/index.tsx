@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
-
+import { useSelector } from 'react-redux';
 import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
@@ -53,6 +53,7 @@ interface InventoryRecordType {
 
 const FormDocumentRegistry: React.FC = () => {
   const navigate = useNavigate();
+  const { masters } = useSelector((state: any) => state.master);
   const { id } = useParams();
   const { isAuthenticated } = useAuth();
   const isEditMode = !!id && isAuthenticated;
@@ -280,22 +281,6 @@ const FormDocumentRegistry: React.FC = () => {
     toast.success('กำลังดาวน์โหลดไฟล์ Excel...');
   };
 
-  const DOCUMENT_TITLE_OPTIONS = [
-    'ใบเบิก',
-    'บันทึกข้อความ',
-    'บิลเงินสด',
-    'หนังสือบริจาก',
-    'ใบกำกับภาษี',
-    'ใบกำกับสินค้า',
-    'ใบสำคัญรับเงิน',
-    'ใบส่งของ',
-    'ใบส่งมอบงาน',
-    'ใบส่งมอบสินค้า',
-    'ใบส่งสินค้า',
-    'ใบเสร็จรับเงิน',
-    'ใบแจ้งหนี้',
-    'ใบเบิกสี่สี',
-  ];
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
@@ -383,16 +368,34 @@ const FormDocumentRegistry: React.FC = () => {
                 label="Age"
                 onChange={handleChange}
               >
-                {DOCUMENT_TITLE_OPTIONS.map((option) => (
-                  <MenuItem key={option} value={option}>
-                    {option}
+                {masters?.invoiceType?.map((option: any) => (
+                  <MenuItem key={option.id} value={option.invioc_name}>
+                    {option.invioc_name}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
             <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
               <Box sx={{ flex: '1 1 45%', minWidth: '250px' }}>
-                <TextField
+                <FormControl fullWidth>
+                  <InputLabel id="demo-simple-select-label">จาก</InputLabel>
+                  <Select
+                    name="document_title"
+                    fullWidth
+                    required={!isViewMode}
+                    disabled={isViewMode}
+                    value={formData.sender}
+                    label="Age"
+                    onChange={handleChange}
+                  >
+                    {masters?.dept?.map((option: any) => (
+                      <MenuItem key={option.id} value={option.dept_name}>
+                        {option.dept_name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                {/* <TextField
                   fullWidth
                   required={!isViewMode}
                   label="จาก"
@@ -403,7 +406,7 @@ const FormDocumentRegistry: React.FC = () => {
                   InputProps={{
                     readOnly: isViewMode,
                   }}
-                />
+                /> */}
               </Box>
               <Box sx={{ flex: '1 1 45%', minWidth: '250px' }}>
                 <TextField

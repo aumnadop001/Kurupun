@@ -21,7 +21,6 @@ import toast from 'react-hot-toast';
 import { useAuth } from '../../../hooks/useAuth';
 import { createInventoryRecord, fetchInventoryRecordById, updateInventoryRecord } from '../../../apis/service/inventoryRecord';
 import { fetchDocumentRegistries } from '../../../apis/service/documentRegistry';
-
 interface DocumentRegistry {
   id: number;
   registry_number: string;
@@ -88,7 +87,6 @@ const FormInventoryRecord: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
   const { isAuthenticated } = useAuth();
-
   const [loading, setLoading] = useState(false);
   const [documentRegistries, setDocumentRegistries] = useState<DocumentRegistry[]>([]);
   const [selectedDocumentRegistry, setSelectedDocumentRegistry] = useState<DocumentRegistry | null>(null);

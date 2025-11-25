@@ -1,0 +1,46 @@
+[
+  {
+    "username": "teradech",
+    "password": "6ebe76c9fb411be97b3b0d48b791a7c9",
+    "prefix": "นาย",
+    "firstname": "ธีรเดช",
+    "lastname": "วัฒนสุชาติ",
+    "email": "Teradech@hotmail.com",
+    "phone_number": "08866644521",
+    "create_datetime": "2025-01-04 11:40:04",
+    "authority": "1"
+  },
+  {
+    "username": "Wasana000",
+    "password": "c6f057b86584942e415435ffb1fa93d4",
+    "prefix": "นาง",
+    "firstname": "วาสนา",
+    "lastname": "สงพรมทิพย์",
+    "email": "wasana99@thaimail.com",
+    "phone_number": "04211558765",
+    "create_datetime": "2025-01-04 11:42:42",
+    "authority": "1"
+  },
+  {
+    "username": "yutana",
+    "password": "25f9e794323b453885f5181f1b624d0b",
+    "prefix": "นางสาว",
+    "firstname": "ยุธนา",
+    "lastname": "ศณีรักษ์",
+    "email": "yutana_s@gmail.com",
+    "phone_number": "0981152246",
+    "create_datetime": "2025-01-04 10:28:06",
+    "authority": "1"
+  },
+  {
+    "username": "zdzsd",
+    "password": "25f9e794323b453885f5181f1b624d0b",
+    "prefix": "นาย",
+    "firstname": "กันต์ศักดิ์",
+    "lastname": "ตันศิริรัตน์",
+    "email": "kansak@gmail.com",
+    "phone_number": "0123456789",
+    "create_datetime": "2025-01-04 10:25:35",
+    "authority": "1"
+  }
+]

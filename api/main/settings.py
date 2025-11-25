@@ -52,7 +52,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "src.authentication",
     "src.documentRegistry",
-    "src.inventory"
+    "src.inventory",
+    "src.master"
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,8 @@
+[
+  { "parcel_type_id": "1", "parcel_type_name": "ครุภัณฑ์" },
+  {
+    "parcel_type_id": "2",
+    "parcel_type_name": "ครุภัณฑ์ต่ำกว่าเกณฑ์หรือวัสดุถาวร"
+  },
+  { "parcel_type_id": "3", "parcel_type_name": "วัสดุสิ้นเปลือง" }
+]

@@ -1,0 +1,17 @@
+[
+  {
+    "committee_type_id": "1",
+    "committee_type_name": "คณะกรรมการกำหนดคุณลักษณะ"
+  },
+  {
+    "committee_type_id": "2",
+    "committee_type_name": "คณะกรรมการกำหนดราคากลาง"
+  },
+  {
+    "committee_type_id": "3",
+    "committee_type_name": "คณะกรรมการกำหนดคุณลักษณะและราคากลาง"
+  },
+  { "committee_type_id": "4", "committee_type_name": "คณะกรรมการพิจารณาผล" },
+  { "committee_type_id": "5", "committee_type_name": "คณะกรรมการควบคุมงาน" },
+  { "committee_type_id": "6", "committee_type_name": "คณะกรรมการตรวจรับพัสดุ" }
+]

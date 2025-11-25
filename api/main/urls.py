@@ -13,4 +13,5 @@ urlpatterns = [
     path('api/auth/', include(('src.authentication.urls', 'authentication'), namespace='authentication')),
     path('api/', include(('src.documentRegistry.urls', 'document_registry'), namespace='document_registry')),
     path('api/', include(('src.inventory.urls', 'inventory'), namespace='inventory')),
+    path('api/', include(('src.master.urls', 'master'), namespace='master')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
