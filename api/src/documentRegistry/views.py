@@ -390,7 +390,8 @@ def export_excel(request):
         content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     )
     currentDate = datetime.now().strftime("%Y-%m-%d")
-    filename = "{}_{}.xlsx".format("ทะเบียนคุมเอกสาร", currentDate)
+    filename = f"ทะเบียนเอกสาร_{currentDate}.xlsx"
+    # filename = "{}_{}.xlsx".format("ทะเบียนคุมเอกสาร", currentDate)
     response["Content-Disposition"] = f'attachment; filename="{filename}"'
 
     wb.save(response)

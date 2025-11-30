@@ -16,3 +16,5 @@ class MasterViewSet(viewsets.ViewSet):
             "invoiceType": serializers.invoiceTypeSerializer(models.invoiceType.objects.all(), many=True).data,
         }
         return Response(response)
+
+
