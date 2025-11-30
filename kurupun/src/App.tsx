@@ -14,8 +14,7 @@ function App() {
     const loadMasterData = async () => {
       try {
         const masterData = await fetchMaster();
-        dispatch(setMasters({ masters: masterData.results }));
-        console.log("Master Data:", masterData);
+        dispatch(setMasters({ masters: masterData }));
       } catch (error) {
         console.error("Error loading master data:", error);
       }

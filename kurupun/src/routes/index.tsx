@@ -7,7 +7,8 @@ import FormDocumentRegistry from '../pages/DocumentRegistry/form';
 import InventoryRecord from '../pages/InventoryRecord';
 import FormInventoryRecord from '../pages/InventoryRecord/form';
 import Inventory from '../pages/Inventory';
-import FormInventory from '../pages/Inventory/form';
+import FormInventory from '../pages/Inventory/form/form';
+import InventoryForm from '../pages/Inventory/form/form';
 import { RequireAuth } from '../hooks/useAuth';
 import Loader from '../components/Loader';
 import SidebarLayout from '../components/Sidebar';
@@ -84,7 +85,7 @@ const Router: React.FC = () => {
             element={
               <RequireAuth>
                 <SidebarLayout>
-                  <FormInventory />
+                  <InventoryForm />
                 </SidebarLayout>
               </RequireAuth>
             }

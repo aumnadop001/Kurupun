@@ -13,17 +13,14 @@ import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Autocomplete from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
+import Tooltip from '@mui/material/Tooltip';
 
 import { fetchInventory, deleteInventory } from '../../apis/service/inventories';
-import { fetchDocumentRegistries } from '../../apis/service/documentRegistry';
 import { useAuth } from '../../hooks/useAuth';
 import moment from 'moment-timezone';
 import { Select } from '@mui/material';
 import { toast } from 'react-hot-toast';
-import { mappingMonthToThai } from '../../utils/mappingMouth';
 import ConfirmDialog from '../../components/ConfirmDialog';
 
 // ตั้งค่า timezone และภาษา
@@ -58,6 +55,11 @@ interface InventoryRecordType {
   stock_balance: number;
   signature: string;
   created_at: string;
+  class_id?: string;
+  des_id?: string;
+  des_name?: string;
+  gpsc_id?: string;
+  keyword?: string;
 }
 
 interface InventoryRecordDataType {
@@ -67,15 +69,8 @@ interface InventoryRecordDataType {
   previous: string | null;
 }
 
-interface DocumentRegistry {
-  id: number;
-  registry_number: string;
-  document_title: string;
-}
-
 const Inventory: React.FC = () => {
   const [data, setData] = useState<InventoryRecordDataType>({ count: 0, results: [], next: null, previous: null });
-  const [documentRegistries, setDocumentRegistries] = useState<DocumentRegistry[]>([]);
   const [searchBy, setSearchBy] = useState<string>('document_registry');
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
@@ -83,19 +78,6 @@ const Inventory: React.FC = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<number | null>(null);
-
-  // Load document registries for mapping
-  useEffect(() => {
-    const loadDocumentRegistries = async () => {
-      try {
-        const response = await fetchDocumentRegistries({ page_size: 1000 });
-        setDocumentRegistries(response.results || []);
-      } catch (error) {
-        console.error("Error fetching document registries:", error);
-      }
-    };
-    loadDocumentRegistries();
-  }, []);
 
   const confirmDelete = async () => {
     if (deleteId === null) return;
@@ -164,19 +146,15 @@ const Inventory: React.FC = () => {
     setData(response);
   };
 
-  const getDocumentRegistryDisplay = (documentRegistryId: number) => {
-    const doc = documentRegistries.find(d => d.id === documentRegistryId);
-    return doc ? `${doc.registry_number} - ${doc.document_title}` : documentRegistryId.toString();
-  };
 
   return (
     <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
       <Box sx={{ mb: 3 }}>
         <Typography variant="h4" component="h1" gutterBottom>
-          บันทึกรายการพัสดุ
+          บัญชีคุมพัสดุ
         </Typography>
         <Button variant="contained" color="primary" onClick={handleCreate}>
-          {isAuthenticated ? 'เพิ่มบันทึกรายการพัสดุ' : 'เข้าสู่ระบบเพื่อเพิ่มบันทึก'}
+          {isAuthenticated ? 'เพิ่มบัญชีคุมพัสดุ' : 'เข้าสู่ระบบเพื่อเพิ่มบัญชีคุมพัสดุ'}
         </Button>
       </Box>
       <form onSubmit={(e) => {
@@ -198,35 +176,15 @@ const Inventory: React.FC = () => {
             <MenuItem value="evidence_left">หลักฐานซ้าย</MenuItem>
             <MenuItem value="evidence_right">หลักฐานขวา</MenuItem>
           </Select>
-          <Autocomplete
-            disablePortal
-            options={Array.from(new Set(
-              data.results
-                .map((option) => {
-                  if (searchBy === 'document_registry') {
-                    return getDocumentRegistryDisplay(option.document_registry);
-                  }
-                  const value = option[searchBy as keyof typeof option];
-                  return value ? String(value) : '';
-                })
-                .filter((value) => value !== '')
-            ))}
-            sx={{ width: 300 }}
-            size="small"
-            renderInput={(params) => <TextField {...params} name="searchValue" />}
-          />
           <Button type='submit' variant="contained" color="primary">ค้นหา</Button>
         </Box>
       </form>
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} sx={{ height: 'calc(100vh - 300px)' }}>
         <Table sx={{ minWidth: 650 }} aria-label="inventory record table">
           <TableHead>
             <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
               <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-                ID
-              </TableCell>
-              <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-                รหัสคลังสินค้า
+                #
               </TableCell>
               <TableCell align="center" sx={{ fontWeight: 'bold' }}>
                 รหัสประเภทพัสดุ
@@ -240,7 +198,7 @@ const Inventory: React.FC = () => {
               <TableCell align="center" sx={{ fontWeight: 'bold' }}>
                 รหัสพัสดุตาม กพร.
               </TableCell>
-              <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+              <TableCell align="left" sx={{ fontWeight: 'bold' }}>
                 คำค้นหา
               </TableCell>
               {isAuthenticated && (
@@ -271,18 +229,15 @@ const Inventory: React.FC = () => {
                       {index + 1 + page * rowsPerPage}
                     </Link>
                   </TableCell>
-                  <TableCell>{getDocumentRegistryDisplay(row.document_registry)}</TableCell>
-                  <TableCell align="center">{row.unit_left || '-'}</TableCell>
-                  <TableCell align="center">{row.qty_left || 0}</TableCell>
-                  <TableCell align="center">{row.received_qty || 0}</TableCell>
-                  <TableCell align="center">{row.issued_qty || 0}</TableCell>
-                  <TableCell align="center">{row.stock_balance || 0}</TableCell>
-                  <TableCell align="center">{(() => {
-                    const date = moment(row.created_at).locale('th');
-                    const buddhistYear = date.year() + 543;
-                    const month = mappingMonthToThai(date.format('MM'));
-                    return date.format(`DD`) + ' ' + month + ' ' + buddhistYear;
-                  })()}</TableCell>
+                  <TableCell align="center">{row.class_id || '-'}</TableCell>
+                  <TableCell align="center">{row.des_id || '-'}</TableCell>
+                  <TableCell align="center">{row.des_name || '-'}</TableCell>
+                  <TableCell align="center">{row.gpsc_id || '-'}</TableCell>
+                  <TableCell align="left" sx={{ maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    <Tooltip title={row.keyword || '-'} arrow>
+                      <span>{row.keyword || '-'}</span>
+                    </Tooltip>
+                  </TableCell>
                   {isAuthenticated && (
                     <TableCell align="center">
                       <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>

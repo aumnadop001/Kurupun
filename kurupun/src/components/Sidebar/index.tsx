@@ -81,7 +81,7 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
       path: '/',
     },
     {
-      text: 'บันทึกคุมคลัง',
+      text: 'บัญชีคุมพัสดุ',
       icon: <DescriptionIcon />,
       path: '/inventory',
     }

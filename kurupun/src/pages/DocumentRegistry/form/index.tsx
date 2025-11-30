@@ -177,7 +177,8 @@ const FormDocumentRegistry: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement> | { target: { name: string; value: string } }) => {
     const { name, value } = e.target;
-
+    console.log(name, value);
+    
     if (name === 'registration_date') {
       const newRegistryNumber = generateRegistryNumber(value);
       setFormData((prev) => ({
@@ -253,6 +254,7 @@ const FormDocumentRegistry: React.FC = () => {
     setConfirmMessage('คุณแน่ใจหรือไม่ว่าต้องการลบบันทึกรายการพัสดุนี้?');
     setConfirmOpen(true);
   };
+  console.log('masters ->', masters);
 
   const handleConfirmDelete = async () => {
     if (confirmTargetId === null) {
@@ -358,14 +360,26 @@ const FormDocumentRegistry: React.FC = () => {
               }}
             /> */}
             <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">เอกสาร</InputLabel>
+              <InputLabel id="demo-simple-select-label"
+                sx={{
+                  top: '-20%',
+                  '&.MuiInputLabel-shrink': {
+                    top: 10,
+                    left: '14px',
+                    transform: 'translateY(-100%)',
+                    width: '200px',
+                  }
+                }}
+              >เอกสาร
+              </InputLabel>
               <Select
                 name="document_title"
                 fullWidth
+                size='small'
                 required={!isViewMode}
                 disabled={isViewMode}
                 value={formData.document_title}
-                label="Age"
+                label="เอกสาร"
                 onChange={handleChange}
               >
                 {masters?.invoiceType?.map((option: any) => (
@@ -378,14 +392,23 @@ const FormDocumentRegistry: React.FC = () => {
             <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
               <Box sx={{ flex: '1 1 45%', minWidth: '250px' }}>
                 <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">จาก</InputLabel>
+                  <InputLabel sx={{
+                    top: '-20%',
+                    '&.MuiInputLabel-shrink': {
+                      top: 10,
+                      left: '14px',
+                      transform: 'translateY(-100%)',
+                      width: '200px',
+                    }
+                  }}>จาก</InputLabel>
                   <Select
-                    name="document_title"
+                    name="sender"
                     fullWidth
+                    size='small'
                     required={!isViewMode}
                     disabled={isViewMode}
                     value={formData.sender}
-                    label="Age"
+                    label="จาก"
                     onChange={handleChange}
                   >
                     {masters?.dept?.map((option: any) => (
