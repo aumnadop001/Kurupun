@@ -59,8 +59,17 @@ for idx, item in enumerate(data, 1):
         if gpsc_id_value:
             gps = gpscode.objects.filter(gpsc_id=gpsc_id_value).first()
         
+        item_id = ''
+        class_id_raw = item.get("class_id", "").strip() if item.get("class_id") else ""
+        type_id_raw  = item.get("type_id", "").strip() if item.get("type_id") else ""
+        des_id_raw   = item.get("Des_id", "").strip() if item.get("Des_id") else ""
+        if class_id_raw or type_id_raw or des_id_raw:
+            item_id = f"{class_id_raw}-{type_id_raw}-{des_id_raw}"
+        else:
+            item_id = None
         # Insert ทุก record (ไม่ใช้ update_or_create เพราะ des_id ซ้ำกันได้)
         InventoryRecord.objects.create(
+            item_id=item_id,
             des_id=des_id,
             class_id=cls,
             type_id=typ,

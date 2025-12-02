@@ -36,6 +36,7 @@ class ptype(models.Model):
 
 
 class InventoryRecord(models.Model):
+    item_id = models.CharField(max_length=100, verbose_name="รหัสรายการพัสดุ", null=True, blank=True)
     class_id = models.ForeignKey(pClass, on_delete=models.CASCADE, null=True, blank=True)
     type_id = models.ForeignKey(ptype, on_delete=models.CASCADE, null=True, blank=True)
     des_id = models.CharField(max_length=100, verbose_name="รหัสรายละเอียดพัสดุ", null=True, blank=True)
