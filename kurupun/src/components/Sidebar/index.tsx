@@ -75,15 +75,15 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
   };
 
   const menuItems = [
+      {
+        text: 'บัญชีคุมพัสดุ',
+        icon: <DescriptionIcon />,
+        path: '/inventory',
+      },
     {
       text: 'ทะเบียนคุมเอกสาร',
       icon: <DescriptionIcon />,
-      path: '/',
-    },
-    {
-      text: 'บัญชีคุมพัสดุ',
-      icon: <DescriptionIcon />,
-      path: '/inventory',
+      path: '/'
     }
   ];
 

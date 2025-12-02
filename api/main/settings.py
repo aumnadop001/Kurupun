@@ -51,8 +51,9 @@ INSTALLED_APPS = [
     "django_filters",
     "rest_framework",
     "src.authentication",
-    "src.documentRegistry",
-    "src.inventory",
+    "src.document_control",
+    # "src.documentRegistry",
+    # "src.inventory",
     "src.master"
 ]
 

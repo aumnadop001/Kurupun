@@ -9,6 +9,8 @@ import FormInventoryRecord from '../pages/InventoryRecord/form';
 import Inventory from '../pages/Inventory';
 import FormInventory from '../pages/Inventory/form/form';
 import InventoryForm from '../pages/Inventory/form/form';
+import DocumentControl from '../pages/DocumentControl';
+import FormDocumentControl from '../pages/DocumentControl/form/form';
 import { RequireAuth } from '../hooks/useAuth';
 import Loader from '../components/Loader';
 import SidebarLayout from '../components/Sidebar';
@@ -20,58 +22,6 @@ const Router: React.FC = () => {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route
-            path="/"
-            element={
-              <SidebarLayout>
-                <DocumentRegistry />
-              </SidebarLayout>
-            }
-          />
-          <Route
-            path="/document-registries/create"
-            element={
-              <RequireAuth>
-                <SidebarLayout>
-                  <FormDocumentRegistry />
-                </SidebarLayout>
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/document-registries/:id"
-            element={
-              <SidebarLayout>
-                <FormDocumentRegistry />
-              </SidebarLayout>
-            }
-          />
-          <Route
-            path="/inventory-records"
-            element={
-              <SidebarLayout>
-                <InventoryRecord />
-              </SidebarLayout>
-            }
-          />
-          <Route
-            path="/inventory-records/create"
-            element={
-              <RequireAuth>
-                <SidebarLayout>
-                  <FormInventoryRecord />
-                </SidebarLayout>
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/inventory-records/:id"
-            element={
-              <SidebarLayout>
-                <FormInventoryRecord />
-              </SidebarLayout>
-            }
-          />
           <Route
             path="/inventory"
             element={
@@ -95,6 +45,40 @@ const Router: React.FC = () => {
             element={
               <SidebarLayout>
                 <FormInventory />
+              </SidebarLayout>
+            }
+          />
+          <Route
+            path="/"
+            element={
+              <SidebarLayout>
+                <DocumentControl />
+              </SidebarLayout>
+            }
+          />
+          <Route
+            path="/document-control"
+            element={
+              <SidebarLayout>
+                <DocumentControl />
+              </SidebarLayout>
+            }
+          />
+          <Route
+            path="/document-control/create"
+            element={
+              <RequireAuth>
+                <SidebarLayout>
+                  <FormDocumentControl />
+                </SidebarLayout>
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/document-control/:id"
+            element={
+              <SidebarLayout>
+                <FormDocumentControl />
               </SidebarLayout>
             }
           />

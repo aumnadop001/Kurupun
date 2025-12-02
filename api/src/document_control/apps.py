@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class DocumentRegistryConfig(AppConfig):
+class DocumentControlConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'src.documentRegistry'
+    name = 'src.document_control'

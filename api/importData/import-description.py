@@ -11,8 +11,7 @@ sys.path.append(BASE_DIR)
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "main.settings")
 django.setup()
 
-import json,sys
-from src.master.models import InventoryRecord, pClass, ptype, gpscode
+from src.master.models import pClass, ptype, gpscode, Description
 
 with open("./data/description.json", encoding="utf-8") as f:
     data = json.load(f)
@@ -23,76 +22,80 @@ skipped = 0
 errors = 0
 not_found_class = 0
 not_found_type = 0
+not_found_gpsc = 0
 
 print(f"Total records to import: {total}", file=sys.stderr)
 
 for idx, item in enumerate(data, 1):
     try:
-        # จัดการ des_id - อนุญาตให้ว่างได้
-        des_id = item.get("Des_id", "").strip() if item.get("Des_id") else None
-        if des_id == "":
-            des_id = None
-        
-        # จัดการ class_id - ถ้าว่างให้เป็น None
-        cls = None
+        # ตรวจสอบ field ที่จำเป็น
         class_id_value = item.get("class_id", "").strip() if item.get("class_id") else ""
-        if class_id_value:
-            cls = pClass.objects.filter(class_id=class_id_value).first()
-            if not cls:
-                not_found_class += 1
-                if not_found_class <= 10:  # แสดงแค่ 10 รายการแรก
-                    print(f"[{idx}/{total}] Warning: class_id '{class_id_value}' not found in database", file=sys.stderr)
-        
-        # จัดการ type_id - ถ้าว่างให้เป็น None
-        typ = None
         type_id_value = item.get("type_id", "").strip() if item.get("type_id") else ""
-        if type_id_value:
-            typ = ptype.objects.filter(ptype_id=type_id_value).first()
-            if not typ:
-                not_found_type += 1
-                if not_found_type <= 10:  # แสดงแค่ 10 รายการแรก
-                    print(f"[{idx}/{total}] Warning: type_id '{type_id_value}' not found in database", file=sys.stderr)
+        des_id_value = item.get("Des_id", "").strip() if item.get("Des_id") else ""
         
-        # จัดการ gpsc_id - อนุญาตให้ว่างได้
-        gps = None
+        # ข้ามถ้าข้อมูลหลักไม่ครบ
+        if not class_id_value or not type_id_value or not des_id_value:
+            skipped += 1
+            if skipped <= 10:
+                print(f"[{idx}/{total}] Skipped: Missing required fields (class_id={class_id_value}, type_id={type_id_value}, des_id={des_id_value})", file=sys.stderr)
+            continue
+        
+        # หา pClass
+        cls = pClass.objects.filter(class_id=class_id_value).first()
+        if not cls:
+            not_found_class += 1
+            if not_found_class <= 10:
+                print(f"[{idx}/{total}] Error: class_id '{class_id_value}' not found", file=sys.stderr)
+            errors += 1
+            continue
+        
+        # หา ptype
+        typ = ptype.objects.filter(ptype_id=type_id_value).first()
+        if not typ:
+            not_found_type += 1
+            if not_found_type <= 10:
+                print(f"[{idx}/{total}] Error: type_id '{type_id_value}' not found", file=sys.stderr)
+            errors += 1
+            continue
+        
+        # หา gpscode (optional)
+        gpsc = None
         gpsc_id_value = item.get("gpsc_id", "").strip() if item.get("gpsc_id") else ""
         if gpsc_id_value:
-            gps = gpscode.objects.filter(gpsc_id=gpsc_id_value).first()
+            gpsc = gpscode.objects.filter(gpsc_id=gpsc_id_value).first()
+            if not gpsc:
+                not_found_gpsc += 1
+                if not_found_gpsc <= 10:
+                    print(f"[{idx}/{total}] Warning: gpsc_id '{gpsc_id_value}' not found", file=sys.stderr)
         
-        item_id = ''
-        class_id_raw = item.get("class_id", "").strip() if item.get("class_id") else ""
-        type_id_raw  = item.get("type_id", "").strip() if item.get("type_id") else ""
-        des_id_raw   = item.get("Des_id", "").strip() if item.get("Des_id") else ""
-        if class_id_raw or type_id_raw or des_id_raw:
-            item_id = f"{class_id_raw}-{type_id_raw}-{des_id_raw}"
-        else:
-            item_id = None
-        # Insert ทุก record (ไม่ใช้ update_or_create เพราะ des_id ซ้ำกันได้)
-        InventoryRecord.objects.create(
-            item_id=item_id,
-            des_id=des_id,
+        # สร้างหรืออัปเดต Description
+        description, created = Description.objects.update_or_create(
             class_id=cls,
             type_id=typ,
-            des_name=item.get("Des_name", "").strip() if item.get("Des_name") else None,
-            gpsc_id=gps,
-            keyword=item.get("keyword", "").strip() if item.get("keyword") else None,
+            Des_id=des_id_value,
+            defaults={
+                'Des_name': item.get("Des_name", "").strip() if item.get("Des_name") else "",
+                'gpsc_id': gpsc,
+                'keyword': item.get("keyword", "").strip() if item.get("keyword") else "",
+            }
         )
-        success += 1
         
-        if success % 500 == 0:
-            print(f"[{idx}/{total}] Progress: {success} imported, {skipped} skipped, {errors} errors", file=sys.stderr)
-            
+        success += 1
+        if success % 1000 == 0:
+            print(f"[{idx}/{total}] Progress: {success} records imported", file=sys.stderr)
+        
     except Exception as e:
         errors += 1
-        print(f"[{idx}/{total}] Error: {str(e)} (Des_id: {item.get('Des_id', 'N/A')})", file=sys.stderr)
-        if errors >= 10:  # ถ้า error เกิน 10 ครั้งให้หยุด
-            print(f"Too many errors, stopping import", file=sys.stderr)
-            break
+        if errors <= 10:
+            print(f"[{idx}/{total}] Exception: {str(e)}", file=sys.stderr)
 
-print(f"\n=== Import Summary ===", file=sys.stderr)
-print(f"Total records: {total}", file=sys.stderr)
-print(f"Successfully imported: {success}", file=sys.stderr)
-print(f"Skipped: {skipped}", file=sys.stderr)
-print(f"Errors: {errors}", file=sys.stderr)
-print(f"class_id not found: {not_found_class}", file=sys.stderr)
-print(f"type_id not found: {not_found_type}", file=sys.stderr)
+print("\n" + "="*60, file=sys.stderr)
+print(f"Import Summary:", file=sys.stderr)
+print(f"  Total: {total}", file=sys.stderr)
+print(f"  Success: {success}", file=sys.stderr)
+print(f"  Skipped: {skipped}", file=sys.stderr)
+print(f"  Errors: {errors}", file=sys.stderr)
+print(f"  Class not found: {not_found_class}", file=sys.stderr)
+print(f"  Type not found: {not_found_type}", file=sys.stderr)
+print(f"  GPSC not found (warnings): {not_found_gpsc}", file=sys.stderr)
+print("="*60, file=sys.stderr)

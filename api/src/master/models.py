@@ -34,23 +34,6 @@ class ptype(models.Model):
         verbose_name = "ประเภทพัสดุ"
         verbose_name_plural = "ประเภทพัสดุทั้งหมด"
 
-
-class InventoryRecord(models.Model):
-    item_id = models.CharField(max_length=100, verbose_name="รหัสรายการพัสดุ", null=True, blank=True)
-    class_id = models.ForeignKey(pClass, on_delete=models.CASCADE, null=True, blank=True)
-    type_id = models.ForeignKey(ptype, on_delete=models.CASCADE, null=True, blank=True)
-    des_id = models.CharField(max_length=100, verbose_name="รหัสรายละเอียดพัสดุ", null=True, blank=True)
-    des_name = models.TextField(verbose_name="ชื่อรายละเอียดพัสดุ", null=True, blank=True)
-    gpsc_id = models.ForeignKey(gpscode, on_delete=models.CASCADE, null=True, blank=True)
-    keyword = models.TextField(verbose_name="คำค้นหา", null=True, blank=True)
-
-    class Meta:
-        verbose_name = "บันทึกรายการพัสดุ"
-        verbose_name_plural = "บันทึกรายการพัสดุทั้งหมด"
-
-    def __str__(self):
-        return f"{self.class_id} - {self.keyword}"
-
 class dept(models.Model):
     dept_id = models.CharField(max_length=100, null=False, blank=True)
     dept_name = models.TextField(blank=True, null=True)
@@ -70,3 +53,58 @@ class invoiceType(models.Model):
     class Meta:
         verbose_name = "ประเภทใบสั่งซื้อ"
         verbose_name_plural = "ประเภทใบสั่งซื้อทั้งหมด"
+
+class Description(models.Model):
+    """
+    รายละเอียดพัสดุ (Description) - จาก description.json
+    """
+    class_id = models.ForeignKey(
+        pClass,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="descriptions",
+        verbose_name="หมวดพัสดุ",
+    )
+    type_id = models.ForeignKey(
+        ptype,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="descriptions",
+        verbose_name="ประเภทพัสดุ",
+    )
+    Des_id = models.CharField(
+        max_length=100, null=True, blank=True, verbose_name="รหัสรายละเอียด"
+    )
+    Des_name = models.TextField(blank=True, null=True, verbose_name="ชื่อรายละเอียด")
+    gpsc_id = models.ForeignKey(
+        gpscode,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="descriptions",
+        verbose_name="รหัสพัสดุตาม กพร.",
+    )
+    keyword = models.TextField(blank=True, null=True, verbose_name="คำค้นหา")
+
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="วันที่สร้าง")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="วันที่แก้ไข")
+
+    def __str__(self):
+        return f"{self.get_item_id()} - {self.Des_name}"
+
+    def get_item_id(self):
+        """
+        สร้าง item_id แบบ {class_id}-{type_id}-{Des_id}
+        """
+        class_code = self.class_id.class_id if self.class_id else ""
+        type_code = self.type_id.ptype_id if self.type_id else ""
+        des_code = self.Des_id if self.Des_id else ""
+        return f"{class_code}-{type_code}-{des_code}"
+
+    class Meta:
+        db_table = "description"
+        verbose_name = "รายละเอียดพัสดุ"
+        verbose_name_plural = "รายละเอียดพัสดุทั้งหมด"
+        ordering = ["class_id", "type_id", "Des_id"]

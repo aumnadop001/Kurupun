@@ -11,7 +11,8 @@ urlpatterns = [
     path('api/', api_root),
     # Namespaced includes so reverse() can target them explicitly
     path('api/auth/', include(('src.authentication.urls', 'authentication'), namespace='authentication')),
-    path('api/', include(('src.documentRegistry.urls', 'document_registry'), namespace='document_registry')),
-    path('api/', include(('src.inventory.urls', 'inventory'), namespace='inventory')),
+    # path('api/', include(('src.documentRegistry.urls', 'document_registry'), namespace='document_registry')),
+    # path('api/', include(('src.inventory.urls', 'inventory'), namespace='inventory')),
     path('api/', include(('src.master.urls', 'master'), namespace='master')),
+    path('api/document-control/', include(('src.document_control.urls', 'document_control'), namespace='document_control')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -146,9 +146,6 @@ const Inventory: React.FC = () => {
     setData(response);
   };
 
-  const handleExportExcel = () => {
-    window.open(`${import.meta.env.VITE_API_URL}/api/master/export-inventories/`, '_blank');
-  };
 
   return (
     <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
@@ -159,9 +156,6 @@ const Inventory: React.FC = () => {
         <Box sx={{ display: 'flex', gap: 2 }}>
           <Button variant="contained" color="primary" onClick={handleCreate}>
             {isAuthenticated ? 'เพิ่มบัญชีคุมพัสดุ' : 'เข้าสู่ระบบเพื่อเพิ่มบัญชีคุมพัสดุ'}
-          </Button>
-          <Button variant="outlined" color="success" onClick={handleExportExcel}>
-            ดาวน์โหลด Excel
           </Button>
         </Box>
       </Box>

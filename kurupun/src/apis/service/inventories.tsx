@@ -9,7 +9,7 @@ interface Params {
 
 export const fetchInventory = async (params?: Params) => {
   try {
-    const response = await callGet("/api/inventory/", params);
+    const response = await callGet("/api/document-control/descriptions/", params);
     return response;
   } catch (error) {
     console.error("Fetch inventory  failed:", error);
@@ -19,7 +19,7 @@ export const fetchInventory = async (params?: Params) => {
 
 export const fetchInventoryById = async (id: string) => {
   try {
-    const response = await callGet(`/api/inventory/${id}/`);
+    const response = await callGet(`/api/document-control/descriptions/${id}/`);
     return response;
   } catch (error) {
     console.error("Fetch inventory record by ID failed:", error);
@@ -29,7 +29,7 @@ export const fetchInventoryById = async (id: string) => {
 
 export const createInventory = async (data: any) => {
   try {
-    const response = await callPost("/api/inventory/", data);
+    const response = await callPost("/api/document-control/descriptions/", data);
     return response;
   } catch (error) {
     console.error("Create inventory failed:", error);
@@ -39,7 +39,7 @@ export const createInventory = async (data: any) => {
 
 export const updateInventory = async (id: string, data: any) => {
   try {
-    const response = await callPut(`/api/inventory/${id}/`, data);
+    const response = await callPut(`/api/document-control/descriptions/${id}/`, data);
     return response;
   } catch (error) {
     console.error("Update inventory failed:", error);
@@ -49,7 +49,7 @@ export const updateInventory = async (id: string, data: any) => {
 
 export const deleteInventory = async (id: number) => {
   try {
-    const response = await callDelete(`/api/inventory/${id}/`);
+    const response = await callDelete(`/api/document-control/descriptions/${id}/`);
     return response;
   } catch (error) {
     console.error("Delete inventory failed:", error);

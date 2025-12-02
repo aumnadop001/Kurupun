@@ -6,41 +6,70 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import Grid from '@mui/material/Grid';
+import Autocomplete from '@mui/material/Autocomplete';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '../../../hooks/useAuth';
 import { fetchInventoryById, createInventory, updateInventory } from '../../../apis/service/inventories';
-
+import { fetchMaster, fetchDescriptionsList } from '../../../apis/service/master';
 interface InventoryFormData {
-  document_registry: number | string;
-  order_criteria: string;
-  reorder_point: string;
-  safety_stock: string;
-  related_equipment: string;
-  remark: string;
-  doc_date_left: string;
-  evidence_left: string;
-  unit_left: string;
-  qty_left: number | string;
-  pending_receive_1: number | string;
-  pending_receive_2: number | string;
-  pending_receive_3: number | string;
-  pending_receive_4: number | string;
-  doc_date_right: string;
-  received_qty: number | string;
-  price_per_unit: string;
-  evidence_right: string;
-  demand_initial: number | string;
-  demand_replace: number | string;
-  issued_qty: number | string;
-  total_borrowed: number | string;
-  stock_balance: number | string;
-  signature: string;
-  class_id?: string;
-  des_id?: string;
-  des_name?: string;
-  gpsc_id?: string;
-  keyword?: string;
+  Des_id: number | string;
+  Des_name: string;
+  class_id: string;
+  class_name: string;
+  type_id: string;
+  type_name: string;
+  gpsc_id: string | null;
+  gpsc_name: string | null;
+  keyword: string | null;
+  item_id: string;
+}
+
+interface DescriptionDetail {
+  id: number;
+  class_id: string;
+  class_name: string;
+  type_id: string;
+  type_name: string;
+  Des_id: string;
+  Des_name: string;
+  gpsc_id: string | null;
+  gpsc_name: string | null;
+  keyword: string | null;
+  item_id: string;
+}
+
+interface PClass {
+  id: number;
+  class_id: string;
+  class_name: string;
+}
+
+interface PType {
+  id: number;
+  ptype_id: string;
+  ptype_name: string;
+  class_id: number;
+  class_name: string;
+}
+
+interface Description {
+  id: number;
+  Des_id: string;
+  Des_name: string;
+  class_id: string;
+  class_name: string;
+  type_id: string;
+  type_name: string;
+  gpsc_id: string | null;
+  gpsc_name: string | null;
+  keyword: string | null;
+  item_id: string;
+}
+
+interface GpsCode {
+  id: number;
+  gpsc_id: string;
+  gpsc_name: string;
 }
 
 const InventoryForm: React.FC = () => {
@@ -50,38 +79,31 @@ const InventoryForm: React.FC = () => {
   const isEditMode = Boolean(id);
 
   const [formData, setFormData] = useState<InventoryFormData>({
-    document_registry: '',
-    order_criteria: '',
-    reorder_point: '',
-    safety_stock: '',
-    related_equipment: '',
-    remark: '',
-    doc_date_left: '',
-    evidence_left: '',
-    unit_left: '',
-    qty_left: '',
-    pending_receive_1: '',
-    pending_receive_2: '',
-    pending_receive_3: '',
-    pending_receive_4: '',
-    doc_date_right: '',
-    received_qty: '',
-    price_per_unit: '',
-    evidence_right: '',
-    demand_initial: '',
-    demand_replace: '',
-    issued_qty: '',
-    total_borrowed: '',
-    stock_balance: '',
-    signature: '',
+    Des_id: '',
+    Des_name: '',
     class_id: '',
-    des_id: '',
-    des_name: '',
-    gpsc_id: '',
-    keyword: '',
+    class_name: '',
+    type_id: '',
+    type_name: '',
+    gpsc_id: null,
+    gpsc_name: null,
+    keyword: null,
+    item_id: '',
   });
 
+  const [descriptionDetail, setDescriptionDetail] = useState<DescriptionDetail | null>(null);
   const [loading, setLoading] = useState(false);
+
+  // Master data states
+  const [classes, setClasses] = useState<PClass[]>([]);
+  const [types, setTypes] = useState<PType[]>([]);
+  const [descriptions, setDescriptions] = useState<Description[]>([]);
+  const [gpsCodes, setGpsCodes] = useState<GpsCode[]>([]);
+
+  // Selected values
+  const [selectedClass, setSelectedClass] = useState<PClass | null>(null);
+  const [selectedType, setSelectedType] = useState<PType | null>(null);
+  const [selectedDescription, setSelectedDescription] = useState<Description | null>(null);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -89,46 +111,80 @@ const InventoryForm: React.FC = () => {
       return;
     }
 
+    loadMasterData();
+
     if (isEditMode && id) {
       loadInventoryData(id);
     }
   }, [isAuthenticated, isEditMode, id, navigate]);
 
+  // Load master data
+  const loadMasterData = async () => {
+    try {
+      const masterData = await fetchMaster();
+      if (masterData.results) {
+        setClasses(masterData.results.pClass || []);
+        setGpsCodes(masterData.results.gpscode || []);
+      }
+    } catch (error: any) {
+      console.error('Error loading master data:', error.message);
+      toast.error('เกิดข้อผิดพลาดในการโหลดข้อมูลหลัก');
+    }
+  };
+
+  // Load types when class changes
+  useEffect(() => {
+    if (selectedClass) {
+      loadTypes(selectedClass.id);
+    } else {
+      setTypes([]);
+      setSelectedType(null);
+    }
+  }, [selectedClass]);
+
+  // Load descriptions when type changes
+  useEffect(() => {
+    if (selectedType) {
+      loadDescriptions(selectedType.id);
+    } else {
+      setDescriptions([]);
+      setSelectedDescription(null);
+    }
+  }, [selectedType]);
+
+  const loadTypes = async (classId: number) => {
+    try {
+      const masterData = await fetchMaster();
+      if (masterData.results && masterData.results.ptype) {
+        const filteredTypes = masterData.results.ptype.filter(
+          (type: PType) => type.class_id === classId
+        );
+        setTypes(filteredTypes);
+      }
+    } catch (error) {
+      console.error('Error loading types:', error);
+    }
+  };
+
+  const loadDescriptions = async (typeId: number) => {
+    try {
+      const response = await fetchDescriptionsList({ type_id: typeId });
+      if (response.results) {
+        setDescriptions(response.results);
+      }
+    } catch (error) {
+      console.error('Error loading descriptions:', error);
+    }
+  };
+
   const loadInventoryData = async (inventoryId: string) => {
     try {
       setLoading(true);
       const data = await fetchInventoryById(inventoryId);
-      setFormData({
-        document_registry: data.document_registry || '',
-        order_criteria: data.order_criteria || '',
-        reorder_point: data.reorder_point || '',
-        safety_stock: data.safety_stock || '',
-        related_equipment: data.related_equipment || '',
-        remark: data.remark || '',
-        doc_date_left: data.doc_date_left || '',
-        evidence_left: data.evidence_left || '',
-        unit_left: data.unit_left || '',
-        qty_left: data.qty_left || '',
-        pending_receive_1: data.pending_receive_1 || '',
-        pending_receive_2: data.pending_receive_2 || '',
-        pending_receive_3: data.pending_receive_3 || '',
-        pending_receive_4: data.pending_receive_4 || '',
-        doc_date_right: data.doc_date_right || '',
-        received_qty: data.received_qty || '',
-        price_per_unit: data.price_per_unit || '',
-        evidence_right: data.evidence_right || '',
-        demand_initial: data.demand_initial || '',
-        demand_replace: data.demand_replace || '',
-        issued_qty: data.issued_qty || '',
-        total_borrowed: data.total_borrowed || '',
-        stock_balance: data.stock_balance || '',
-        signature: data.signature || '',
-        class_id: data.class_id || '',
-        des_id: data.des_id || '',
-        des_name: data.des_name || '',
-        gpsc_id: data.gpsc_id || '',
-        keyword: data.keyword || '',
-      });
+      console.log('data ->', data);
+
+      // Set description detail from nested serializer
+      setFormData(data);
     } catch (error) {
       console.error('Error loading inventory data:', error);
       toast.error('เกิดข้อผิดพลาดในการโหลดข้อมูล');
@@ -148,14 +204,24 @@ const InventoryForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!isEditMode && !selectedDescription) {
+      toast.error('กรุณาเลือกรายละเอียดพัสดุ');
+      return;
+    }
+
     try {
       setLoading(true);
 
+      const submitData = {
+        ...formData,
+        description: isEditMode ? formData : selectedDescription?.id,
+      };
+
       if (isEditMode && id) {
-        await updateInventory(id, formData);
+        await updateInventory(id, submitData);
         toast.success('แก้ไขข้อมูลสำเร็จ');
       } else {
-        await createInventory(formData);
+        await createInventory(submitData);
         toast.success('เพิ่มข้อมูลสำเร็จ');
       }
 
@@ -184,60 +250,133 @@ const InventoryForm: React.FC = () => {
         </Typography>
 
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
-          <Grid container spacing={3}>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <TextField
-                fullWidth
-                label="รหัสประเภทพัสดุ"
-                name="class_id"
-                value={formData.class_id}
-                onChange={handleChange}
-                size="small"
-              />
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <TextField
-                fullWidth
-                label="รหัสรายละเอียดพัสดุ"
-                name="des_id"
-                value={formData.des_id}
-                onChange={handleChange}
-                size="small"
-              />
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <TextField
-                fullWidth
-                label="ชื่อรายละเอียดพัสดุ"
-                name="des_name"
-                value={formData.des_name}
-                onChange={handleChange}
-                size="small"
-              />
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <TextField
-                fullWidth
-                label="รหัสพัสดุตาม กพร."
-                name="gpsc_id"
-                value={formData.gpsc_id}
-                onChange={handleChange}
-                size="small"
-              />
-            </Grid>
-            <Grid size={{ xs: 12 }}>
-              <TextField
-                fullWidth
-                label="คำค้นหา"
-                name="keyword"
-                value={formData.keyword}
-                onChange={handleChange}
-                size="small"
-                multiline
-                rows={3}
-              />
-            </Grid>
-          </Grid>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+            {/* Row 1 */}
+            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+              <Box sx={{ flex: '1 1 45%', minWidth: '250px' }}>
+                <TextField
+                  fullWidth
+                  label="รหัสรายละเอียด"
+                  name="Des_id"
+                  value={formData.Des_id}
+                  onChange={handleChange}
+
+                />
+              </Box>
+
+              <Box sx={{ flex: '1 1 45%', minWidth: '250px' }}>
+                <TextField
+                  fullWidth
+                  label="ชื่อรายละเอียด"
+                  name="Des_name"
+                  value={formData.Des_name}
+                  onChange={handleChange}
+
+                />
+              </Box>
+            </Box>
+
+            {/* Row 2 */}
+            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+              <Box sx={{ flex: '1 1 45%', minWidth: '250px' }}>
+                <TextField
+                  fullWidth
+                  label="รหัสหมวดหมู่"
+                  name="class_id"
+                  value={formData.class_id}
+                  onChange={handleChange}
+
+                />
+              </Box>
+
+              <Box sx={{ flex: '1 1 45%', minWidth: '250px' }}>
+                <TextField
+                  fullWidth
+                  label="ชื่อหมวดหมู่"
+                  name="class_name"
+                  value={formData.class_name}
+                  onChange={handleChange}
+
+                />
+              </Box>
+            </Box>
+
+            {/* Row 3 */}
+            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+              <Box sx={{ flex: '1 1 45%', minWidth: '250px' }}>
+                <TextField
+                  fullWidth
+                  label="รหัสประเภท"
+                  name="type_id"
+                  value={formData.type_id}
+                  onChange={handleChange}
+
+                />
+              </Box>
+
+              <Box sx={{ flex: '1 1 45%', minWidth: '250px' }}>
+                <TextField
+                  fullWidth
+                  label="ชื่อประเภท"
+                  name="type_name"
+                  value={formData.type_name}
+                  onChange={handleChange}
+
+                />
+              </Box>
+            </Box>
+
+            {/* Row 4 */}
+            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+              <Box sx={{ flex: '1 1 45%', minWidth: '250px' }}>
+                <TextField
+                  fullWidth
+                  label="รหัส GPSC"
+                  name="gpsc_id"
+                  value={formData.gpsc_id || ''}
+                  onChange={handleChange}
+
+                />
+              </Box>
+
+              <Box sx={{ flex: '1 1 45%', minWidth: '250px' }}>
+                <TextField
+                  fullWidth
+                  label="ชื่อ GPSC"
+                  name="gpsc_name"
+                  value={formData.gpsc_name || ''}
+                  onChange={handleChange}
+
+                />
+              </Box>
+            </Box>
+
+            {/* Row 5 */}
+            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+              <Box sx={{ flex: '1 1 45%', minWidth: '250px' }}>
+                <TextField
+                  fullWidth
+                  label="คำค้นหา"
+                  name="keyword"
+                  value={formData.keyword || ''}
+                  onChange={handleChange}
+
+                />
+              </Box>
+
+              <Box sx={{ flex: '1 1 45%', minWidth: '250px' }}>
+                <TextField
+                  fullWidth
+                  label="รหัสรายการ"
+                  name="item_id"
+                  value={formData.item_id}
+                  onChange={handleChange}
+                  required
+                  disabled={loading}
+                />
+              </Box>
+            </Box>
+          </Box>
 
           {/* ปุ่มควบคุม */}
           <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', mt: 4 }}>

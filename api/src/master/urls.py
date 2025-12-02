@@ -1,12 +1,12 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from src.master.views import MasterViewSet  # , export_inventory_excel
+from src.master.views import MasterViewSet, DescriptionViewSet
 
 router = DefaultRouter()
-router.register(r'master', MasterViewSet, basename='master')
-app_name = 'inventory'
+router.register(r"master", MasterViewSet, basename="master")
+router.register(r"descriptions", DescriptionViewSet, basename="description")
+app_name = "inventory"
 
 urlpatterns = [
-	path('', include(router.urls), name='master'),
-	# path('export-inventory/<int:document_registry_id>/', export_inventory_excel, name='export_inventory_excel'),
+    path("", include(router.urls), name="master"),
 ]
