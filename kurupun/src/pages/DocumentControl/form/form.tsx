@@ -403,7 +403,7 @@ const ItemForm: React.FC = () => {
                 <Autocomplete
                   fullWidth
                   options={descriptions}
-                  getOptionLabel={(option) => `${option.Des_id} - ${option.Des_name}`}
+                  getOptionLabel={(option) => `${option.Des_name}`}
                   value={descriptions.find((desc) => desc.id === formData.description) || null}
                   onChange={(event, newValue) => {
                     setFormData(prev => ({
