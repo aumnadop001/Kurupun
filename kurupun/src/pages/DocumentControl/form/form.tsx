@@ -403,7 +403,10 @@ const ItemForm: React.FC = () => {
                 <Autocomplete
                   fullWidth
                   options={descriptions}
-                  getOptionLabel={(option) => `${option.Des_name}`}
+                  getOptionLabel={(option) => `${option.Des_id} - ${option.Des_name}`}
+                  filterOptions={(options, state) =>
+                    options.filter(o => (`${o.Des_id} - ${o.Des_name}`).toLowerCase().includes(state.inputValue.toLowerCase()))
+                  }
                   value={descriptions.find((desc) => desc.id === formData.description) || null}
                   onChange={(event, newValue) => {
                     setFormData(prev => ({
