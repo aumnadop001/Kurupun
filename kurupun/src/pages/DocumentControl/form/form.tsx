@@ -403,11 +403,13 @@ const ItemForm: React.FC = () => {
                 <Autocomplete
                   fullWidth
                   options={descriptions}
-                  getOptionLabel={(option) => `${option.Des_id} - ${option.Des_name}`}
+                  getOptionLabel={(option: any) =>
+                    typeof option === 'string' ? option : `${option.Des_id} - ${option.Des_name}`
+                  }
                   filterOptions={(options, state) =>
                     options.filter(o => (`${o.Des_id} - ${o.Des_name}`).toLowerCase().includes(state.inputValue.toLowerCase()))
                   }
-                  value={descriptions.find((desc) => desc.id === formData.description) || null}
+                  value={descriptions.find((desc) => desc.id === Number(formData.description)) || null}
                   onChange={(event, newValue) => {
                     setFormData(prev => ({
                       ...prev,
@@ -423,7 +425,13 @@ const ItemForm: React.FC = () => {
                       placeholder="ค้นหารายการครุภัณฑ์..."
                     />
                   )}
-                  isOptionEqualToValue={(option, value) => option.id === value.id}
+                  isOptionEqualToValue={(option: any, value: any) => {
+                    if (value == null) return false;
+                    if (typeof value === 'string' || typeof value === 'number') {
+                      return option.id === Number(value);
+                    }
+                    return option.id === value.id;
+                  }}
                   noOptionsText="ไม่พบข้อมูล"
                 />
               </Grid>
