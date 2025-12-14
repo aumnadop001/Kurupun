@@ -8,6 +8,7 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
+import Autocomplete from '@mui/material/Autocomplete';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '../../../hooks/useAuth';
 import { fetchItemById, createItem, updateItem } from '../../../apis/service/documentControl';
@@ -399,25 +400,29 @@ const ItemForm: React.FC = () => {
           <form onSubmit={handleSubmit}>
             <Grid container spacing={3}>
               <Grid size={{ xs: 12 }}>
-                <TextField
-                  select
+                <Autocomplete
                   fullWidth
-                  label="รายการครุภัณฑ์"
-                  name="description"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  required
-                  size="small"
-                >
-                  <MenuItem value="">
-                    <em>-- เลือกรายการครุภัณฑ์ --</em>
-                  </MenuItem>
-                  {descriptions.map((desc) => (
-                    <MenuItem key={desc.id} value={desc.id}>
-                      {desc.Des_id} - {desc.Des_name}
-                    </MenuItem>
-                  ))}
-                </TextField>
+                  options={descriptions}
+                  getOptionLabel={(option) => `${option.Des_id} - ${option.Des_name}`}
+                  value={descriptions.find((desc) => desc.id === formData.description) || null}
+                  onChange={(event, newValue) => {
+                    setFormData(prev => ({
+                      ...prev,
+                      description: newValue ? newValue.id : ''
+                    }));
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="รายการครุภัณฑ์"
+                      required
+                      size="small"
+                      placeholder="ค้นหารายการครุภัณฑ์..."
+                    />
+                  )}
+                  isOptionEqualToValue={(option, value) => option.id === value.id}
+                  noOptionsText="ไม่พบข้อมูล"
+                />
               </Grid>
 
               <Grid size={{ xs: 12, sm: 6 }}>
