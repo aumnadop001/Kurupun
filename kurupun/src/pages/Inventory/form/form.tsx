@@ -203,10 +203,10 @@ const InventoryForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!isEditMode && !selectedDescription) {
-      toast.error('กรุณาเลือกรายละเอียดพัสดุ');
-      return;
-    }
+    // if (!isEditMode && !selectedDescription) {
+    //   toast.error('กรุณาเลือกรายละเอียดพัสดุ');
+    //   return;
+    // }
 
     try {
       setLoading(true);
