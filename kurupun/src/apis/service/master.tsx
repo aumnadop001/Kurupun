@@ -18,7 +18,7 @@ export const fetchMaster = async (params?: Params) => {
 
 export const fetchDescriptionsList = async (params?: any) => {
   try {
-    const response = await callGet("/api/master/descriptions/", params);
+    const response = await callGet("/api/descriptions/", params);
     return response;
   } catch (error) {
     console.error("Fetch descriptions failed:", error);

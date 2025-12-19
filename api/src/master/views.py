@@ -4,7 +4,7 @@ from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from src.master import models, serializers
 from rest_framework.pagination import PageNumberPagination
-
+import sys
 
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 100
@@ -41,9 +41,7 @@ class MasterViewSet(viewsets.ViewSet):
 class DescriptionViewSet(viewsets.ModelViewSet):
     """ViewSet for Description CRUD operations"""
 
-    queryset = models.Description.objects.select_related(
-        "class_id", "type_id", "gpsc_id"
-    ).all()
+    queryset = models.Description.objects.all()
     serializer_class = serializers.DescriptionSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [

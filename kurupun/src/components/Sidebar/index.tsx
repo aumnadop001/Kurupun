@@ -75,15 +75,15 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
   };
 
   const menuItems = [
-      {
-        text: 'บัญชีคุมพัสดุ',
-        icon: <DescriptionIcon />,
-        path: '/inventory',
-      },
     {
-      text: 'ทะเบียนคุมเอกสาร',
+      text: 'ทะเบียนเอกสาร',
       icon: <DescriptionIcon />,
-      path: '/'
+      path: '/',
+    },
+    {
+      text: 'ทะเบียนคุมพัสดุ',
+      icon: <DescriptionIcon />,
+      path: '/inventory',
     }
   ];
 
@@ -156,7 +156,17 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
       <Box sx={{ flexGrow: 1, overflowY: 'auto' }}>
         <List sx={{ px: 1, py: 2 }}>
           {menuItems.map((item) => {
-            const isActive = location.pathname === item.path;
+            let isActive = location.pathname === item.path;
+            // กำหนดเงื่อนไขการ active สำหรับ path ที่มี dynamic parameter
+
+            if (item.path === '/' && (location.pathname.startsWith('/documents/edit/') || location.pathname === '/documents/create')) {
+              isActive = true;
+            } else {
+              if (location.pathname.split('/')[1] === item.path.split('/')[1] && item.path !== '/') {
+                isActive = true;
+              }
+            }
+
             return (
               <ListItem key={item.text} disablePadding sx={{ mb: 0.5 }}>
                 <ListItemButton

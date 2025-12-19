@@ -16,7 +16,6 @@
     "@mui/material": "^7.3.5",
     "@mui/x-data-grid": "^8.17.0",
     "@reduxjs/toolkit": "^2.10.1",
-    "@rollup/rollup-linux-arm64-gnu": "^4.53.2",
     "axios": "^1.13.2",
     "formik": "^2.4.9",
     "moment-timezone": "^0.6.0",
@@ -32,9 +31,9 @@
     "scss": "^0.2.4",
     "yup": "^1.7.1"
   },
- "devDependencies": {
+  "devDependencies": {
     "@eslint/js": "^9.39.1",
-    "@types/node": "^24.10.0",
+    "@types/node": "^25.0.3",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
     "@vitejs/plugin-react": "^4.7.0",

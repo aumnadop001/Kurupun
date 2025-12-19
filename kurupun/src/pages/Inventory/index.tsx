@@ -1,101 +1,123 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router';
-
-import Container from '@mui/material/Container';
-import Paper from '@mui/material/Paper';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TablePagination from '@mui/material/TablePagination';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import MenuItem from '@mui/material/MenuItem';
-import Tooltip from '@mui/material/Tooltip';
-
-import { fetchInventory, deleteInventory } from '../../apis/service/inventories';
+import { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import moment from 'moment-timezone';
-import { Select } from '@mui/material';
-import { toast } from 'react-hot-toast';
-import ConfirmDialog from '../../components/ConfirmDialog';
+import toast from 'react-hot-toast';
+import {
+  Box,
+  Button,
+  TextField,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton,
+  Typography,
+  TablePagination,
+  Toolbar,
+  InputAdornment,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Chip,
+  CircularProgress,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+} from '@mui/material';
+import {
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+  Add as AddIcon,
+  Search as SearchIcon,
+} from '@mui/icons-material';
+import { fetchInventories, deleteInventory } from '../../apis/service/inventory';
+import { Inventory } from '../../types/inventory';
 
-// ตั้งค่า timezone และภาษา
-moment.tz.setDefault('Asia/Bangkok');
-moment.locale('th');
-
-interface InventoryRecordType {
-  id: number;
-  document_registry: number;
-  document_registry_display?: string;
-  order_criteria: string;
-  reorder_point: string;
-  safety_stock: string;
-  related_equipment: string;
-  remark: string;
-  doc_date_left: string;
-  evidence_left: string;
-  unit_left: string;
-  qty_left: number;
-  pending_receive_1: number;
-  pending_receive_2: number;
-  pending_receive_3: number;
-  pending_receive_4: number;
-  doc_date_right: string;
-  received_qty: number;
-  price_per_unit: string;
-  evidence_right: string;
-  demand_initial: number;
-  demand_replace: number;
-  issued_qty: number;
-  total_borrowed: number;
-  stock_balance: number;
-  signature: string;
-  created_at: string;
-  class_id?: string;
-  des_id?: string;
-  des_name?: string;
-  gpsc_id?: string;
-  keyword?: string;
-}
-
-interface InventoryRecordDataType {
-  count: number;
-  results: InventoryRecordType[];
-  next: string | null;
-  previous: string | null;
-}
-
-const Inventory: React.FC = () => {
-  const [data, setData] = useState<InventoryRecordDataType>({ count: 0, results: [], next: null, previous: null });
-  const [searchBy, setSearchBy] = useState<string>('document_registry');
+function Inventories() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { isAuthenticated } = useAuth();
+  const [inventories, setInventories] = useState<Inventory[]>([]);
+  const [loading, setLoading] = useState(false);
+  
+  // Get parameters from URL query
+  const documentIdParam = searchParams.get('document_id');
+  const searchParam = searchParams.get('search');
+  
+  const [searchTerm, setSearchTerm] = useState(searchParam || '');
+  const [requestTypeFilter, setRequestTypeFilter] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [confirmOpen, setConfirmOpen] = useState(false);
-  const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [totalCount, setTotalCount] = useState(0);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [selectedInventoryId, setSelectedInventoryId] = useState<number | null>(null);
 
-  const confirmDelete = async () => {
-    if (deleteId === null) return;
-
+  const loadInventories = async () => {
+    setLoading(true);
     try {
-      await deleteInventory(deleteId);
-      setData({ ...data, results: data.results.filter(item => item.id !== deleteId) });
-      toast.success('ลบข้อมูลสำเร็จ');
+      const params: any = {
+        page: page + 1,
+        page_size: rowsPerPage,
+        search: searchTerm,
+        ordering: '-request_date',
+      };
+      
+      if (requestTypeFilter) {
+        params.request_type = requestTypeFilter;
+      }
+
+      // Filter by document_id if provided in URL
+      if (documentIdParam) {
+        params.document_record = documentIdParam;
+      }
+
+      const response = await fetchInventories(params);
+      setInventories(response.results);
+      setTotalCount(response.count);
     } catch (error) {
-      console.error('Error deleting inventory record:', error);
-      toast.error('เกิดข้อผิดพลาดในการลบข้อมูล');
+      console.error('Error loading inventories:', error);
     } finally {
-      setConfirmOpen(false);
-      setDeleteId(null);
+      setLoading(false);
     }
   };
 
-  const handleChangePage = (_event: unknown, newPage: number) => {
+  // Update searchTerm when URL parameter changes
+  useEffect(() => {
+    if (searchParam) {
+      setSearchTerm(searchParam);
+    }
+  }, [searchParam]);
+
+  useEffect(() => {
+    loadInventories();
+  }, [page, rowsPerPage, requestTypeFilter, documentIdParam]);
+
+  const handleSearch = () => {
+    setPage(0);
+    loadInventories();
+  };
+
+  const handleSearchKeyPress = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
+  const handleResetSearch = () => {
+    setSearchTerm('');
+    setRequestTypeFilter('');
+    setPage(0);
+    // Clear URL parameters
+    navigate('/inventory');
+  };
+
+  const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
 
@@ -104,192 +126,215 @@ const Inventory: React.FC = () => {
     setPage(0);
   };
 
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const response = await fetchInventory({ page: page + 1, page_size: rowsPerPage });
-        setData(response);
-      } catch (error) {
-        console.error("Error fetching inventory records:", error);
-      }
-    };
-    loadData();
-  }, [page, rowsPerPage]);
+  const handleCreate = () => {
+    navigate('/inventory/create');
+  };
 
   const handleEdit = (id: number) => {
-    if (isAuthenticated) {
-      navigate(`/inventory/${id}`);
-    } else {
-      navigate('/login', { state: { from: `/inventory/${id}` } });
+    navigate(`/inventory/edit/${id}`);
+  };
+
+  const handleDeleteClick = (id: number) => {
+    setSelectedInventoryId(id);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (selectedInventoryId) {
+      try {
+        await deleteInventory(selectedInventoryId);
+        loadInventories();
+        toast.success('ลบข้อมูลเรียบร้อย');
+      } catch (error) {
+        console.error('Error deleting inventory:', error);
+        toast.error('เกิดข้อผิดพลาดในการลบข้อมูล');
+      }
     }
+    setDeleteDialogOpen(false);
+    setSelectedInventoryId(null);
   };
 
-  const handleDelete = async (id: number) => {
-    if (!isAuthenticated) {
-      navigate('/login');
-      return;
-    }
-    setDeleteId(id);
-    setConfirmOpen(true);
+  const handleDeleteCancel = () => {
+    setDeleteDialogOpen(false);
+    setSelectedInventoryId(null);
   };
 
-  const handleCreate = () => {
-    if (isAuthenticated) {
-      navigate("/inventory/create");
-    } else {
-      navigate('/login', { state: { from: '/inventory/create' } });
-    }
+  const formatDate = (dateString: string) => {
+    if (!dateString) return '-';
+    return new Date(dateString).toLocaleDateString('th-TH');
   };
 
-  const handleSearch = async (searchBy: string, searchValue: string) => {
-    const response = await fetchInventory({ page: page + 1, page_size: rowsPerPage, [searchBy]: searchValue });
-    setData(response);
+  const getRequestTypeLabel = (type: string) => {
+    return type === 'INITIAL' ? 'ขั้นต้น' : 'ทดแทน';
   };
 
+  const getRequestTypeColor = (type: string) => {
+    return type === 'INITIAL' ? 'primary' : 'secondary';
+  };
 
   return (
-    <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
-      <Box sx={{ mb: 3 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          บัญชีคุมพัสดุ
-        </Typography>
-        <Box sx={{ display: 'flex', gap: 2 }}>
-          <Button variant="contained" color="primary" onClick={handleCreate}>
-            {isAuthenticated ? 'เพิ่มบัญชีคุมพัสดุ' : 'เข้าสู่ระบบเพื่อเพิ่มบัญชีคุมพัสดุ'}
-          </Button>
-        </Box>
-      </Box>
-      <form onSubmit={(e) => {
-        e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        const searchValue = formData.get('searchValue') as string;
-        handleSearch(searchBy, searchValue);
-      }}>
-        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap', mb: 3 }}>
-          <Typography>ค้นหาโดย</Typography>
-          <Select
-            value={searchBy}
-            onChange={(e) => setSearchBy(e.target.value)}
-            sx={{ minWidth: 150 }}
-            size="small"
-          >
-            <MenuItem value="document_registry">รายการ (ทะเบียนเอกสาร)</MenuItem>
-            <MenuItem value="unit_left">หน่วย</MenuItem>
-            <MenuItem value="evidence_left">หลักฐานซ้าย</MenuItem>
-            <MenuItem value="evidence_right">หลักฐานขวา</MenuItem>
-          </Select>
-          <Button type='submit' variant="contained" color="primary">ค้นหา</Button>
-        </Box>
-      </form>
-      <TableContainer component={Paper} sx={{ height: 'calc(100vh - 300px)' }}>
-        <Table sx={{ minWidth: 650 }} aria-label="inventory record table">
-          <TableHead>
-            <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
-              <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-                #
-              </TableCell>
-              <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-                รหัสประเภทพัสดุ
-              </TableCell>
-              <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-                รหัสรายละเอียดพัสดุ
-              </TableCell>
-              <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-                ชื่อรายละเอียดพัสดุ
-              </TableCell>
-              <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-                รหัสพัสดุตาม กพร.
-              </TableCell>
-              <TableCell align="left" sx={{ fontWeight: 'bold' }}>
-                คำค้นหา
-              </TableCell>
-              {isAuthenticated && (
-                <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-                  จัดการ
-                </TableCell>
-              )}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {data.count === 0 ? (
-              <TableRow>
-                <TableCell colSpan={isAuthenticated ? 9 : 8} align="center">
-                  <Typography variant="body2" color="text.secondary">
-                    ไม่มีข้อมูล
-                  </Typography>
-                </TableCell>
-              </TableRow>
-            ) : (
-              data.results.map((row, index) => (
-                <TableRow
-                  key={row.id}
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                  hover
-                >
-                  <TableCell align="center">
-                    <Link to={`/inventory/${row.id}`} style={{ textDecoration: 'none', color: 'inherit', textDecorationLine: 'underline' }}>
-                      {index + 1 + page * rowsPerPage}
-                    </Link>
-                  </TableCell>
-                  <TableCell align="center">{row.class_id || '-'}</TableCell>
-                  <TableCell align="center">{row.des_id || '-'}</TableCell>
-                  <TableCell align="center">{row.des_name || '-'}</TableCell>
-                  <TableCell align="center">{row.gpsc_id || '-'}</TableCell>
-                  <TableCell align="left" sx={{ maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    <Tooltip title={row.keyword || '-'} arrow>
-                      <span>{row.keyword || '-'}</span>
-                    </Tooltip>
-                  </TableCell>
-                  {isAuthenticated && (
-                    <TableCell align="center">
-                      <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          size="small"
-                          onClick={() => handleEdit(row.id)}
-                        >
-                          แก้ไข
-                        </Button>
-                        <Button
-                          variant="outlined"
-                          color="error"
-                          size="small"
-                          onClick={() => handleDelete(row.id)}
-                        >
-                          ลบ
-                        </Button>
-                      </Box>
-                    </TableCell>
-                  )}
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25, { label: 'ทั้งหมด', value: -1 }]}
-          component="div"
-          count={data.count}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          labelRowsPerPage="แถวต่อหน้า:"
-          labelDisplayedRows={({ from, to, count }) =>
-            `${from}-${to} จาก ${count !== -1 ? count : `มากกว่า ${to}`}`
-          }
-        />
-      </TableContainer>
-      <ConfirmDialog
-        open={confirmOpen}
-        title="ยืนยันการลบ"
-        message="คุณแน่ใจหรือไม่ว่าต้องการลบข้อมูลนี้?"
-        onCancel={() => setConfirmOpen(false)}
-        onConfirm={confirmDelete}
-      />
-    </Container>
-  );
-};
+    <Box sx={{ p: 3 }}>
+      <Typography variant="h4" gutterBottom>
+        ทะเบียนคุมวัสดุ {documentIdParam && `(กรองตามเอกสาร #${documentIdParam})`}
+      </Typography>
 
-export default Inventory;
+      <Toolbar sx={{ pl: 0, pr: 0, mb: 2 }}>
+        <TextField
+          placeholder="ค้นหา: หลักฐาน, หน่วย, ลายมือชื่อ..."
+          variant="outlined"
+          size="small"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          onKeyPress={handleSearchKeyPress}
+          sx={{ flexGrow: 1, mr: 2 }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+        />
+        <FormControl size="small" sx={{ minWidth: 150, mr: 2 }}>
+          <InputLabel>ประเภท</InputLabel>
+          <Select
+            value={requestTypeFilter}
+            label="ประเภท"
+            onChange={(e) => setRequestTypeFilter(e.target.value)}
+          >
+            <MenuItem value="">ทั้งหมด</MenuItem>
+            <MenuItem value="INITIAL">ขั้นต้น</MenuItem>
+            <MenuItem value="REPLACEMENT">ทดแทน</MenuItem>
+          </Select>
+        </FormControl>
+        <Button
+          variant="outlined"
+          startIcon={<SearchIcon />}
+          onClick={handleSearch}
+          sx={{ mr: 1 }}
+        >
+          ค้นหา
+        </Button>
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={handleResetSearch}
+          sx={{ mr: 2 }}
+        >
+          Reset
+        </Button>
+        {isAuthenticated && (
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={handleCreate}
+          >
+            เพิ่มข้อมูล
+          </Button>
+        )}
+      </Toolbar>
+
+      {loading ? (
+        <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>วันที่ค้างรับ</TableCell>
+                  <TableCell>หลักฐาน</TableCell>
+                  <TableCell>วันที่ร้องขอ</TableCell>
+                  <TableCell>จำนวนที่รับ</TableCell>
+                  <TableCell>ราคาต่อหน่วย</TableCell>
+                  <TableCell>ประเภท</TableCell>
+                  <TableCell>จ่าย</TableCell>
+                  <TableCell>คงคลัง</TableCell>
+                  <TableCell align="center">จัดการ</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {inventories.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={9} align="center">
+                      ไม่พบข้อมูล
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  inventories.map((inventory) => (
+                    <TableRow key={inventory.id} hover>
+                      <TableCell>{formatDate(inventory.pending_date)}</TableCell>
+                      <TableCell>{inventory.pending_evidence}</TableCell>
+                      <TableCell>{formatDate(inventory.request_date)}</TableCell>
+                      <TableCell>{inventory.received_quantity}</TableCell>
+                      <TableCell>{parseFloat(inventory.unit_price).toFixed(2)}</TableCell>
+                      <TableCell>
+                        <Chip
+                          label={getRequestTypeLabel(inventory.request_type)}
+                          color={getRequestTypeColor(inventory.request_type)}
+                          size="small"
+                        />
+                      </TableCell>
+                      <TableCell>{inventory.issue_quantity}</TableCell>
+                      <TableCell>{inventory.stock_balance}</TableCell>
+                      <TableCell align="center">
+                        {isAuthenticated && (
+                          <>
+                            <Button variant='contained' startIcon={<EditIcon />} size='small' onClick={() => handleEdit(inventory.id!)} sx={{ mr: 1 }}>
+                              แก้ไข
+                            </Button>
+                            <Button variant='contained' color='error' startIcon={<DeleteIcon />} size='small' onClick={() => handleDeleteClick(inventory.id!)} >
+                              ลบ
+                            </Button>
+                          </>
+                        )}
+                        {!isAuthenticated && (
+                          <Typography variant="caption" color="text.secondary">
+                            ต้อง login เพื่อแก้ไข
+                          </Typography>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25, 50]}
+            component="div"
+            count={totalCount}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            labelRowsPerPage="แสดงต่อหน้า:"
+            labelDisplayedRows={({ from, to, count }) =>
+              `${from}-${to} จาก ${count !== -1 ? count : `มากกว่า ${to}`}`
+            }
+          />
+        </>
+      )}
+
+      <Dialog open={deleteDialogOpen} onClose={handleDeleteCancel}>
+        <DialogTitle>ยืนยันการลบ</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            คุณแน่ใจหรือไม่ว่าต้องการลบข้อมูลนี้?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel}>ยกเลิก</Button>
+          <Button onClick={handleDeleteConfirm} color="error" autoFocus>
+            ลบ
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
+  );
+}
+
+export default Inventories;

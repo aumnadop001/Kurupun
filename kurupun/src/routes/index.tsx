@@ -1,17 +1,12 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import LoginPage from '../pages/LoginPage';
-import RegisterPage from '../pages/Register';
-import DocumentRegistry from '../pages/DocumentRegistry';
-import FormDocumentRegistry from '../pages/DocumentRegistry/form';
-import InventoryRecord from '../pages/InventoryRecord';
-import FormInventoryRecord from '../pages/InventoryRecord/form';
-import Inventory from '../pages/Inventory';
-import FormInventory from '../pages/Inventory/form/form';
-import InventoryForm from '../pages/Inventory/form/form';
-import DocumentControl from '../pages/DocumentControl';
-import FormDocumentControl from '../pages/DocumentControl/form/form';
 import { RequireAuth } from '../hooks/useAuth';
+import LoginPage from '../pages/LoginPage';
+import Documents from '../pages/Document';
+import DocumentForm from '../pages/Document/form/form';
+import Inventories from '../pages/Inventory';
+import InventoryForm from '../pages/Inventory/form/form';
+import RegisterPage from '../pages/Register';
 import Loader from '../components/Loader';
 import SidebarLayout from '../components/Sidebar';
 
@@ -26,7 +21,7 @@ const Router: React.FC = () => {
             path="/inventory"
             element={
               <SidebarLayout>
-                <Inventory />
+                <Inventories />
               </SidebarLayout>
             }
           />
@@ -41,10 +36,10 @@ const Router: React.FC = () => {
             }
           />
           <Route
-            path="/inventory/:id"
+            path="/inventory/edit/:id"
             element={
               <SidebarLayout>
-                <FormInventory />
+                <InventoryForm />
               </SidebarLayout>
             }
           />
@@ -52,33 +47,25 @@ const Router: React.FC = () => {
             path="/"
             element={
               <SidebarLayout>
-                <DocumentControl />
+                <Documents />
               </SidebarLayout>
             }
           />
           <Route
-            path="/document-control"
-            element={
-              <SidebarLayout>
-                <DocumentControl />
-              </SidebarLayout>
-            }
-          />
-          <Route
-            path="/document-control/create"
+            path="/documents/create"
             element={
               <RequireAuth>
                 <SidebarLayout>
-                  <FormDocumentControl />
+                  <DocumentForm />
                 </SidebarLayout>
               </RequireAuth>
             }
           />
           <Route
-            path="/document-control/:id"
+            path="/documents/edit/:id"
             element={
               <SidebarLayout>
-                <FormDocumentControl />
+                <DocumentForm />
               </SidebarLayout>
             }
           />

@@ -1,386 +1,585 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router';
-import Container from '@mui/material/Container';
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import { toast } from 'react-hot-toast';
-import { useAuth } from '../../../hooks/useAuth';
-import { fetchInventoryById, createInventory, updateInventory } from '../../../apis/service/inventories';
-import { fetchMaster, fetchDescriptionsList } from '../../../apis/service/master';
-interface InventoryFormData {
-  Des_id: number | string;
-  Des_name: string;
-  class_id: string;
-  class_name: string;
-  type_id: string;
-  type_name: string;
-  gpsc_id: string | null;
-  gpsc_name: string | null;
-  keyword: string | null;
-  item_id: string;
-}
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  Paper,
+  Grid,
+  Divider,
+  CircularProgress,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  FormHelperText,
+} from '@mui/material';
+import { Save as SaveIcon, Cancel as CancelIcon } from '@mui/icons-material';
+import toast from 'react-hot-toast';
 
-interface DescriptionDetail {
-  id: number;
-  class_id: string;
-  class_name: string;
-  type_id: string;
-  type_name: string;
-  Des_id: string;
-  Des_name: string;
-  gpsc_id: string | null;
-  gpsc_name: string | null;
-  keyword: string | null;
-  item_id: string;
-}
+import {
+  createInventory,
+  updateInventory,
+  fetchInventoryById,
+} from '../../../apis/service/inventory';
+import { fetchDocumentRecords } from '../../../apis/service/documents';
+import { InventoryFormValues } from '../../../types/inventory';
+import { DocumentRecord } from '../../../types/document';
 
-interface PClass {
-  id: number;
-  class_id: string;
-  class_name: string;
-}
+const validationSchema = Yup.object({
+  pending_date: Yup.string().required('กรุณาเลือกวันที่ค้างรับ'),
+  pending_evidence: Yup.string().required('กรุณากรอกหลักฐาน'),
+  pending_unit: Yup.string().required('กรุณากรอกหน่วยนับ'),
+  pending_signature: Yup.string().required('กรุณากรอกลายมือชื่อ'),
+  request_date: Yup.string().required('กรุณาเลือกวันที่ร้องขอ'),
+  received_quantity: Yup.number()
+    .required('กรุณากรอกจำนวนที่รับ')
+    .min(0, 'จำนวนต้องไม่น้อยกว่า 0'),
+  unit_price: Yup.number()
+    .required('กรุณากรอกราคาต่อหน่วย')
+    .min(0, 'ราคาต้องไม่น้อยกว่า 0'),
+  request_evidence: Yup.string().required('กรุณากรอกหลักฐาน'),
+  request_type: Yup.string().required('กรุณาเลือกประเภท'),
+  issue_quantity: Yup.number()
+    .required('กรุณากรอกจำนวนที่จ่าย')
+    .min(0, 'จำนวนต้องไม่น้อยกว่า 0'),
+  total_borrowed: Yup.number()
+    .required('กรุณากรอกรวมยืม')
+    .min(0, 'จำนวนต้องไม่น้อยกว่า 0'),
+  stock_balance: Yup.number()
+    .required('กรุณากรอกคงคลัง')
+    .min(0, 'จำนวนต้องไม่น้อยกว่า 0'),
+  request_signature: Yup.string().required('กรุณากรอกลายมือชื่อ'),
+});
 
-interface PType {
-  id: number;
-  ptype_id: string;
-  ptype_name: string;
-  class_id: number;
-  class_name: string;
-}
-
-interface Description {
-  id: number;
-  Des_id: string;
-  Des_name: string;
-  class_id: string;
-  class_name: string;
-  type_id: string;
-  type_name: string;
-  gpsc_id: string | null;
-  gpsc_name: string | null;
-  keyword: string | null;
-  item_id: string;
-}
-
-interface GpsCode {
-  id: number;
-  gpsc_id: string;
-  gpsc_name: string;
-}
-
-const InventoryForm: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+function InventoryForm() {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { id } = useParams<{ id: string }>();
+  const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(false);
+  const [documentRecords, setDocumentRecords] = useState<DocumentRecord[]>([]);
+  const [previousStockBalance, setPreviousStockBalance] = useState<number>(0);
   const isEditMode = Boolean(id);
 
-  const [formData, setFormData] = useState<InventoryFormData>({
-    Des_id: '',
-    Des_name: '',
-    class_id: '',
-    class_name: '',
-    type_id: '',
-    type_name: '',
-    gpsc_id: null,
-    gpsc_name: null,
-    keyword: null,
-    item_id: '',
+  const formik = useFormik<InventoryFormValues>({
+    initialValues: {
+      document_record: '',
+      pending_date: '',
+      pending_evidence: '',
+      pending_unit: '',
+      pending_quantity: '',
+      pending_receive1: '',
+      pending_balance1: '',
+      pending_receive2: '',
+      pending_balance2: '',
+      pending_receive3: '',
+      pending_balance3: '',
+      pending_receive4: '',
+      pending_balance4: '',
+      pending_signature: '',
+      request_date: '',
+      received_quantity: '',
+      unit_price: '',
+      request_evidence: '',
+      request_type: '',
+      issue_quantity: '',
+      total_borrowed: '',
+      stock_balance: '',
+      request_signature: '',
+    },
+    validationSchema,
+    onSubmit: async (values) => {
+      setLoading(true);
+      try {
+        const payload = {
+          document_record: values.document_record ? parseInt(values.document_record) : null,
+          pending_date: values.pending_date,
+          pending_evidence: values.pending_evidence,
+          pending_unit: values.pending_unit,
+          pending_quantity: values.pending_quantity ? parseInt(values.pending_quantity) : null,
+          pending_receive1: values.pending_receive1 ? parseInt(values.pending_receive1) : null,
+          pending_balance1: values.pending_balance1 ? parseInt(values.pending_balance1) : null,
+          pending_receive2: values.pending_receive2 ? parseInt(values.pending_receive2) : null,
+          pending_balance2: values.pending_balance2 ? parseInt(values.pending_balance2) : null,
+          pending_receive3: values.pending_receive3 ? parseInt(values.pending_receive3) : null,
+          pending_balance3: values.pending_balance3 ? parseInt(values.pending_balance3) : null,
+          pending_receive4: values.pending_receive4 ? parseInt(values.pending_receive4) : null,
+          pending_balance4: values.pending_balance4 ? parseInt(values.pending_balance4) : null,
+          pending_signature: values.pending_signature,
+          request_date: values.request_date,
+          received_quantity: parseInt(values.received_quantity),
+          unit_price: parseFloat(values.unit_price),
+          request_evidence: values.request_evidence,
+          request_type: values.request_type,
+          issue_quantity: parseInt(values.issue_quantity),
+          total_borrowed: parseInt(values.total_borrowed),
+          stock_balance: parseInt(values.stock_balance),
+          request_signature: values.request_signature,
+        };
+
+        if (isEditMode) {
+          await updateInventory(parseInt(id!), payload);
+          toast.success('อัปเดตข้อมูลเรียบร้อย');
+        } else {
+          await createInventory(payload);
+          toast.success('บันทึกข้อมูลเรียบร้อย');
+        }
+        navigate('/inventories');
+      } catch (error) {
+        console.error('Error saving inventory:', error);
+        toast.error('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+      } finally {
+        setLoading(false);
+      }
+    },
   });
 
-  const [descriptionDetail, setDescriptionDetail] = useState<DescriptionDetail | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  // Master data states
-  const [classes, setClasses] = useState<PClass[]>([]);
-  const [types, setTypes] = useState<PType[]>([]);
-  const [descriptions, setDescriptions] = useState<Description[]>([]);
-  const [gpsCodes, setGpsCodes] = useState<GpsCode[]>([]);
-
-  // Selected values
-  const [selectedClass, setSelectedClass] = useState<PClass | null>(null);
-  const [selectedType, setSelectedType] = useState<PType | null>(null);
-  const [selectedDescription, setSelectedDescription] = useState<Description | null>(null);
-
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/login');
-      return;
+    loadDocumentRecords();
+    if (isEditMode) {
+      loadInventoryData();
     }
+  }, [id]);
 
-    loadMasterData();
+  // Auto-calculate stock balance
+  useEffect(() => {
+    const received = parseFloat(formik.values.received_quantity) || 0;
+    const issued = parseFloat(formik.values.issue_quantity) || 0;
+    const newBalance = previousStockBalance + received - issued;
 
-    if (isEditMode && id) {
-      loadInventoryData(id);
+    // Only update if the calculated value is different
+    if (newBalance.toString() !== formik.values.stock_balance) {
+      formik.setFieldValue('stock_balance', newBalance.toString());
     }
-  }, [isAuthenticated, isEditMode, id, navigate]);
+  }, [formik.values.received_quantity, formik.values.issue_quantity, previousStockBalance]);
 
-  // Load master data
-  const loadMasterData = async () => {
+  const loadDocumentRecords = async () => {
     try {
-      const masterData = await fetchMaster();
-      if (masterData.results) {
-        setClasses(masterData.results.pClass || []);
-        setGpsCodes(masterData.results.gpscode || []);
-      }
-    } catch (error: any) {
-      console.error('Error loading master data:', error.message);
-      toast.error('เกิดข้อผิดพลาดในการโหลดข้อมูลหลัก');
-    }
-  };
-
-  // Load types when class changes
-  useEffect(() => {
-    if (selectedClass) {
-      loadTypes(selectedClass.id);
-    } else {
-      setTypes([]);
-      setSelectedType(null);
-    }
-  }, [selectedClass]);
-
-  // Load descriptions when type changes
-  useEffect(() => {
-    if (selectedType) {
-      loadDescriptions(selectedType.id);
-    } else {
-      setDescriptions([]);
-      setSelectedDescription(null);
-    }
-  }, [selectedType]);
-
-  const loadTypes = async (classId: number) => {
-    try {
-      const masterData = await fetchMaster();
-      if (masterData.results && masterData.results.ptype) {
-        const filteredTypes = masterData.results.ptype.filter(
-          (type: PType) => type.class_id === classId
-        );
-        setTypes(filteredTypes);
-      }
+      const response = await fetchDocumentRecords({ page_size: 1000 });
+      setDocumentRecords(response.results);
     } catch (error) {
-      console.error('Error loading types:', error);
+      console.error('Error loading document records:', error);
     }
   };
 
-  const loadDescriptions = async (typeId: number) => {
+  const loadInventoryData = async () => {
+    setInitialLoading(true);
     try {
-      const response = await fetchDescriptionsList({ type_id: typeId });
-      if (response.results) {
-        setDescriptions(response.results);
-      }
-    } catch (error) {
-      console.error('Error loading descriptions:', error);
-    }
-  };
-
-  const loadInventoryData = async (inventoryId: string) => {
-    try {
-      setLoading(true);
-      const data = await fetchInventoryById(inventoryId);
-      console.log('data ->', data);
-
-      // Set description detail from nested serializer
-      setFormData(data);
+      const data = await fetchInventoryById(parseInt(id!));
+      formik.setValues({
+        document_record: data.document_record?.toString() || '',
+        pending_date: data.pending_date || '',
+        pending_evidence: data.pending_evidence || '',
+        pending_unit: data.pending_unit || '',
+        pending_quantity: data.pending_quantity?.toString() || '',
+        pending_receive1: data.pending_receive1?.toString() || '',
+        pending_balance1: data.pending_balance1?.toString() || '',
+        pending_receive2: data.pending_receive2?.toString() || '',
+        pending_balance2: data.pending_balance2?.toString() || '',
+        pending_receive3: data.pending_receive3?.toString() || '',
+        pending_balance3: data.pending_balance3?.toString() || '',
+        pending_receive4: data.pending_receive4?.toString() || '',
+        pending_balance4: data.pending_balance4?.toString() || '',
+        pending_signature: data.pending_signature || '',
+        request_date: data.request_date || '',
+        received_quantity: data.received_quantity?.toString() || '',
+        unit_price: data.unit_price?.toString() || '',
+        request_evidence: data.request_evidence || '',
+        request_type: data.request_type || '',
+        issue_quantity: data.issue_quantity?.toString() || '',
+        total_borrowed: data.total_borrowed?.toString() || '',
+        stock_balance: data.stock_balance?.toString() || '',
+        request_signature: data.request_signature || '',
+      });
     } catch (error) {
       console.error('Error loading inventory data:', error);
-      toast.error('เกิดข้อผิดพลาดในการโหลดข้อมูล');
+      alert('เกิดข้อผิดพลาดในการโหลดข้อมูล');
     } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // if (!isEditMode && !selectedDescription) {
-    //   toast.error('กรุณาเลือกรายละเอียดพัสดุ');
-    //   return;
-    // }
-
-    try {
-      setLoading(true);
-
-      const submitData = {
-        ...formData,
-        description: isEditMode ? formData : selectedDescription?.id,
-      };
-
-      if (isEditMode && id) {
-        await updateInventory(id, submitData);
-        toast.success('แก้ไขข้อมูลสำเร็จ');
-      } else {
-        await createInventory(submitData);
-        toast.success('เพิ่มข้อมูลสำเร็จ');
-      }
-
-      navigate('/inventory');
-    } catch (error) {
-      console.error('Error saving inventory:', error);
-      toast.error('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
-    } finally {
-      setLoading(false);
+      setInitialLoading(false);
     }
   };
 
   const handleCancel = () => {
-    navigate('/inventory');
+    navigate('/inventories');
   };
 
-  if (!isAuthenticated) {
-    return null;
+  if (initialLoading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+        <CircularProgress />
+      </Box>
+    );
   }
 
   return (
-    <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
-      <Paper sx={{ p: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          {isEditMode ? 'แก้ไขบัญชีคุมพัสดุ' : 'เพิ่มบัญชีคุมพัสดุ'}
-        </Typography>
+    <Box sx={{ p: 3 }}>
+      <Typography variant="h4" gutterBottom>
+        {isEditMode ? 'แก้ไขทะเบียนคุมวัสดุ' : 'เพิ่มทะเบียนคุมวัสดุ'}
+      </Typography>
 
-        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-            {/* Row 1 */}
-            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-              <Box sx={{ flex: '1 1 45%', minWidth: '250px' }}>
-                <TextField
-                  fullWidth
-                  label="รหัสรายละเอียด"
-                  name="Des_id"
-                  value={formData.Des_id}
-                  onChange={handleChange}
+      <Paper sx={{ p: 3, mt: 3 }}>
+        <form onSubmit={formik.handleSubmit}>
+          <Typography variant="h6" gutterBottom>
+            เชื่อมโยงกับเอกสาร
+          </Typography>
+          <Grid container spacing={2}>
+            <Grid size={{ xs: 12 }} >
+              <FormControl
+                fullWidth
+                error={formik.touched.document_record && Boolean(formik.errors.document_record)}
+              >
+                <FormControl fullWidth size="small">
+                  <InputLabel id="document_record-label">
+                    ทะเบียนเอกสาร
+                  </InputLabel>
 
-                />
-              </Box>
+                  <Select
+                    labelId="document_record-label"
+                    id="document_record"
+                    name="document_record"
+                    value={formik.values.document_record}
+                    label="ทะเบียนเอกสาร"
+                    onChange={formik.handleChange}
+                  >
+                    <MenuItem value="">ไม่เชื่อมโยง</MenuItem>
+                    {documentRecords.map((doc) => (
+                      <MenuItem key={doc.id} value={doc.id}>
+                        {doc.registration_number} - {doc.first_item}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
 
-              <Box sx={{ flex: '1 1 45%', minWidth: '250px' }}>
-                <TextField
-                  fullWidth
-                  label="ชื่อรายละเอียด"
-                  name="Des_name"
-                  value={formData.Des_name}
-                  onChange={handleChange}
+                {formik.touched.document_record && formik.errors.document_record && (
+                  <FormHelperText>{formik.errors.document_record}</FormHelperText>
+                )}
+              </FormControl>
+            </Grid>
+          </Grid>
 
-                />
-              </Box>
-            </Box>
+          <Divider sx={{ my: 3 }} />
 
-            {/* Row 2 */}
-            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-              <Box sx={{ flex: '1 1 45%', minWidth: '250px' }}>
-                <TextField
-                  fullWidth
-                  label="รหัสหมวดหมู่"
-                  name="class_id"
-                  value={formData.class_id}
-                  onChange={handleChange}
+          <Typography variant="h6" gutterBottom>
+            ค้างรับ และ ค้างจ่าย
+          </Typography>
+          <Grid container spacing={2}>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+              <TextField
+                fullWidth
+                id="pending_date"
+                name="pending_date"
+                label="วันที่ *"
+                type="date"
+                InputLabelProps={{ shrink: true }}
+                value={formik.values.pending_date}
+                onChange={formik.handleChange}
+                error={formik.touched.pending_date && Boolean(formik.errors.pending_date)}
+                helperText={formik.touched.pending_date && formik.errors.pending_date}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+              <TextField
+                fullWidth
+                id="pending_evidence"
+                name="pending_evidence"
+                label="หลักฐาน *"
+                value={formik.values.pending_evidence}
+                onChange={formik.handleChange}
+                error={formik.touched.pending_evidence && Boolean(formik.errors.pending_evidence)}
+                helperText={formik.touched.pending_evidence && formik.errors.pending_evidence}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+              <TextField
+                fullWidth
+                id="pending_unit"
+                name="pending_unit"
+                label="หน่วยนับ *"
+                value={formik.values.pending_unit}
+                onChange={formik.handleChange}
+                error={formik.touched.pending_unit && Boolean(formik.errors.pending_unit)}
+                helperText={formik.touched.pending_unit && formik.errors.pending_unit}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+              <TextField
+                fullWidth
+                id="pending_quantity"
+                name="pending_quantity"
+                label="จำนวน"
+                type="number"
+                value={formik.values.pending_quantity}
+                onChange={formik.handleChange}
+              />
+            </Grid>
+          </Grid>
 
-                />
-              </Box>
+          <Typography variant="subtitle2" sx={{ mt: 2, mb: 1 }}>
+            รับ/ค้าง (4 รอบ)
+          </Typography>
+          <Grid container spacing={2}>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+              <TextField
+                fullWidth
+                id="pending_receive1"
+                name="pending_receive1"
+                label="รับ 1"
+                type="number"
+                value={formik.values.pending_receive1}
+                onChange={formik.handleChange}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+              <TextField
+                fullWidth
+                id="pending_balance1"
+                name="pending_balance1"
+                label="ค้าง 1"
+                type="number"
+                value={formik.values.pending_balance1}
+                onChange={formik.handleChange}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+              <TextField
+                fullWidth
+                id="pending_receive2"
+                name="pending_receive2"
+                label="รับ 2"
+                type="number"
+                value={formik.values.pending_receive2}
+                onChange={formik.handleChange}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+              <TextField
+                fullWidth
+                id="pending_balance2"
+                name="pending_balance2"
+                label="ค้าง 2"
+                type="number"
+                value={formik.values.pending_balance2}
+                onChange={formik.handleChange}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+              <TextField
+                fullWidth
+                id="pending_receive3"
+                name="pending_receive3"
+                label="รับ 3"
+                type="number"
+                value={formik.values.pending_receive3}
+                onChange={formik.handleChange}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+              <TextField
+                fullWidth
+                id="pending_balance3"
+                name="pending_balance3"
+                label="ค้าง 3"
+                type="number"
+                value={formik.values.pending_balance3}
+                onChange={formik.handleChange}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+              <TextField
+                fullWidth
+                id="pending_receive4"
+                name="pending_receive4"
+                label="รับ 4"
+                type="number"
+                value={formik.values.pending_receive4}
+                onChange={formik.handleChange}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+              <TextField
+                fullWidth
+                id="pending_balance4"
+                name="pending_balance4"
+                label="ค้าง 4"
+                type="number"
+                value={formik.values.pending_balance4}
+                onChange={formik.handleChange}
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                fullWidth
+                id="pending_signature"
+                name="pending_signature"
+                label="ลายมือชื่อ *"
+                value={formik.values.pending_signature}
+                onChange={formik.handleChange}
+                error={formik.touched.pending_signature && Boolean(formik.errors.pending_signature)}
+                helperText={formik.touched.pending_signature && formik.errors.pending_signature}
+              />
+            </Grid>
+          </Grid>
 
-              <Box sx={{ flex: '1 1 45%', minWidth: '250px' }}>
-                <TextField
-                  fullWidth
-                  label="ชื่อหมวดหมู่"
-                  name="class_name"
-                  value={formData.class_name}
-                  onChange={handleChange}
+          <Divider sx={{ my: 3 }} />
 
-                />
-              </Box>
-            </Box>
+          <Typography variant="h6" gutterBottom>
+            ความต้องการรับและจ่าย
+          </Typography>
+          <Grid container spacing={2}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+              <TextField
+                fullWidth
+                id="request_date"
+                name="request_date"
+                label="วันที่ *"
+                type="date"
+                InputLabelProps={{ shrink: true }}
+                value={formik.values.request_date}
+                onChange={formik.handleChange}
+                error={formik.touched.request_date && Boolean(formik.errors.request_date)}
+                helperText={formik.touched.request_date && formik.errors.request_date}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+              <TextField
+                fullWidth
+                id="received_quantity"
+                name="received_quantity"
+                label="จำนวนที่รับ *"
+                type="number"
+                value={formik.values.received_quantity}
+                onChange={formik.handleChange}
+                error={formik.touched.received_quantity && Boolean(formik.errors.received_quantity)}
+                helperText={formik.touched.received_quantity && formik.errors.received_quantity}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+              <TextField
+                fullWidth
+                id="unit_price"
+                name="unit_price"
+                label="ราคาต่อหน่วย *"
+                type="number"
+                inputProps={{ step: '0.01' }}
+                value={formik.values.unit_price}
+                onChange={formik.handleChange}
+                error={formik.touched.unit_price && Boolean(formik.errors.unit_price)}
+                helperText={formik.touched.unit_price && formik.errors.unit_price}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+              <TextField
+                fullWidth
+                label="คงคลังก่อนหน้า"
+                type="number"
+                value={previousStockBalance}
+                onChange={(e) => setPreviousStockBalance(parseFloat(e.target.value) || 0)}
+                helperText="ยอดคงคลังก่อนทำธุรกรรมนี้"
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <TextField
+                fullWidth
+                id="request_evidence"
+                name="request_evidence"
+                label="หลักฐาน *"
+                value={formik.values.request_evidence}
+                onChange={formik.handleChange}
+                error={formik.touched.request_evidence && Boolean(formik.errors.request_evidence)}
+                helperText={formik.touched.request_evidence && formik.errors.request_evidence}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <FormControl
+                fullWidth
+                size='small'
+                error={formik.touched.request_type && Boolean(formik.errors.request_type)}
+              >
+                <InputLabel>ประเภท *</InputLabel>
+                <Select
+                  id="request_type"
+                  name="request_type"
 
-            {/* Row 3 */}
-            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-              <Box sx={{ flex: '1 1 45%', minWidth: '250px' }}>
-                <TextField
-                  fullWidth
-                  label="รหัสประเภท"
-                  name="type_id"
-                  value={formData.type_id}
-                  onChange={handleChange}
+                  value={formik.values.request_type}
+                  label="ประเภท *"
+                  onChange={formik.handleChange}
+                >
+                  <MenuItem value="INITIAL">ขั้นต้น</MenuItem>
+                  <MenuItem value="REPLACEMENT">ทดแทน</MenuItem>
+                </Select>
+                {formik.touched.request_type && formik.errors.request_type && (
+                  <FormHelperText>{formik.errors.request_type}</FormHelperText>
+                )}
+              </FormControl>
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+              <TextField
+                fullWidth
+                id="issue_quantity"
+                name="issue_quantity"
+                label="จ่าย *"
+                type="number"
+                value={formik.values.issue_quantity}
+                onChange={formik.handleChange}
+                error={formik.touched.issue_quantity && Boolean(formik.errors.issue_quantity)}
+                helperText={formik.touched.issue_quantity && formik.errors.issue_quantity}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+              <TextField
+                fullWidth
+                id="total_borrowed"
+                name="total_borrowed"
+                label="รวมยืม *"
+                type="number"
+                value={formik.values.total_borrowed}
+                onChange={formik.handleChange}
+                error={formik.touched.total_borrowed && Boolean(formik.errors.total_borrowed)}
+                helperText={formik.touched.total_borrowed && formik.errors.total_borrowed}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+              <TextField
+                fullWidth
+                id="stock_balance"
+                name="stock_balance"
+                label="คงคลัง *"
+                type="number"
+                value={formik.values.stock_balance}
+                onChange={formik.handleChange}
+                error={formik.touched.stock_balance && Boolean(formik.errors.stock_balance)}
+                helperText={formik.touched.stock_balance && formik.errors.stock_balance}
+                InputProps={{
+                  readOnly: true,
+                }}
+                sx={{
+                  '& .MuiInputBase-input': {
+                    backgroundColor: '#f5f5f5',
+                  },
+                }}
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                fullWidth
+                id="request_signature"
+                name="request_signature"
+                label="ลายมือชื่อ *"
+                value={formik.values.request_signature}
+                onChange={formik.handleChange}
+                error={formik.touched.request_signature && Boolean(formik.errors.request_signature)}
+                helperText={formik.touched.request_signature && formik.errors.request_signature}
+              />
+            </Grid>
+          </Grid>
 
-                />
-              </Box>
-
-              <Box sx={{ flex: '1 1 45%', minWidth: '250px' }}>
-                <TextField
-                  fullWidth
-                  label="ชื่อประเภท"
-                  name="type_name"
-                  value={formData.type_name}
-                  onChange={handleChange}
-
-                />
-              </Box>
-            </Box>
-
-            {/* Row 4 */}
-            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-              <Box sx={{ flex: '1 1 45%', minWidth: '250px' }}>
-                <TextField
-                  fullWidth
-                  label="รหัส GPSC"
-                  name="gpsc_id"
-                  value={formData.gpsc_id || ''}
-                  onChange={handleChange}
-
-                />
-              </Box>
-
-              <Box sx={{ flex: '1 1 45%', minWidth: '250px' }}>
-                <TextField
-                  fullWidth
-                  label="ชื่อ GPSC"
-                  name="gpsc_name"
-                  value={formData.gpsc_name || ''}
-                  onChange={handleChange}
-
-                />
-              </Box>
-            </Box>
-
-            {/* Row 5 */}
-            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-              <Box sx={{ flex: '1 1 45%', minWidth: '250px' }}>
-                <TextField
-                  fullWidth
-                  label="คำค้นหา"
-                  name="keyword"
-                  value={formData.keyword || ''}
-                  onChange={handleChange}
-
-                />
-              </Box>
-
-              <Box sx={{ flex: '1 1 45%', minWidth: '250px' }}>
-                <TextField
-                  fullWidth
-                  label="รหัสรายการ"
-                  name="item_id"
-                  value={formData.item_id}
-                  onChange={handleChange}
-                  required
-                  disabled={loading}
-                />
-              </Box>
-            </Box>
-          </Box>
-
-          {/* ปุ่มควบคุม */}
-          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', mt: 4 }}>
+          <Box sx={{ mt: 3, display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
             <Button
               variant="outlined"
+              startIcon={<CancelIcon />}
               onClick={handleCancel}
               disabled={loading}
             >
@@ -389,16 +588,16 @@ const InventoryForm: React.FC = () => {
             <Button
               type="submit"
               variant="contained"
-              color="primary"
+              startIcon={loading ? <CircularProgress size={20} /> : <SaveIcon />}
               disabled={loading}
             >
-              {loading ? 'กำลังบันทึก...' : isEditMode ? 'บันทึกการแก้ไข' : 'เพิ่มข้อมูล'}
+              {loading ? 'กำลังบันทึก...' : 'บันทึก'}
             </Button>
           </Box>
-        </Box>
+        </form>
       </Paper>
-    </Container>
+    </Box>
   );
-};
+}
 
 export default InventoryForm;

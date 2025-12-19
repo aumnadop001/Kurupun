@@ -20,4 +20,3 @@ admin.site.register(pClass)
 admin.site.register(gpscode)
 admin.site.register(invoiceType)
 admin.site.register(Description, DescriptionAdmin)
-

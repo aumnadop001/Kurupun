@@ -20,6 +20,12 @@ const theme = createTheme({
       light: '#8b9aff',
       dark: '#5568d3',
     },
+    error: {
+      main: '#e74c3c',       // Soft red for errors
+      light: '#ff7665',
+      dark: '#b22a1a',
+      contrastText: '#ffffff',
+    },
     background: {
       default: '#f8f9fc',    // Very light purple-tinted background
       paper: '#FFFFFF',
