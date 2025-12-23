@@ -83,3 +83,24 @@ export const exportDocumentRecordToExcel = async (id: number): Promise<Blob> => 
     throw error;
   }
 };
+
+export const getNextRegisterNo = async (date: string): Promise<string> => {
+  try {
+    const response = await callGet(`/api/documents/document-records/next-register-no/`, { date });
+    return response.registerNo;
+  } catch (error) {
+    console.error("Get next register number failed:", error);
+    throw error;
+  }
+};
+
+export const getTotalStockBalance = async (documentRecordId: number, beforeId?: number): Promise<{ total_stock_balance: number }> => {
+  try {
+    const params = beforeId ? { before_id: beforeId.toString() } : {};
+    const response = await callGet(`/api/documents/document-records/${documentRecordId}/total-stock-balance/`, params);
+    return response;
+  } catch (error) {
+    console.error("Get total stock balance failed:", error);
+    throw error;
+  }
+};

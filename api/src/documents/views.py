@@ -66,6 +66,41 @@ class DocumentRecordViewSet(viewsets.ModelViewSet):
     ]
     ordering = ["-registration_date"]  # Default ordering
 
+    @action(detail=False, methods=["get"], url_path="next-register-no")
+    def next_register_no(self, request):
+        """Generate next register number based on date"""
+        date_str = request.query_params.get('date')
+        if not date_str:
+            return Response({'error': 'Date parameter is required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            # แปลงวันที่จาก YYYY-MM-DD เป็นปี พ.ศ. 2 หลัก
+            from datetime import datetime
+            date_obj = datetime.strptime(date_str, '%Y-%m-%d')
+            year_ad = date_obj.year
+            year_be = year_ad + 543
+            year_suffix = str(year_be)[-2:]  # เอา 2 หลักสุดท้าย เช่น 2568 -> 68
+            
+            # ดึงเลขทะเบียนล่าสุดของปีนี้
+            latest = DocumentRecord.objects.filter(
+                registerNo__endswith=f'-{year_suffix}'
+            ).order_by('-registerNo').first()
+            
+            if latest and latest.registerNo:
+                # แยกเลขลำดับออกมา (0001 จาก 0001-68)
+                try:
+                    number = int(latest.registerNo.split('-')[0])
+                    next_number = number + 1
+                except (ValueError, IndexError):
+                    next_number = 1
+            else:
+                next_number = 1
+            
+            register_no = f"{next_number:04d}-{year_suffix}"
+            return Response({'registerNo': register_no})
+        except ValueError:
+            return Response({'error': 'Invalid date format. Use YYYY-MM-DD'}, status=status.HTTP_400_BAD_REQUEST)
+    
     @action(detail=True, methods=["get"])
     def inventories(self, request, pk=None):
         """Get all inventories for a specific document record"""
@@ -73,6 +108,28 @@ class DocumentRecordViewSet(viewsets.ModelViewSet):
         inventories = document_record.inventories.all()
         serializer = InventorySerializer(inventories, many=True)
         return Response(serializer.data)
+
+    @action(detail=True, methods=["get"], url_path="total-stock-balance")
+    def total_stock_balance(self, request, pk=None):
+        """Get stock balance from the latest inventory record before the specified one"""
+        document_record = self.get_object()
+        before_id = request.query_params.get('before_id')  # id ของ record ปัจจุบัน (ถ้ามี)
+        
+        queryset = Inventory.objects.filter(document_record=document_record)
+        
+        # ถ้ามี before_id ให้หาคงคลังจากรายการที่มี id น้อยกว่า (สร้างก่อน)
+        if before_id:
+            queryset = queryset.filter(id__lt=int(before_id))
+        
+        # เรียงตาม id แบบ descending เพื่อหารายการล่าสุด
+        latest_inventory = queryset.order_by('-id').first()
+        
+        if latest_inventory:
+            total_stock_balance = latest_inventory.stock_balance or 0
+        else:
+            total_stock_balance = 0
+        
+        return Response({'total_stock_balance': total_stock_balance})
 
     @action(detail=True, methods=["get"], url_path="export-excel")
     def export_excel(self, request, pk=None):
@@ -125,3 +182,23 @@ class InventoryViewSet(viewsets.ModelViewSet):
         "unit_price",
     ]
     ordering = ["-request_date"]  # Default ordering
+
+    @action(detail=False, methods=["get"], url_path="latest-stock-balance")
+    def latest_stock_balance(self, request):
+        """Get latest stock balance for a specific document record"""
+        document_record_id = request.query_params.get('document_record')
+        if not document_record_id:
+            return Response({'stock_balance': 0})
+        
+        try:
+            # ดึง inventory ล่าสุดของ document_record นี้
+            latest_inventory = Inventory.objects.filter(
+                document_record_id=document_record_id
+            ).order_by('-request_date', '-id').first()
+            
+            if latest_inventory:
+                return Response({'stock_balance': latest_inventory.stock_balance or 0})
+            else:
+                return Response({'stock_balance': 0})
+        except Exception as e:
+            return Response({'error': str(e), 'stock_balance': 0}, status=status.HTTP_400_BAD_REQUEST)

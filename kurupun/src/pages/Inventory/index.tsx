@@ -251,6 +251,7 @@ function Inventories() {
                   <TableCell>ราคาต่อหน่วย</TableCell>
                   <TableCell>ประเภท</TableCell>
                   <TableCell>จ่าย</TableCell>
+                  <TableCell>รวมยืม</TableCell>
                   <TableCell>คงคลัง</TableCell>
                   <TableCell align="center">จัดการ</TableCell>
                 </TableRow>
@@ -278,6 +279,7 @@ function Inventories() {
                         />
                       </TableCell>
                       <TableCell>{inventory.issue_quantity}</TableCell>
+                      <TableCell>{inventory.total_borrowed}</TableCell>
                       <TableCell>{inventory.stock_balance}</TableCell>
                       <TableCell align="center">
                         {isAuthenticated && (

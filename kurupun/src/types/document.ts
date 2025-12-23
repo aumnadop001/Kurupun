@@ -1,5 +1,6 @@
 export interface DocumentRecord {
   id?: number;
+  registerNo?: string;
   registration_number: string;
   registration_date: string;
   document_type: string;
@@ -24,6 +25,7 @@ export interface DocumentRecord {
 }
 
 export interface DocumentRecordFormValues {
+  registerNo: string;
   registration_number: string;
   registration_date: string;
   document_type: string;

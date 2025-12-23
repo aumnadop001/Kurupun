@@ -25,35 +25,12 @@ import {
   updateInventory,
   fetchInventoryById,
 } from '../../../apis/service/inventory';
-import { fetchDocumentRecords } from '../../../apis/service/documents';
+import { fetchDocumentRecords, getTotalStockBalance } from '../../../apis/service/documents';
 import { InventoryFormValues } from '../../../types/inventory';
 import { DocumentRecord } from '../../../types/document';
 
-const validationSchema = Yup.object({
-  pending_date: Yup.string().required('กรุณาเลือกวันที่ค้างรับ'),
-  pending_evidence: Yup.string().required('กรุณากรอกหลักฐาน'),
-  pending_unit: Yup.string().required('กรุณากรอกหน่วยนับ'),
-  pending_signature: Yup.string().required('กรุณากรอกลายมือชื่อ'),
-  request_date: Yup.string().required('กรุณาเลือกวันที่ร้องขอ'),
-  received_quantity: Yup.number()
-    .required('กรุณากรอกจำนวนที่รับ')
-    .min(0, 'จำนวนต้องไม่น้อยกว่า 0'),
-  unit_price: Yup.number()
-    .required('กรุณากรอกราคาต่อหน่วย')
-    .min(0, 'ราคาต้องไม่น้อยกว่า 0'),
-  request_evidence: Yup.string().required('กรุณากรอกหลักฐาน'),
-  request_type: Yup.string().required('กรุณาเลือกประเภท'),
-  issue_quantity: Yup.number()
-    .required('กรุณากรอกจำนวนที่จ่าย')
-    .min(0, 'จำนวนต้องไม่น้อยกว่า 0'),
-  total_borrowed: Yup.number()
-    .required('กรุณากรอกรวมยืม')
-    .min(0, 'จำนวนต้องไม่น้อยกว่า 0'),
-  stock_balance: Yup.number()
-    .required('กรุณากรอกคงคลัง')
-    .min(0, 'จำนวนต้องไม่น้อยกว่า 0'),
-  request_signature: Yup.string().required('กรุณากรอกลายมือชื่อ'),
-});
+const validationSchema = Yup.object({});
+
 
 function InventoryForm() {
   const navigate = useNavigate();
@@ -96,9 +73,9 @@ function InventoryForm() {
       try {
         const payload = {
           document_record: values.document_record ? parseInt(values.document_record) : null,
-          pending_date: values.pending_date,
-          pending_evidence: values.pending_evidence,
-          pending_unit: values.pending_unit,
+          pending_date: values.pending_date || null,
+          pending_evidence: values.pending_evidence || '',
+          pending_unit: values.pending_unit || '',
           pending_quantity: values.pending_quantity ? parseInt(values.pending_quantity) : null,
           pending_receive1: values.pending_receive1 ? parseInt(values.pending_receive1) : null,
           pending_balance1: values.pending_balance1 ? parseInt(values.pending_balance1) : null,
@@ -108,16 +85,17 @@ function InventoryForm() {
           pending_balance3: values.pending_balance3 ? parseInt(values.pending_balance3) : null,
           pending_receive4: values.pending_receive4 ? parseInt(values.pending_receive4) : null,
           pending_balance4: values.pending_balance4 ? parseInt(values.pending_balance4) : null,
-          pending_signature: values.pending_signature,
-          request_date: values.request_date,
-          received_quantity: parseInt(values.received_quantity),
-          unit_price: parseFloat(values.unit_price),
-          request_evidence: values.request_evidence,
-          request_type: values.request_type,
-          issue_quantity: parseInt(values.issue_quantity),
-          total_borrowed: parseInt(values.total_borrowed),
-          stock_balance: parseInt(values.stock_balance),
-          request_signature: values.request_signature,
+          pending_signature: values.pending_signature || '',
+          request_date: values.request_date || null,
+          received_quantity: values.received_quantity ? parseInt(values.received_quantity) : 0,
+          unit_price: values.unit_price ? parseFloat(values.unit_price) : 0,
+          request_evidence: values.request_evidence || '',
+          request_type: values.request_type || 'INITIAL',
+          issue_quantity: values.issue_quantity ? parseInt(values.issue_quantity) : 0,
+          total_borrowed: values.total_borrowed ? parseInt(values.total_borrowed) : 0,
+          previous_stock_balance: previousStockBalance,
+          stock_balance: values.stock_balance ? parseInt(values.stock_balance) : 0,
+          request_signature: values.request_signature || '',
         };
 
         if (isEditMode) {
@@ -144,17 +122,39 @@ function InventoryForm() {
     }
   }, [id]);
 
+  // Load total stock balance from document record when it changes
+  useEffect(() => {
+    const loadStockBalance = async () => {
+      if (formik.values.document_record && !isEditMode) {
+        try {
+          // ไม่ต้องส่ง parameter เพราะต้องการคงคลังล่าสุดทั้งหมด
+          const response = await getTotalStockBalance(
+            parseInt(formik.values.document_record)
+          );
+          setPreviousStockBalance(response.total_stock_balance || 0);
+        } catch (error) {
+          console.error('Error loading total stock balance:', error);
+          setPreviousStockBalance(0);
+        }
+      } else if (!formik.values.document_record) {
+        setPreviousStockBalance(0);
+      }
+    };
+    loadStockBalance();
+  }, [formik.values.document_record, isEditMode]);
+
   // Auto-calculate stock balance
   useEffect(() => {
     const received = parseFloat(formik.values.received_quantity) || 0;
     const issued = parseFloat(formik.values.issue_quantity) || 0;
-    const newBalance = previousStockBalance + received - issued;
+    const borrowed = parseFloat(formik.values.total_borrowed) || 0;
+    const newBalance = previousStockBalance + received - issued - borrowed;
 
     // Only update if the calculated value is different
     if (newBalance.toString() !== formik.values.stock_balance) {
       formik.setFieldValue('stock_balance', newBalance.toString());
     }
-  }, [formik.values.received_quantity, formik.values.issue_quantity, previousStockBalance]);
+  }, [formik.values.received_quantity, formik.values.issue_quantity, formik.values.total_borrowed, previousStockBalance]);
 
   const loadDocumentRecords = async () => {
     try {
@@ -196,7 +196,9 @@ function InventoryForm() {
       });
     } catch (error) {
       console.error('Error loading inventory data:', error);
-      alert('เกิดข้อผิดพลาดในการโหลดข้อมูล');
+      // alert('เกิดข้อผิดพลาดในการโหลดข้อมูล');
+      toast.error('หมดอายุการใช้งาน กรุณาเข้าสู่ระบบใหม่');
+      navigate('/login');
     } finally {
       setInitialLoading(false);
     }
@@ -271,7 +273,7 @@ function InventoryForm() {
                 fullWidth
                 id="pending_date"
                 name="pending_date"
-                label="วันที่ *"
+                label="วันทู่"
                 type="date"
                 InputLabelProps={{ shrink: true }}
                 value={formik.values.pending_date}
@@ -285,7 +287,7 @@ function InventoryForm() {
                 fullWidth
                 id="pending_evidence"
                 name="pending_evidence"
-                label="หลักฐาน *"
+                label="หลักฐาน"
                 value={formik.values.pending_evidence}
                 onChange={formik.handleChange}
                 error={formik.touched.pending_evidence && Boolean(formik.errors.pending_evidence)}
@@ -297,7 +299,7 @@ function InventoryForm() {
                 fullWidth
                 id="pending_unit"
                 name="pending_unit"
-                label="หน่วยนับ *"
+                label="หน่วยนับ"
                 value={formik.values.pending_unit}
                 onChange={formik.handleChange}
                 error={formik.touched.pending_unit && Boolean(formik.errors.pending_unit)}
@@ -414,7 +416,7 @@ function InventoryForm() {
                 fullWidth
                 id="pending_signature"
                 name="pending_signature"
-                label="ลายมือชื่อ *"
+                label="ลายมือชื่อ"
                 value={formik.values.pending_signature}
                 onChange={formik.handleChange}
                 error={formik.touched.pending_signature && Boolean(formik.errors.pending_signature)}
@@ -434,7 +436,7 @@ function InventoryForm() {
                 fullWidth
                 id="request_date"
                 name="request_date"
-                label="วันที่ *"
+                label="วันที่"
                 type="date"
                 InputLabelProps={{ shrink: true }}
                 value={formik.values.request_date}
@@ -448,7 +450,7 @@ function InventoryForm() {
                 fullWidth
                 id="received_quantity"
                 name="received_quantity"
-                label="จำนวนที่รับ *"
+                label="จำนวนที่รับ"
                 type="number"
                 value={formik.values.received_quantity}
                 onChange={formik.handleChange}
@@ -461,7 +463,7 @@ function InventoryForm() {
                 fullWidth
                 id="unit_price"
                 name="unit_price"
-                label="ราคาต่อหน่วย *"
+                label="ราคาต่อหน่วย"
                 type="number"
                 inputProps={{ step: '0.01' }}
                 value={formik.values.unit_price}
@@ -476,8 +478,15 @@ function InventoryForm() {
                 label="คงคลังก่อนหน้า"
                 type="number"
                 value={previousStockBalance}
-                onChange={(e) => setPreviousStockBalance(parseFloat(e.target.value) || 0)}
-                helperText="ยอดคงคลังก่อนทำธุรกรรมนี้"
+                helperText="ยอดคงคลังสะสมจากรายการก่อนหน้าทั้งหมด"
+                InputProps={{
+                  readOnly: true,
+                }}
+                sx={{
+                  '& .MuiInputBase-input': {
+                    backgroundColor: '#f5f5f5',
+                  },
+                }}
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
@@ -485,7 +494,7 @@ function InventoryForm() {
                 fullWidth
                 id="request_evidence"
                 name="request_evidence"
-                label="หลักฐาน *"
+                label="หลักฐาน"
                 value={formik.values.request_evidence}
                 onChange={formik.handleChange}
                 error={formik.touched.request_evidence && Boolean(formik.errors.request_evidence)}
@@ -498,13 +507,13 @@ function InventoryForm() {
                 size='small'
                 error={formik.touched.request_type && Boolean(formik.errors.request_type)}
               >
-                <InputLabel>ประเภท *</InputLabel>
+                <InputLabel>ประเภท</InputLabel>
                 <Select
                   id="request_type"
                   name="request_type"
 
                   value={formik.values.request_type}
-                  label="ประเภท *"
+                  label="ประเภท"
                   onChange={formik.handleChange}
                 >
                   <MenuItem value="INITIAL">ขั้นต้น</MenuItem>
@@ -520,7 +529,7 @@ function InventoryForm() {
                 fullWidth
                 id="issue_quantity"
                 name="issue_quantity"
-                label="จ่าย *"
+                label="จ่าย"
                 type="number"
                 value={formik.values.issue_quantity}
                 onChange={formik.handleChange}
@@ -533,7 +542,7 @@ function InventoryForm() {
                 fullWidth
                 id="total_borrowed"
                 name="total_borrowed"
-                label="รวมยืม *"
+                label="รวมยืม"
                 type="number"
                 value={formik.values.total_borrowed}
                 onChange={formik.handleChange}
@@ -541,33 +550,12 @@ function InventoryForm() {
                 helperText={formik.touched.total_borrowed && formik.errors.total_borrowed}
               />
             </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <TextField
-                fullWidth
-                id="stock_balance"
-                name="stock_balance"
-                label="คงคลัง *"
-                type="number"
-                value={formik.values.stock_balance}
-                onChange={formik.handleChange}
-                error={formik.touched.stock_balance && Boolean(formik.errors.stock_balance)}
-                helperText={formik.touched.stock_balance && formik.errors.stock_balance}
-                InputProps={{
-                  readOnly: true,
-                }}
-                sx={{
-                  '& .MuiInputBase-input': {
-                    backgroundColor: '#f5f5f5',
-                  },
-                }}
-              />
-            </Grid>
             <Grid size={{ xs: 12 }}>
               <TextField
                 fullWidth
                 id="request_signature"
                 name="request_signature"
-                label="ลายมือชื่อ *"
+                label="ลายมือชื่อ"
                 value={formik.values.request_signature}
                 onChange={formik.handleChange}
                 error={formik.touched.request_signature && Boolean(formik.errors.request_signature)}

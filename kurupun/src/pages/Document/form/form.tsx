@@ -21,11 +21,14 @@ import {
   createDocumentRecord,
   updateDocumentRecord,
   fetchDocumentRecordById,
+  getNextRegisterNo,
+  getTotalStockBalance,
 } from '../../../apis/service/documents';
 import { DocumentRecordFormValues } from '../../../types/document';
 import { fetchDescriptionsList } from '../../../apis/service/master';
 
 const validationSchema = Yup.object({
+  registerNo: Yup.string(),
   registration_number: Yup.string().required('กรุณากรอกทะเบียนที่'),
   registration_date: Yup.string().required('กรุณาเลือกวันที่ลงทะเบียน'),
   document_type: Yup.string().required('กรุณากรอกประเภทเอกสาร'),
@@ -46,6 +49,7 @@ function DocumentForm() {
   const [selectedDescription, setSelectedDescription] = useState<any>(null);
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchTimeout, setSearchTimeout] = useState<any>(null);
+  const [totalStockBalance, setTotalStockBalance] = useState<number>(0);
   const isEditMode = Boolean(id);
   const { results } = useSelector((state: any) => state.master.masters);
   // {
@@ -71,11 +75,28 @@ function DocumentForm() {
     };
   }, [searchTimeout]);
 
+  // Generate registerNo based on registration date
+  const generateRegisterNo = async (date: string) => {
+    if (!date) return;
+
+    try {
+      const registerNo = await getNextRegisterNo(date);
+      formik.setFieldValue('registerNo', registerNo);
+    } catch (error) {
+      console.error('Error generating register number:', error);
+      // Fallback: generate locally if API fails
+      const yearAD = parseInt(date.split('-')[0]); // ปี ค.ศ.
+      const yearBE = yearAD + 543; // แปลงเป็นปี พ.ศ.
+      const year = yearBE.toString().slice(-2); // เอาแค่ 2 หลักสุดท้ายของปี พ.ศ. เช่น 2568 -> 68
+      formik.setFieldValue('registerNo', `0001-${year}`);
+    }
+  };
+
   // Format item_id with dashes (XXXX-XXX-XXXX)
   const formatItemId = (value: string) => {
     // Remove all non-digit characters
     const digits = value.replace(/\D/g, '');
-    
+
     // Format: XXXX-XXX-XXXX
     if (digits.length <= 4) {
       return digits;
@@ -124,6 +145,7 @@ function DocumentForm() {
 
   const formik = useFormik<DocumentRecordFormValues>({
     initialValues: {
+      registerNo: '',
       registration_number: '',
       registration_date: '',
       document_type: '',
@@ -194,6 +216,10 @@ function DocumentForm() {
   useEffect(() => {
     if (isEditMode) {
       loadDocumentData();
+    } else {
+      // Generate default registerNo with today's date for new records
+      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+      generateRegisterNo(today);
     }
   }, [id]);
 
@@ -201,7 +227,7 @@ function DocumentForm() {
     setInitialLoading(true);
     try {
       const data = await fetchDocumentRecordById(parseInt(id!));
-      
+
       // ค้นหา description จาก registration_number โดยเรียก API
       if (data.registration_number) {
         try {
@@ -232,8 +258,9 @@ function DocumentForm() {
         setSelectedDescription(null);
         setDescriptionInputValue(data.first_item || '');
       }
-      
+
       formik.setValues({
+        registerNo: data.registerNo || '',
         registration_number: data.registration_number || '',
         registration_date: data.registration_date || '',
         document_type: data.document_type || '',
@@ -259,9 +286,20 @@ function DocumentForm() {
         safety_stock_quantity: data.safety_stock_quantity?.toString() || '',
         storage_location: data.storage_location || '',
       });
+
+      // ดึงคงคลังรวมจาก Inventory
+      try {
+        const stockResponse = await getTotalStockBalance(parseInt(id!));
+        setTotalStockBalance(stockResponse.total_stock_balance || 0);
+      } catch (error) {
+        console.error('Error fetching total stock balance:', error);
+        setTotalStockBalance(0);
+      }
     } catch (error) {
       console.error('Error loading document data:', error);
-      alert('เกิดข้อผิดพลาดในการโหลดข้อมูล');
+      // alert('เกิดข้อผิดพลาดในการโหลดข้อมูล');
+      toast.error('หมดอายุการใช้งาน กรุณาเข้าสู่ระบบใหม่');
+      navigate('/login');
     } finally {
       setInitialLoading(false);
     }
@@ -294,6 +332,27 @@ function DocumentForm() {
             <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
+                id="registerNo"
+                name="registerNo"
+                label="ทะเบียนที่ *"
+                placeholder="0001-68"
+                value={formik.values.registerNo}
+                helperText="สร้างอัตโนมัติจากวันที่ลงทะเบียน"
+                onChange={(e) => formik.setFieldValue('registerNo', e.target.value)}
+                InputLabelProps={{ shrink: true }}
+              // InputProps={{
+              //   readOnly: true,
+              // }}
+              // sx={{
+              //   '& .MuiInputBase-input': {
+              //     backgroundColor: '#f5f5f5',
+              //   },
+              // }}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <TextField
+                fullWidth
                 id="registration_number"
                 name="registration_number"
                 label="รหัสทะเบียน (Item ID) *"
@@ -302,7 +361,7 @@ function DocumentForm() {
                 onChange={(e) => {
                   const formatted = formatItemId(e.target.value);
                   formik.setFieldValue('registration_number', formatted);
-                  
+
                   // ค้นหา description ที่ตรงกับ item_id
                   const found = descriptions.find((desc: any) => desc.item_id === formatted);
                   if (found) {
@@ -314,7 +373,7 @@ function DocumentForm() {
                 }}
                 error={formik.touched.registration_number && Boolean(formik.errors.registration_number)}
                 helperText={
-                  (formik.touched.registration_number && formik.errors.registration_number) || 
+                  (formik.touched.registration_number && formik.errors.registration_number) ||
                   "รูปแบบ: XXXX-XXX-XXXX (จะใส่ - ให้อัตโนมัติ)"
                 }
                 inputProps={{
@@ -323,7 +382,7 @@ function DocumentForm() {
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
-                           <Autocomplete
+              <Autocomplete
                 freeSolo
                 fullWidth
                 options={descriptions}
@@ -357,11 +416,11 @@ function DocumentForm() {
                 }}
                 filterOptions={(options) => options}
                 noOptionsText={
-                  searchLoading 
-                    ? "กำลังค้นหา..." 
-                    : descriptionInputValue.length < 2 
-                    ? "กรุณาพิมพ์อย่างน้อย 2 ตัวอักษร หรือพิมพ์เองได้"
-                    : "ไม่พบข้อมูล (สามารถพิมพ์เองได้)"
+                  searchLoading
+                    ? "กำลังค้นหา..."
+                    : descriptionInputValue.length < 2
+                      ? "กรุณาพิมพ์อย่างน้อย 2 ตัวอักษร หรือพิมพ์เองได้"
+                      : "ไม่พบข้อมูล (สามารถพิมพ์เองได้)"
                 }
                 renderInput={(params) => (
                   <TextField
@@ -369,8 +428,8 @@ function DocumentForm() {
                     label="คำอธิบาย (Description)"
                     placeholder="ค้นหา เลือก หรือพิมพ์เอง"
                     helperText={
-                      selectedDescription 
-                        ? `หมวด: ${selectedDescription.class_name || '-'}` 
+                      selectedDescription
+                        ? `หมวด: ${selectedDescription.class_name || '-'}`
                         : "พิมพ์ค้นหา (รอ 2 วิหลังพิมพ์เสร็จ) หรือพิมพ์คำอธิบายเอง"
                     }
                     InputProps={{
@@ -407,7 +466,13 @@ function DocumentForm() {
                 type="date"
                 InputLabelProps={{ shrink: true }}
                 value={formik.values.registration_date}
-                onChange={formik.handleChange}
+                onChange={(e) => {
+                  formik.handleChange(e);
+                  // Generate registerNo when date changes (only for new records)
+                  if (!isEditMode) {
+                    generateRegisterNo(e.target.value);
+                  }
+                }}
                 error={
                   formik.touched.registration_date && Boolean(formik.errors.registration_date)
                 }
@@ -490,6 +555,26 @@ function DocumentForm() {
                 helperText={formik.touched.first_item && formik.errors.first_item}
               />
             </Grid>
+            {isEditMode && (
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <TextField
+                  fullWidth
+                  label="คงคลังรวมทั้งหมด"
+                  type="number"
+                  value={totalStockBalance}
+                  helperText="ยอดคงคลังรวมจากรายการ Inventory ทั้งหมด"
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                  sx={{
+                    '& .MuiInputBase-input': {
+                      backgroundColor: '#f5f5f5',
+                    },
+                  }}
+                  InputLabelProps={{ shrink: true }}
+                />
+              </Grid>
+            )}
           </Grid>
 
           <Divider sx={{ my: 3 }} />

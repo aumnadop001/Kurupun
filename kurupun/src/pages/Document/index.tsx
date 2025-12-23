@@ -207,7 +207,7 @@ function Documents() {
                 ) : (
                   documents?.map((doc) => (
                     <TableRow key={doc.id} hover>
-                      <TableCell>{doc.registration_number}</TableCell>
+                      <TableCell>{doc.registerNo}</TableCell>
                       <TableCell>{formatDate(doc.registration_date)}</TableCell>
                       <TableCell>{doc.document_type}</TableCell>
                       <TableCell>{doc.sender}</TableCell>

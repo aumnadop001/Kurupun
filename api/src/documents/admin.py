@@ -6,6 +6,7 @@ from src.documents.models import DocumentRecord, Inventory
 
 class DocumentRecordAdmin(admin.ModelAdmin):
     list_display = (
+        "registerNo",
         "registration_number",
         "registration_date",
         "document_type",

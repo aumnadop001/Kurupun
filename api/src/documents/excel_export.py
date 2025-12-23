@@ -283,6 +283,10 @@ def export_document_record_to_excel(document_record):
     inventories = document_record.inventories.all().order_by("request_date")
 
     current_row = 9
+    cumulative_received = 0  # ยอดรับสะสม
+    cumulative_issued = 0    # ยอดจ่ายสะสม
+    cumulative_borrowed = 0  # ยอดยืมสะสม
+    
     for inventory in inventories:
         # Pending section
         ws[f"A{current_row}"] = (
@@ -337,7 +341,16 @@ def export_document_record_to_excel(document_record):
             if inventory.request_date
             else ""
         )
-        ws[f"J{current_row}"] = inventory.received_quantity or ""
+        
+        # คำนวณยอดสะสม
+        cumulative_received += inventory.received_quantity or 0
+        cumulative_issued += inventory.issue_quantity or 0
+        cumulative_borrowed += inventory.total_borrowed or 0
+        
+        # คงคลัง = รับสะสม - จ่ายสะสม - ยืมสะสม
+        calculated_stock_balance = cumulative_received - cumulative_issued - cumulative_borrowed
+        
+        ws[f"J{current_row}"] = cumulative_received
         ws[f"K{current_row}"] = (
             float(inventory.unit_price) if inventory.unit_price else ""
         )
@@ -349,7 +362,7 @@ def export_document_record_to_excel(document_record):
 
         ws[f"O{current_row}"] = inventory.issue_quantity or ""
         ws[f"P{current_row}"] = inventory.total_borrowed or ""
-        ws[f"Q{current_row}"] = inventory.stock_balance or ""
+        ws[f"Q{current_row}"] = calculated_stock_balance
         ws[f"R{current_row}"] = inventory.request_signature or ""
 
         # Apply styles to all cells in the row

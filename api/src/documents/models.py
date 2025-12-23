@@ -4,6 +4,7 @@ from django.db import models
 
 
 class DocumentRecord(models.Model):
+    registerNo = models.CharField(max_length=100, null=True,blank=True)  # ทะเบียนที่
     registration_number = models.CharField(max_length=100, unique=True) # ทะเบียนที่
     registration_date = models.DateField() # วันที่ลงทะเบียน
     document_type = models.CharField(max_length=100) # ประเภทเอกสาร
@@ -35,9 +36,9 @@ class DocumentRecord(models.Model):
 class Inventory(models.Model):
     document_record = models.ForeignKey(DocumentRecord, on_delete=models.CASCADE, related_name='inventories', null=True, blank=True)
     # ===== Zone ค้างรับ และ ค้างจ่าย =====
-    pending_date = models.DateField()  # ว.ด.ป
-    pending_evidence = models.CharField(max_length=100)  # หลักฐาน
-    pending_unit = models.CharField(max_length=50)  # หน่วยนับ
+    pending_date = models.DateField(null=True, blank=True)  # ว.ด.ป
+    pending_evidence = models.CharField(max_length=100, blank=True, default='')  # หลักฐาน
+    pending_unit = models.CharField(max_length=50, blank=True, default='')  # หน่วยนับ
     pending_quantity = models.PositiveIntegerField(blank=True, null=True)  # จำนวน
     pending_receive1 = models.PositiveIntegerField(blank=True, null=True)  # รับ
     pending_balance1 = models.PositiveIntegerField(blank=True, null=True)  # ค้าง
@@ -47,13 +48,13 @@ class Inventory(models.Model):
     pending_balance3 = models.PositiveIntegerField(blank=True, null=True)  # ค้าง
     pending_receive4 = models.PositiveIntegerField(blank=True, null=True)  # รับ
     pending_balance4 = models.PositiveIntegerField(blank=True, null=True)  # ค้าง
-    pending_signature = models.CharField(max_length=255)  # ลายมือชื่อ
+    pending_signature = models.CharField(max_length=255, blank=True, default='')  # ลายมือชื่อ
 
     # ===== Zone ความต้องการรับและจ่าย =====
-    request_date = models.DateField()  # ว.ด.ป
-    received_quantity = models.PositiveIntegerField()  # จำนวนที่รับ
-    unit_price = models.DecimalField(max_digits=10, decimal_places=2)  # ราคาต่อหน่วย
-    request_evidence = models.CharField(max_length=100)  # หลักฐาน
+    request_date = models.DateField(null=True, blank=True)  # ว.ด.ป
+    received_quantity = models.PositiveIntegerField(default=0)  # จำนวนที่รับ
+    unit_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # ราคาต่อหน่วย
+    request_evidence = models.CharField(max_length=100, blank=True, default='')  # หลักฐาน
 
     request_type = models.CharField(  # ขั้นต้น / ทดแทน
         max_length=20,
@@ -61,12 +62,14 @@ class Inventory(models.Model):
             ("INITIAL", "ขั้นต้น"),
             ("REPLACEMENT", "ทดแทน"),
         ),
+        default="INITIAL",
     )
 
-    issue_quantity = models.PositiveIntegerField()  # จ่าย
-    total_borrowed = models.PositiveIntegerField()  # รวมยืม
-    stock_balance = models.PositiveIntegerField()  # คงคลัง
-    request_signature = models.CharField(max_length=255)  # ลายมือชื่อ
+    issue_quantity = models.PositiveIntegerField(default=0)  # จ่าย
+    total_borrowed = models.PositiveIntegerField(default=0)  # รวมยืม
+    previous_stock_balance = models.PositiveIntegerField(default=0)  # คงคลังก่อนหน้า
+    stock_balance = models.PositiveIntegerField(default=0)  # คงคลัง
+    request_signature = models.CharField(max_length=255, blank=True, default='')  # ลายมือชื่อ
 
     class Meta:
         verbose_name = "ทะเบียนคุมวัสดุ"

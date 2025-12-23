@@ -70,3 +70,13 @@ export const deleteInventory = async (id: number): Promise<void> => {
     throw error;
   }
 };
+
+export const getLatestStockBalance = async (documentRecordId: number): Promise<{ stock_balance: number }> => {
+  try {
+    const response = await callGet(`/api/documents/inventories/latest-stock-balance/`, { document_record: documentRecordId });
+    return response;
+  } catch (error) {
+    console.error("Get latest stock balance failed:", error);
+    throw error;
+  }
+};
