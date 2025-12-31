@@ -35,8 +35,19 @@ const validationSchema = Yup.object({
   sender: Yup.string().required('กรุณากรอกผู้ส่ง'),
   recipient: Yup.string().required('กรุณากรอกผู้รับ'),
   first_item: Yup.string().required('กรุณากรอกรายการแรก'),
-  unit_of_measure: Yup.string().required('กรุณากรอกหน่วยนับ'),
+  unit_of_measure: Yup.string(),
   file_storage_date: Yup.string().required('กรุณาเลือกวันที่เก็บเข้าแฟ้ม'),
+  requester_name: Yup.string().when('document_type', {
+    is: 'ใบเบิก',
+    then: schema => schema.required('กรุณากรอกชื่อผู้เบิก'),
+    otherwise: schema => schema.notRequired(),
+  }),
+  requester_set_number: Yup.string().when('document_type', {
+    is: 'ใบเบิก',
+    then: schema => schema.required('กรุณากรอกเลขชุดผู้เบิก'),
+    otherwise: schema => schema.notRequired(),
+  }),
+
 });
 
 function DocumentForm() {
@@ -166,6 +177,8 @@ function DocumentForm() {
       safety_stock_days: '',
       safety_stock_quantity: '',
       storage_location: '',
+      requester_set_number: '',
+      requester_name: '',
     },
     validationSchema,
     onSubmit: async (values) => {
@@ -195,7 +208,7 @@ function DocumentForm() {
             ? parseInt(values.safety_stock_quantity)
             : null,
         };
-
+        
         if (isEditMode) {
           await updateDocumentRecord(parseInt(id!), payload);
           toast.success('อัปเดตข้อมูลเรียบร้อย');
@@ -285,6 +298,8 @@ function DocumentForm() {
         safety_stock_days: data.safety_stock_days?.toString() || '',
         safety_stock_quantity: data.safety_stock_quantity?.toString() || '',
         storage_location: data.storage_location || '',
+        requester_set_number: data.requester_set_number || '',
+        requester_name: data.requester_name || '',
       });
 
       // ดึงคงคลังรวมจาก Inventory
@@ -355,18 +370,19 @@ function DocumentForm() {
                 fullWidth
                 id="registration_number"
                 name="registration_number"
-                label="รหัสทะเบียน (Item ID) *"
+                label="หมายเลขพัสดุ *"
                 placeholder="2305-001-0001"
                 value={formik.values.registration_number}
                 onChange={(e) => {
                   const formatted = formatItemId(e.target.value);
                   formik.setFieldValue('registration_number', formatted);
-
                   // ค้นหา description ที่ตรงกับ item_id
                   const found = descriptions.find((desc: any) => desc.item_id === formatted);
                   if (found) {
                     setSelectedDescription(found);
+
                     formik.setFieldValue('first_item', found.Des_name || '');
+
                   } else {
                     setSelectedDescription(null);
                   }
@@ -398,9 +414,11 @@ function DocumentForm() {
                   setDescriptionInputValue(newInputValue);
                   handleDescriptionSearch(newInputValue);
                   // Update first_item field with typed value
-                  formik.setFieldValue('first_item', newInputValue);
+                  // formik.setFieldValue('inventory_number', found.item_id || '');
+
                 }}
                 onChange={(_, newValue) => {
+
                   if (typeof newValue === 'string') {
                     // User typed a custom value
                     setSelectedDescription(null);
@@ -410,6 +428,8 @@ function DocumentForm() {
                     setSelectedDescription(newValue);
                     formik.setFieldValue('registration_number', newValue.item_id || '');
                     formik.setFieldValue('first_item', newValue.Des_name || '');
+                    formik.setFieldValue('inventory_number', newValue.item_id || '');
+
                   } else {
                     setSelectedDescription(null);
                   }
@@ -425,13 +445,16 @@ function DocumentForm() {
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    label="คำอธิบาย (Description)"
+                    label="ชื่อพัสดุ"
                     placeholder="ค้นหา เลือก หรือพิมพ์เอง"
                     helperText={
-                      selectedDescription
-                        ? `หมวด: ${selectedDescription.class_name || '-'}`
-                        : "พิมพ์ค้นหา (รอ 2 วิหลังพิมพ์เสร็จ) หรือพิมพ์คำอธิบายเอง"
+                      formik.touched.first_item && formik.errors.first_item
+                      ? 'กรุณากรอกชื่อพัสดุ'
+                      : selectedDescription
+                        ? `หมวด: ${selectedDescription.first_item || '-'}`
+                        : "พิมพ์ค้นหา (รอ 2 วิหลังพิมพ์เสร็จ) หรือพิมพ์ชื่อพัสดุเอง"
                     }
+                    error={formik.touched.first_item && Boolean(formik.errors.first_item)}
                     InputProps={{
                       ...params.InputProps,
                       endAdornment: (
@@ -532,15 +555,21 @@ function DocumentForm() {
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
-              <TextField
-                fullWidth
-                id="recipient"
-                name="recipient"
-                label="ถึง *"
-                value={formik.values.recipient}
-                onChange={formik.handleChange}
-                error={formik.touched.recipient && Boolean(formik.errors.recipient)}
-                helperText={formik.touched.recipient && formik.errors.recipient}
+              <Autocomplete
+                options={results?.dept || []}
+                getOptionLabel={(option) => option.dept_name || ''}
+                value={results?.dept?.find((dept: any) => dept.dept_name === formik.values.recipient) || null}
+                onChange={(_, newValue) => {
+                  formik.setFieldValue('recipient', newValue?.dept_name || '');
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="ถึง *"
+                    error={formik.touched.sender && Boolean(formik.errors.sender)}
+                    helperText={formik.touched.sender && formik.errors.sender}
+                  />
+                )}
               />
             </Grid>
             <Grid size={{ xs: 12 }}>
@@ -555,7 +584,7 @@ function DocumentForm() {
                 helperText={formik.touched.first_item && formik.errors.first_item}
               />
             </Grid>
-            {isEditMode && (
+            {/* {isEditMode && (
               <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth
@@ -574,7 +603,46 @@ function DocumentForm() {
                   InputLabelProps={{ shrink: true }}
                 />
               </Grid>
-            )}
+            )} */}
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                fullWidth
+                id="related_document_number"
+                name="related_document_number"
+                label="เลขที่เอกสารที่เกี่ยวข้อง"
+                value={formik.values.related_document_number}
+                onChange={formik.handleChange}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <TextField
+                fullWidth
+                id="requester_name"
+                name="requester_name"
+                label="ชื่อผู้เบิก"
+                InputLabelProps={{ shrink: true }}
+                value={formik.values.requester_name}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.requester_name && Boolean(formik.errors.requester_name)
+                }
+                helperText={formik.touched.requester_name && formik.errors.requester_name}
+              />
+            </Grid><Grid size={{ xs: 12, sm: 6 }}>
+              <TextField
+                fullWidth
+                id="requester_set_number"
+                name="requester_set_number"
+                label="เลขที่ชุดเบิก"
+                InputLabelProps={{ shrink: true }}
+                value={formik.values.requester_set_number}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.requester_set_number && Boolean(formik.errors.requester_set_number)
+                }
+                helperText={formik.touched.requester_set_number && formik.errors.requester_set_number}
+              />
+            </Grid>
           </Grid>
 
           <Divider sx={{ my: 3 }} />
@@ -583,7 +651,7 @@ function DocumentForm() {
             ข้อมูลพัสดุ
           </Typography>
           <Grid container spacing={2}>
-            <Grid size={{ xs: 12, sm: 6 }}>
+            {/* <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
                 id="inventory_number"
@@ -592,13 +660,13 @@ function DocumentForm() {
                 value={formik.values.inventory_number}
                 onChange={formik.handleChange}
               />
-            </Grid>
+            </Grid> */}
             <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
                 id="unit_of_measure"
                 name="unit_of_measure"
-                label="หน่วยนับ *"
+                label="หน่วยนับ"
                 value={formik.values.unit_of_measure}
                 onChange={formik.handleChange}
                 error={formik.touched.unit_of_measure && Boolean(formik.errors.unit_of_measure)}
@@ -612,16 +680,6 @@ function DocumentForm() {
                 name="storage_location"
                 label="ที่เก็บ"
                 value={formik.values.storage_location}
-                onChange={formik.handleChange}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <TextField
-                fullWidth
-                id="related_document_number"
-                name="related_document_number"
-                label="เลขที่เอกสารที่เกี่ยวข้อง"
-                value={formik.values.related_document_number}
                 onChange={formik.handleChange}
               />
             </Grid>

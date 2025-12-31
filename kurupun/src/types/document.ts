@@ -22,6 +22,8 @@ export interface DocumentRecord {
   safety_stock_quantity?: number;
   storage_location?: string;
   inventories_count?: number;
+  requester_set_number?: string;
+  requester_name?: string;
 }
 
 export interface DocumentRecordFormValues {
@@ -46,6 +48,8 @@ export interface DocumentRecordFormValues {
   safety_stock_days: string;
   safety_stock_quantity: string;
   storage_location: string;
+  requester_set_number: string;
+  requester_name: string;
 }
 
 export interface DocumentRecordListResponse {

@@ -72,7 +72,7 @@ instance.interceptors.response.use(
 
       try {
         // Call refresh token API
-        const response = await axios.post(`${environment.API_HOST}/authentication/token/refresh/`, {
+        const response = await axios.post(`${environment.API_HOST}/api/auth/token/refresh/`, {
           refresh: refreshToken
         });
 

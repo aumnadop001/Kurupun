@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import DocumentRecord, Inventory
 from .serializers import DocumentRecordSerializer, InventorySerializer
-from .excel_export import generate_excel_response
+from .excel_export import generate_excel_response, generate_table_excel_response
 from rest_framework.pagination import PageNumberPagination
 
 
@@ -22,7 +22,7 @@ class DocumentRecordViewSet(viewsets.ModelViewSet):
     Supports filtering and search
     """
 
-    queryset = DocumentRecord.objects.prefetch_related("inventories").all()
+    queryset = DocumentRecord.objects.prefetch_related("inventories").all().order_by('-id')
     serializer_class = DocumentRecordSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     pagination_class = StandardResultsSetPagination
@@ -57,14 +57,19 @@ class DocumentRecordViewSet(viewsets.ModelViewSet):
 
     # Fields that can be used for ordering
     ordering_fields = [
-        "registration_date",
-        "file_storage_date",
-        "registration_number",
-        "days_to_order",
-        "quantity_to_order",
-        "safety_stock_quantity",
+        "-id"
+        # "registration_date",
+        # "file_storage_date",
+        # "registration_number",
+        # "days_to_order",
+        # "quantity_to_order",
+        # "safety_stock_quantity",
     ]
-    ordering = ["-registration_date"]  # Default ordering
+    ordering = ["-id"]  # Default ordering
+
+    def get_queryset(self):
+        """Override to ensure ordering by -id is always applied"""
+        return super().get_queryset().order_by('-id')
 
     @action(detail=False, methods=["get"], url_path="next-register-no")
     def next_register_no(self, request):
@@ -115,7 +120,10 @@ class DocumentRecordViewSet(viewsets.ModelViewSet):
         document_record = self.get_object()
         before_id = request.query_params.get('before_id')  # id ของ record ปัจจุบัน (ถ้ามี)
         
-        queryset = Inventory.objects.filter(document_record=document_record)
+        # ดึง inventories จากทุก DocumentRecord ที่มี registration_number เดียวกัน
+        queryset = Inventory.objects.filter(
+            document_record__registration_number=document_record.registration_number
+        )
         
         # ถ้ามี before_id ให้หาคงคลังจากรายการที่มี id น้อยกว่า (สร้างก่อน)
         if before_id:
@@ -137,6 +145,17 @@ class DocumentRecordViewSet(viewsets.ModelViewSet):
         document_record = self.get_object()
         return generate_excel_response(document_record)
 
+    @action(detail=False, methods=["get"], url_path="export-documents")
+    def export_documents(self, request):
+        """Export all document records as table to Excel file"""
+        # ใช้ queryset ที่มี filter เดียวกับ list
+        queryset = self.filter_queryset(self.get_queryset())
+        
+        # ถ้าต้องการ export ทั้งหมดไม่มี pagination
+        document_records = queryset.all()
+        
+        return generate_table_excel_response(document_records)
+
 
 class InventoryViewSet(viewsets.ModelViewSet):
     """
@@ -144,7 +163,7 @@ class InventoryViewSet(viewsets.ModelViewSet):
     Supports filtering and search
     """
 
-    queryset = Inventory.objects.select_related("document_record").all()
+    queryset = Inventory.objects.select_related("document_record").all().order_by('-id')
     serializer_class = InventorySerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     pagination_class = StandardResultsSetPagination
@@ -174,14 +193,19 @@ class InventoryViewSet(viewsets.ModelViewSet):
 
     # Fields that can be used for ordering
     ordering_fields = [
-        "pending_date",
-        "request_date",
-        "stock_balance",
-        "received_quantity",
-        "issue_quantity",
-        "unit_price",
+        "id"
+        # "pending_date",
+        # "request_date",
+        # "stock_balance",
+        # "received_quantity",
+        # "issue_quantity",
+        # "unit_price",
     ]
-    ordering = ["-request_date"]  # Default ordering
+    ordering = ["-id"]  # Default ordering
+
+    def get_queryset(self):
+        """Override to ensure ordering by -id is always applied"""
+        return super().get_queryset().order_by('-id')
 
     @action(detail=False, methods=["get"], url_path="latest-stock-balance")
     def latest_stock_balance(self, request):

@@ -2,7 +2,7 @@ from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment, Border, Side, PatternFill
 from openpyxl.utils import get_column_letter
 from django.http import HttpResponse
-from .models import DocumentRecord
+from .models import DocumentRecord, Inventory
 from urllib.parse import quote
 
 def export_document_record_to_excel(document_record):
@@ -280,7 +280,10 @@ def export_document_record_to_excel(document_record):
     ws["N8"].border = thin_border
 
     # Row 9+: Data rows (Inventories)
-    inventories = document_record.inventories.all().order_by("request_date")
+    # ดึง inventories จากทุก DocumentRecord ที่มี registration_number เดียวกัน
+    inventories = Inventory.objects.filter(
+        document_record__registration_number=document_record.registration_number
+    ).select_related('document_record').order_by("request_date")
 
     current_row = 9
     cumulative_received = 0  # ยอดรับสะสม
@@ -379,6 +382,120 @@ def export_document_record_to_excel(document_record):
         ws.row_dimensions[row].height = 19
 
     return wb
+
+
+def export_document_records_table_to_excel(document_records):
+    """
+    Export DocumentRecords เป็น Excel ตามโครงสร้างของ table.html
+    """
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "ทะเบียนเอกสาร"
+
+    # Define styles
+    header_font = Font(name="TH SarabunPSK", size=14, bold=True)
+    normal_font = Font(name="TH SarabunPSK", size=14)
+    center_alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+    
+    thin_border = Border(
+        left=Side(style="thin"),
+        right=Side(style="thin"),
+        top=Side(style="thin"),
+        bottom=Side(style="thin"),
+    )
+    
+    header_fill = PatternFill(start_color="CCE5FF", end_color="CCE5FF", fill_type="solid")
+
+    # Set column widths
+    column_widths = {
+        "A": 15,  # ทะเบียนที่
+        "B": 18,  # วันที่ลงทะเบียน
+        "C": 15,  # เอกสาร
+        "D": 20,  # จาก
+        "E": 25,  # รายการแรกในเอกสาร
+        "F": 20,  # (ทะเบียนที่ - duplicate in HTML)
+        "G": 18,  # วันที่เก็บเข้าแฟ้ม
+        "H": 25,  # เลขที่เอกสารที่เกี่ยวข้อง
+        "I": 20,  # ชื่อผู้เบิก
+        "J": 18,  # เลขที่ชุดเบิก
+    }
+    for col, width in column_widths.items():
+        ws.column_dimensions[col].width = width
+
+    # Header row
+    headers = [
+        "ทะเบียนที่",
+        "วันที่ลงทะเบียน",
+        "เอกสาร",
+        "จาก",
+        "รายการแรกในเอกสาร",
+        "",  # colspan 2 in HTML
+        "วันที่เก็บเข้าแฟ้ม",
+        "เลขที่เอกสารที่เกี่ยวข้อง",
+        "ชื่อผู้เบิก",
+        "เลขที่ชุดเบิก",
+    ]
+    
+    for col_idx, header in enumerate(headers, start=1):
+        cell = ws.cell(row=1, column=col_idx)
+        cell.value = header
+        cell.font = header_font
+        cell.alignment = center_alignment
+        cell.border = thin_border
+        cell.fill = header_fill
+
+    # Data rows
+    current_row = 2
+    for doc in document_records:
+        ws.cell(row=current_row, column=1).value = doc.registerNo or ""
+        ws.cell(row=current_row, column=2).value = (
+            doc.registration_date.strftime("%d/%m/%Y") if doc.registration_date else ""
+        )
+        ws.cell(row=current_row, column=3).value = doc.document_type or ""
+        ws.cell(row=current_row, column=4).value = doc.sender or ""
+        ws.cell(row=current_row, column=5).value = doc.first_item or ""
+        ws.cell(row=current_row, column=6).value = doc.registration_number or ""
+        ws.cell(row=current_row, column=7).value = (
+            doc.file_storage_date.strftime("%d/%m/%Y") if doc.file_storage_date else ""
+        )
+        ws.cell(row=current_row, column=8).value = doc.related_document_number or ""
+        ws.cell(row=current_row, column=9).value = doc.requester_name or ""
+        ws.cell(row=current_row, column=10).value = doc.requester_set_number or ""
+
+        # Apply styles to all cells in the row
+        for col in range(1, 11):
+            cell = ws.cell(row=current_row, column=col)
+            cell.font = normal_font
+            cell.alignment = center_alignment
+            cell.border = thin_border
+
+        current_row += 1
+
+    # Set row heights
+    ws.row_dimensions[1].height = 25
+    for row in range(2, current_row):
+        ws.row_dimensions[row].height = 20
+
+    return wb
+
+
+def generate_table_excel_response(document_records):
+    """
+    สร้าง Excel response สำหรับตาราง DocumentRecords
+    """
+    wb = export_document_records_table_to_excel(document_records)
+
+    response = HttpResponse(
+        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+
+    filename = "ทะเบียนเอกสาร.xlsx"
+    quoted_filename = quote(filename)
+
+    response["Content-Disposition"] = f"attachment; filename*=UTF-8''{quoted_filename}"
+
+    wb.save(response)
+    return response
 
 
 def generate_excel_response(document_record):

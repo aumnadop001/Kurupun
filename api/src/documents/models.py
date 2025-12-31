@@ -5,14 +5,14 @@ from django.db import models
 
 class DocumentRecord(models.Model):
     registerNo = models.CharField(max_length=100, null=True,blank=True)  # ทะเบียนที่
-    registration_number = models.CharField(max_length=100, unique=True) # ทะเบียนที่
+    registration_number = models.CharField(max_length=100) # ทะเบียนที่
     registration_date = models.DateField() # วันที่ลงทะเบียน
     document_type = models.CharField(max_length=100) # ประเภทเอกสาร
     sender = models.CharField(max_length=255) # จาก
     recipient = models.CharField(max_length=255) # ถึง
     first_item = models.CharField(max_length=255) # รายการแรก
     inventory_number = models.CharField(max_length=100, blank=True, null=True) # หมายเลขพัสดุ
-    unit_of_measure = models.CharField(max_length=50) # หน่วยนับ
+    unit_of_measure = models.CharField(max_length=50, blank=True, null=True) # หน่วยนับ
     file_storage_date = models.DateField() # วันที่เก็บเข้าแฟ้ม
     related_document_number = models.CharField(max_length=100, blank=True, null=True) # เลขที่เอกสารที่เกียวข้อง
     remark = models.TextField(blank=True, null=True)  # หมายเหตุ
@@ -25,6 +25,9 @@ class DocumentRecord(models.Model):
     safety_stock_days = models.PositiveIntegerField(blank=True, null=True)  # เกณฑ์ปลอดภัย วัน
     safety_stock_quantity = models.PositiveIntegerField(blank=True, null=True) # เกณฑ์ปลอดภัย จำนวน
     storage_location = models.CharField(max_length=255, blank=True, null=True) # ที่เก็บ
+    requester_name = models.CharField(max_length=255, blank=True, null=True)     # ชื่อผู้เบิก
+    requester_set_number = models.CharField(max_length=100, blank=True, null=True)     # เลขที่ชุดเบิก
+    
     def __str__(self):
         return f"DocumentRecord {self.registration_number}"
 

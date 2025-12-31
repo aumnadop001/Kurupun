@@ -2,9 +2,12 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import toast from 'react-hot-toast';
+import { styled, alpha } from '@mui/material/styles';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import {
   Box,
   Button,
+  ButtonGroup,
   TextField,
   Table,
   TableBody,
@@ -13,7 +16,6 @@ import {
   TableHead,
   TableRow,
   Paper,
-  IconButton,
   Typography,
   TablePagination,
   Toolbar,
@@ -23,9 +25,13 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
-  Chip,
   CircularProgress,
+  Divider
 } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import Menu, { MenuProps } from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import {
   Edit as EditIcon,
   Delete as DeleteIcon,
@@ -38,6 +44,52 @@ import { DocumentRecord } from '../../types/document';
 import { environment } from '../../environments';
 const { API_HOST } = environment;
 
+const StyledMenu = styled((props: MenuProps) => (
+  <Menu
+    elevation={0}
+    anchorOrigin={{
+      vertical: 'bottom',
+      horizontal: 'right',
+    }}
+    transformOrigin={{
+      vertical: 'top',
+      horizontal: 'right',
+    }}
+    {...props}
+  />
+))(({ theme }) => ({
+  '& .MuiPaper-root': {
+    borderRadius: 6,
+    marginTop: theme.spacing(1),
+    minWidth: 180,
+    color: 'rgb(55, 65, 81)',
+    boxShadow:
+      'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
+    '& .MuiMenu-list': {
+      padding: '4px 0',
+    },
+    '& .MuiMenuItem-root': {
+      '& .MuiSvgIcon-root': {
+        fontSize: 18,
+        color: theme.palette.text.secondary,
+        marginRight: theme.spacing(1.5),
+        ...theme.applyStyles('dark', {
+          color: 'inherit',
+        }),
+      },
+      '&:active': {
+        backgroundColor: alpha(
+          theme.palette.primary.main,
+          theme.palette.action.selectedOpacity,
+        ),
+      },
+    },
+    ...theme.applyStyles('dark', {
+      color: theme.palette.grey[300],
+    }),
+  },
+}));
+
 function Documents() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
@@ -49,6 +101,14 @@ function Documents() {
   const [totalCount, setTotalCount] = useState(0);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedDocumentId, setSelectedDocumentId] = useState<number | null>(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const loadDocuments = async () => {
     setLoading(true);
@@ -190,6 +250,7 @@ function Documents() {
                   <TableCell>ทะเบียนที่</TableCell>
                   <TableCell>วันที่ลงทะเบียน</TableCell>
                   <TableCell>ประเภทเอกสาร</TableCell>
+                  <TableCell>ชื่อพัสดุ</TableCell>
                   <TableCell>จาก</TableCell>
                   <TableCell>ถึง</TableCell>
                   <TableCell>หมายเลขพัสดุ</TableCell>
@@ -210,29 +271,97 @@ function Documents() {
                       <TableCell>{doc.registerNo}</TableCell>
                       <TableCell>{formatDate(doc.registration_date)}</TableCell>
                       <TableCell>{doc.document_type}</TableCell>
+                      <TableCell>{doc.first_item}</TableCell>
                       <TableCell>{doc.sender}</TableCell>
                       <TableCell>{doc.recipient}</TableCell>
                       <TableCell>{doc.inventory_number || '-'}</TableCell>
                       <TableCell>{doc.storage_location || '-'}</TableCell>
                       <TableCell align="center">
-                        <Button variant='contained' size='small' onClick={() => navigate(`/inventory?document_id=${doc.id}&search=${doc.registration_number}`)} sx={{ mr: 1 }}>
-                          แสดงข้อมูลพัสดุ {doc.inventories_count ? `(${doc.inventories_count})` : ''}
+                        <Button
+                          id="demo-customized-button"
+                          aria-controls={open ? 'demo-customized-menu' : undefined}
+                          aria-haspopup="true"
+                          aria-expanded={open ? 'true' : undefined}
+                          variant="outlined"
+                          disableElevation
+                          onClick={handleClick}
+                        // endIcon={<KeyboardArrowDownIcon />}
+                        >
+                          <MenuIcon />
                         </Button>
-                        {isAuthenticated && (
-                          <>
-                            <Button variant='contained' size='small' startIcon={<EditIcon />} onClick={() => handleEdit(doc.id!)}>
-                              แก้ไข
-                            </Button>
-                            <Button variant='contained' size='small' color='error' startIcon={<DeleteIcon />} onClick={() => handleDeleteClick(doc.id!)} sx={{ mx: 1 }}>
+                        <StyledMenu
+                          id="demo-customized-menu"
+                          slotProps={{
+                            list: {
+                              'aria-labelledby': 'demo-customized-button',
+                            },
+                          }}
+                          anchorEl={anchorEl}
+                          open={open}
+                          onClose={handleClose}
+                        >
+                          <MenuItem onClick={() => {
+                            navigate(`/inventory?search=${doc.registration_number}`);
+                            handleClose();
+                          }} disableRipple
+                          >
+                            <VisibilityIcon />
+                            แสดงข้อมูลพัสดุ {doc.inventories_count ? `(${doc.inventories_count})` : ''}
+                          </MenuItem>
+                          <MenuItem onClick={() => {
+                            navigate(`/documents/edit/${doc.id}`);
+                            handleClose();
+                          }}
+                            disableRipple>
+                            <EditIcon />
+                            แก้ไข
+                          </MenuItem>
+                          {isAuthenticated && (
+                            <MenuItem
+                              component="a"
+                              href={`${API_HOST}/api/documents/document-records/export-documents/`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={handleClose}
+                              disableRipple
+                            >
+                              <DownloadIcon sx={{ mr: 1 }} />
+                              ดาวน์โหลดทะเบียนเอกสาร
+                            </MenuItem>
+                          )}
+
+                          {isAuthenticated && (
+                            <MenuItem
+                              component="a"
+                              href={`${API_HOST}/api/documents/document-records/${doc.id}/export-excel/`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={handleClose}
+                              disableRipple
+                            >
+                              <DownloadIcon sx={{ mr: 1 }} />
+                              ดาวน์โหลดบัญชีคุมพัสดุ
+                            </MenuItem>
+                          )}
+                          {isAuthenticated && <>
+                            <Divider sx={{ my: 0.5 }} />
+                            <MenuItem onClick={() => {
+                              handleDeleteClick(doc.id!);
+                              handleClose();
+                            }} disableRipple>
+                              <DeleteIcon />
                               ลบ
-                            </Button>
-                            <a href={`${API_HOST}/api/documents/document-records/${doc.id}/export-excel/`} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
-                              <Button variant='contained' size='small' color='success' startIcon={<DownloadIcon />}>
-                                ดาวน์โหลด
-                              </Button>
-                            </a>
-                          </>
-                        )}
+                            </MenuItem></>}
+                        </StyledMenu>
+                        {/* <ButtonGroup variant='contained' size='small'>
+                          <Button variant='contained' size='small' onClick={() => navigate(`/inventory?search=${doc.registration_number}`)}>
+                            แสดงข้อมูลพัสดุ {doc.inventories_count ? `(${doc.inventories_count})` : ''}
+                          </Button>
+                          {isAuthenticated && <Button startIcon={<EditIcon />} onClick={() => handleEdit(doc.id!)}>แก้ไข</Button>}
+                          {isAuthenticated && <Button color='error' startIcon={<DeleteIcon />} onClick={() => handleDeleteClick(doc.id!)}> ลบ</Button>}
+                          {isAuthenticated && <Button color='success' startIcon={<DownloadIcon />} component='a' href={`${API_HOST}/api/documents/document-records/${doc.id}/export-excel/`} target="_blank" rel="noopener noreferrer">ดาวน์โหลดบัญชีคุมพัสดุ</Button>}
+                          {isAuthenticated && <Button color='success' startIcon={<DownloadIcon />} component='a' href={`${API_HOST}/api/documents/document-records/export-documents/`} target="_blank" rel="noopener noreferrer">ดาวน์โหลดทะเบียนเอกสาร</Button>}
+                        </ButtonGroup> */}
                       </TableCell>
                     </TableRow>
                   ))

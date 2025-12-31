@@ -6,6 +6,7 @@ import Documents from '../pages/Document';
 import DocumentForm from '../pages/Document/form/form';
 import Inventories from '../pages/Inventory';
 import InventoryForm from '../pages/Inventory/form/form';
+import PaymentIntentForm from '../pages/Inventory/form/PaymentIntentForm';
 import RegisterPage from '../pages/Register';
 import Loader from '../components/Loader';
 import SidebarLayout from '../components/Sidebar';
@@ -17,6 +18,32 @@ const Router: React.FC = () => {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route
+            path="/"
+            element={
+              <SidebarLayout>
+                <Documents />
+              </SidebarLayout>
+            }
+          />
+          <Route
+            path="/documents/create"
+            element={
+              <RequireAuth>
+                <SidebarLayout>
+                  <DocumentForm />
+                </SidebarLayout>
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/documents/edit/:id"
+            element={
+              <SidebarLayout>
+                <DocumentForm />
+              </SidebarLayout>
+            }
+          />
           <Route
             path="/inventory"
             element={
@@ -44,29 +71,13 @@ const Router: React.FC = () => {
             }
           />
           <Route
-            path="/"
-            element={
-              <SidebarLayout>
-                <Documents />
-              </SidebarLayout>
-            }
-          />
-          <Route
-            path="/documents/create"
+            path="/payment-intent/create"
             element={
               <RequireAuth>
                 <SidebarLayout>
-                  <DocumentForm />
+                  <PaymentIntentForm />
                 </SidebarLayout>
               </RequireAuth>
-            }
-          />
-          <Route
-            path="/documents/edit/:id"
-            element={
-              <SidebarLayout>
-                <DocumentForm />
-              </SidebarLayout>
             }
           />
           <Route path="*" element={<Navigate to="/" replace />} />

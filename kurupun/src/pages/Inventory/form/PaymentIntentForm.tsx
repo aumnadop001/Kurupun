@@ -32,7 +32,7 @@ import { DocumentRecord } from '../../../types/document';
 const validationSchema = Yup.object({});
 
 
-function InventoryForm() {
+function PaymentIntentForm() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [loading, setLoading] = useState(false);
@@ -41,7 +41,6 @@ function InventoryForm() {
   const [previousStockBalance, setPreviousStockBalance] = useState<number>(0);
   const isEditMode = Boolean(id);
   const [currentDocument, setCurrentDocument] = useState<DocumentRecord | null>(null);
-
 
   const formik = useFormik<InventoryFormValues>({
     initialValues: {
@@ -151,13 +150,13 @@ function InventoryForm() {
     }
   }, [formik.values.document_record, isEditMode]);
 
-
   useEffect(() => {
     if (currentDocument) {
-      const format_request_evidence = `${currentDocument.document_type} - ${currentDocument.sender}${currentDocument.related_document_number && `- ${currentDocument.related_document_number}`} - ${currentDocument.registerNo}`;
+      const format_request_evidence = `${currentDocument.document_type} - ${currentDocument.sender}${currentDocument.related_document_number  && `- ${currentDocument.related_document_number}`} - ${currentDocument.registerNo}`;
       formik.setFieldValue('request_evidence', format_request_evidence);
     }
   }, [currentDocument])
+
 
   // Auto-calculate stock balance
   useEffect(() => {
@@ -185,6 +184,7 @@ function InventoryForm() {
     setInitialLoading(true);
     try {
       const data = await fetchInventoryById(parseInt(id!));
+      const format_request_evidence = `${currentDocument?.document_type} - ${currentDocument?.sender}  - ${currentDocument?.registerNo}`;
       formik.setValues({
         document_record: data.document_record?.toString() || '',
         pending_date: data.pending_date || '',
@@ -203,7 +203,7 @@ function InventoryForm() {
         request_date: data.request_date || '',
         received_quantity: data.received_quantity?.toString() || '',
         unit_price: data.unit_price?.toString() || '',
-        request_evidence: data.request_evidence || '',
+        request_evidence: format_request_evidence || '',
         request_type: data.request_type || '',
         issue_quantity: data.issue_quantity?.toString() || '',
         total_borrowed: data.total_borrowed?.toString() || '',
@@ -265,7 +265,7 @@ function InventoryForm() {
                     <MenuItem value="">ไม่เชื่อมโยง</MenuItem>
                     {documentRecords.map((doc) => (
                       <MenuItem key={doc.id} value={doc.id}>
-                        {doc.registerNo} - {doc.first_item}
+                        {doc.registration_number} - {doc.first_item}
                       </MenuItem>
                     ))}
                   </Select>
@@ -277,173 +277,10 @@ function InventoryForm() {
               </FormControl>
             </Grid>
           </Grid>
-          <Divider sx={{ mt: 4, mb: 3 }} />
+          <Divider sx={{ mt: 4, mb: 2 }} />
+
           <Typography variant="h6" gutterBottom>
-            ค้างรับ และ ค้างจ่าย
-          </Typography>
-          <Grid container spacing={2}>
-            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-              <TextField
-                fullWidth
-                id="pending_date"
-                name="pending_date"
-                label="วันทู่"
-                type="date"
-                InputLabelProps={{ shrink: true }}
-                value={formik.values.pending_date}
-                onChange={formik.handleChange}
-                error={formik.touched.pending_date && Boolean(formik.errors.pending_date)}
-                helperText={formik.touched.pending_date && formik.errors.pending_date}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-              <TextField
-                fullWidth
-                id="pending_evidence"
-                name="pending_evidence"
-                label="หลักฐาน"
-                value={formik.values.pending_evidence}
-                onChange={formik.handleChange}
-                error={formik.touched.pending_evidence && Boolean(formik.errors.pending_evidence)}
-                helperText={formik.touched.pending_evidence && formik.errors.pending_evidence}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-              <TextField
-                fullWidth
-                id="pending_unit"
-                name="pending_unit"
-                label="หน่วยนับ"
-                value={formik.values.pending_unit}
-                onChange={formik.handleChange}
-                error={formik.touched.pending_unit && Boolean(formik.errors.pending_unit)}
-                helperText={formik.touched.pending_unit && formik.errors.pending_unit}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-              <TextField
-                fullWidth
-                id="pending_quantity"
-                name="pending_quantity"
-                label="จำนวน"
-                type="number"
-                value={formik.values.pending_quantity}
-                onChange={formik.handleChange}
-              />
-            </Grid>
-          </Grid>
-
-          <Typography variant="subtitle2" sx={{ mt: 2, mb: 1 }}>
-            รับ/ค้าง (4 รอบ)
-          </Typography>
-          <Grid container spacing={2}>
-            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-              <TextField
-                fullWidth
-                id="pending_receive1"
-                name="pending_receive1"
-                label="รับ 1"
-                type="number"
-                value={formik.values.pending_receive1}
-                onChange={formik.handleChange}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-              <TextField
-                fullWidth
-                id="pending_balance1"
-                name="pending_balance1"
-                label="ค้าง 1"
-                type="number"
-                value={formik.values.pending_balance1}
-                onChange={formik.handleChange}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-              <TextField
-                fullWidth
-                id="pending_receive2"
-                name="pending_receive2"
-                label="รับ 2"
-                type="number"
-                value={formik.values.pending_receive2}
-                onChange={formik.handleChange}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-              <TextField
-                fullWidth
-                id="pending_balance2"
-                name="pending_balance2"
-                label="ค้าง 2"
-                type="number"
-                value={formik.values.pending_balance2}
-                onChange={formik.handleChange}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-              <TextField
-                fullWidth
-                id="pending_receive3"
-                name="pending_receive3"
-                label="รับ 3"
-                type="number"
-                value={formik.values.pending_receive3}
-                onChange={formik.handleChange}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-              <TextField
-                fullWidth
-                id="pending_balance3"
-                name="pending_balance3"
-                label="ค้าง 3"
-                type="number"
-                value={formik.values.pending_balance3}
-                onChange={formik.handleChange}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-              <TextField
-                fullWidth
-                id="pending_receive4"
-                name="pending_receive4"
-                label="รับ 4"
-                type="number"
-                value={formik.values.pending_receive4}
-                onChange={formik.handleChange}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-              <TextField
-                fullWidth
-                id="pending_balance4"
-                name="pending_balance4"
-                label="ค้าง 4"
-                type="number"
-                value={formik.values.pending_balance4}
-                onChange={formik.handleChange}
-              />
-            </Grid>
-            <Grid size={{ xs: 12 }}>
-              <TextField
-                fullWidth
-                id="pending_signature"
-                name="pending_signature"
-                label="ลายมือชื่อ"
-                value={formik.values.pending_signature}
-                onChange={formik.handleChange}
-                error={formik.touched.pending_signature && Boolean(formik.errors.pending_signature)}
-                helperText={formik.touched.pending_signature && formik.errors.pending_signature}
-              />
-            </Grid>
-          </Grid>
-
-          <Divider sx={{ my: 3 }} />
-
-          {/* {!isEditMode && <> */}
-          <Typography variant="h6" gutterBottom>
-            ความต้องการรับและจ่าย
+            ความต้องการรับ
           </Typography>
           <Grid container spacing={2}>
             <Grid size={{ xs: 12, sm: 6 }}>
@@ -528,80 +365,17 @@ function InventoryForm() {
             การรับ
           </Typography>
           <Grid container spacing={2}>
-            {/* <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField
-                  fullWidth
-                  label="คงคลังก่อนหน้า"
-                  type="number"
-                  disabled
-                  value={previousStockBalance}
-                  helperText="ยอดคงคลังสะสมจากรายการก่อนหน้าทั้งหมด"
-                /> */}
-          {/* </Grid> */}
-          <Grid size={{ xs: 12 }}>
-            <TextField
-              fullWidth
-              id="received_quantity"
-              name="received_quantity"
-              label="จำนวนที่รับ"
-              type="number"
-              value={formik.values.received_quantity}
-              onChange={formik.handleChange}
-              error={formik.touched.received_quantity && Boolean(formik.errors.received_quantity)}
-              helperText={formik.touched.received_quantity && formik.errors.received_quantity}
-            />
-          </Grid>
-        </Grid>
-        <Divider sx={{ mt: 4, mb: 2 }} />
-
-        <Typography variant="h6" gutterBottom>
-          การจ่าย
-        </Typography>
-        <Grid container spacing={2}>
-          <Grid size={{ xs: 12, sm: 6 }}>
-            <TextField
-              fullWidth
-              id="issue_quantity"
-              name="issue_quantity"
-              label="จ่าย"
-              type="number"
-              value={formik.values.issue_quantity}
-              onChange={formik.handleChange}
-              error={formik.touched.issue_quantity && Boolean(formik.errors.issue_quantity)}
-              helperText={formik.touched.issue_quantity && formik.errors.issue_quantity}
-            />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6 }}>
-            <TextField
-              fullWidth
-              id="total_borrowed"
-              name="total_borrowed"
-              label="รวมยืม"
-              type="number"
-              value={formik.values.total_borrowed}
-              onChange={formik.handleChange}
-              error={formik.touched.total_borrowed && Boolean(formik.errors.total_borrowed)}
-              helperText={formik.touched.total_borrowed && formik.errors.total_borrowed}
-            />
-          </Grid>
-        </Grid>
-
-        {/* <Grid container spacing={2}>
-            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
-                id="request_date"
-                name="request_date"
-                label="วันที่"
-                type="date"
-                InputLabelProps={{ shrink: true }}
-                value={formik.values.request_date}
-                onChange={formik.handleChange}
-                error={formik.touched.request_date && Boolean(formik.errors.request_date)}
-                helperText={formik.touched.request_date && formik.errors.request_date}
+                label="คงคลังก่อนหน้า"
+                type="number"
+                disabled
+                value={previousStockBalance}
+                helperText="ยอดคงคลังสะสมจากรายการก่อนหน้าทั้งหมด"
               />
             </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
                 id="received_quantity"
@@ -614,73 +388,14 @@ function InventoryForm() {
                 helperText={formik.touched.received_quantity && formik.errors.received_quantity}
               />
             </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <TextField
-                fullWidth
-                id="unit_price"
-                name="unit_price"
-                label="ราคาต่อหน่วย"
-                type="number"
-                inputProps={{ step: '0.01' }}
-                value={formik.values.unit_price}
-                onChange={formik.handleChange}
-                error={formik.touched.unit_price && Boolean(formik.errors.unit_price)}
-                helperText={formik.touched.unit_price && formik.errors.unit_price}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <TextField
-                fullWidth
-                label="คงคลังก่อนหน้า"
-                type="number"
-                value={previousStockBalance}
-                helperText="ยอดคงคลังสะสมจากรายการก่อนหน้าทั้งหมด"
-                InputProps={{
-                  readOnly: true,
-                }}
-                sx={{
-                  '& .MuiInputBase-input': {
-                    backgroundColor: '#f5f5f5',
-                  },
-                }}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <TextField
-                fullWidth
-                id="request_evidence"
-                name="request_evidence"
-                label="หลักฐาน"
-                value={formik.values.request_evidence}
-                onChange={formik.handleChange}
-                error={formik.touched.request_evidence && Boolean(formik.errors.request_evidence)}
-                helperText={formik.touched.request_evidence && formik.errors.request_evidence}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <FormControl
-                fullWidth
-                size='small'
-                error={formik.touched.request_type && Boolean(formik.errors.request_type)}
-              >
-                <InputLabel>ประเภท</InputLabel>
-                <Select
-                  id="request_type"
-                  name="request_type"
+          </Grid>
+          <Divider sx={{ mt: 4, mb: 2 }} />
 
-                  value={formik.values.request_type}
-                  label="ประเภท"
-                  onChange={formik.handleChange}
-                >
-                  <MenuItem value="INITIAL">ขั้นต้น</MenuItem>
-                  <MenuItem value="REPLACEMENT">ทดแทน</MenuItem>
-                </Select>
-                {formik.touched.request_type && formik.errors.request_type && (
-                  <FormHelperText>{formik.errors.request_type}</FormHelperText>
-                )}
-              </FormControl>
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+          <Typography variant="h6" gutterBottom>
+            การจ่าย
+          </Typography>
+          <Grid container spacing={2}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
                 id="issue_quantity"
@@ -693,7 +408,7 @@ function InventoryForm() {
                 helperText={formik.touched.issue_quantity && formik.errors.issue_quantity}
               />
             </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
                 id="total_borrowed"
@@ -706,42 +421,30 @@ function InventoryForm() {
                 helperText={formik.touched.total_borrowed && formik.errors.total_borrowed}
               />
             </Grid>
-            <Grid size={{ xs: 12 }}>
-              <TextField
-                fullWidth
-                id="request_signature"
-                name="request_signature"
-                label="ลายมือชื่อ"
-                value={formik.values.request_signature}
-                onChange={formik.handleChange}
-                error={formik.touched.request_signature && Boolean(formik.errors.request_signature)}
-                helperText={formik.touched.request_signature && formik.errors.request_signature}
-              />
-            </Grid>
-          </Grid> */}
+          </Grid>
 
-        <Box sx={{ mt: 3, display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
-          <Button
-            variant="outlined"
-            startIcon={<CancelIcon />}
-            onClick={handleCancel}
-            disabled={loading}
-          >
-            ยกเลิก
-          </Button>
-          <Button
-            type="submit"
-            variant="contained"
-            startIcon={loading ? <CircularProgress size={20} /> : <SaveIcon />}
-            disabled={loading}
-          >
-            {loading ? 'กำลังบันทึก...' : 'บันทึก'}
-          </Button>
-        </Box>
-      </form>
-    </Paper>
-    </Box >
+          <Box sx={{ mt: 3, display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
+            <Button
+              variant="outlined"
+              startIcon={<CancelIcon />}
+              onClick={handleCancel}
+              disabled={loading}
+            >
+              ยกเลิก
+            </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              startIcon={loading ? <CircularProgress size={20} /> : <SaveIcon />}
+              disabled={loading}
+            >
+              {loading ? 'กำลังบันทึก...' : 'บันทึก'}
+            </Button>
+          </Box>
+        </form>
+      </Paper>
+    </Box>
   );
 }
 
-export default InventoryForm;
+export default PaymentIntentForm;

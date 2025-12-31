@@ -45,11 +45,11 @@ function Inventories() {
   const { isAuthenticated } = useAuth();
   const [inventories, setInventories] = useState<Inventory[]>([]);
   const [loading, setLoading] = useState(false);
-  
+
   // Get parameters from URL query
-  const documentIdParam = searchParams.get('document_id');
+  // const documentIdParam = searchParams.get('document_id');
   const searchParam = searchParams.get('search');
-  
+
   const [searchTerm, setSearchTerm] = useState(searchParam || '');
   const [requestTypeFilter, setRequestTypeFilter] = useState('');
   const [page, setPage] = useState(0);
@@ -67,15 +67,15 @@ function Inventories() {
         search: searchTerm,
         ordering: '-request_date',
       };
-      
+
       if (requestTypeFilter) {
         params.request_type = requestTypeFilter;
       }
 
       // Filter by document_id if provided in URL
-      if (documentIdParam) {
-        params.document_record = documentIdParam;
-      }
+      // if (documentIdParam) {
+      //   params.document_record = documentIdParam;
+      // }
 
       const response = await fetchInventories(params);
       setInventories(response.results);
@@ -96,7 +96,7 @@ function Inventories() {
 
   useEffect(() => {
     loadInventories();
-  }, [page, rowsPerPage, requestTypeFilter, documentIdParam]);
+  }, [page, rowsPerPage, requestTypeFilter]);
 
   const handleSearch = () => {
     setPage(0);
@@ -115,6 +115,7 @@ function Inventories() {
     setPage(0);
     // Clear URL parameters
     navigate('/inventory');
+    loadInventories();
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -133,6 +134,10 @@ function Inventories() {
   const handleEdit = (id: number) => {
     navigate(`/inventory/edit/${id}`);
   };
+
+  const handlePaymentIntent = (id: number) => {
+    navigate(`/payment-intent/create`);
+  }
 
   const handleDeleteClick = (id: number) => {
     setSelectedInventoryId(id);
@@ -175,7 +180,7 @@ function Inventories() {
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h4" gutterBottom>
-        ทะเบียนคุมวัสดุ {documentIdParam && `(กรองตามเอกสาร #${documentIdParam})`}
+        ทะเบียนคุมวัสดุ {searchParam && `(กรองตามเอกสาร #${searchParam})`}
       </Typography>
 
       <Toolbar sx={{ pl: 0, pr: 0, mb: 2 }}>
@@ -244,15 +249,13 @@ function Inventories() {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>วันที่ค้างรับ</TableCell>
-                  <TableCell>หลักฐาน</TableCell>
-                  <TableCell>วันที่ร้องขอ</TableCell>
-                  <TableCell>จำนวนที่รับ</TableCell>
-                  <TableCell>ราคาต่อหน่วย</TableCell>
-                  <TableCell>ประเภท</TableCell>
-                  <TableCell>จ่าย</TableCell>
-                  <TableCell>รวมยืม</TableCell>
-                  <TableCell>คงคลัง</TableCell>
+                  {/* <TableCell>#</TableCell> */}
+                  <TableCell>หมายเลขพัสดุ</TableCell>
+                  <TableCell>ชื่อพัสดุ</TableCell>
+                  {/* <TableCell>รับเข้า</TableCell> */}
+                  {/* <TableCell>จ่ายออก</TableCell> */}
+                  {/* <TableCell>รวมยืม</TableCell> */}
+                  <TableCell align="center">คำนวนคงคลัง</TableCell>
                   <TableCell align="center">จัดการ</TableCell>
                 </TableRow>
               </TableHead>
@@ -264,28 +267,27 @@ function Inventories() {
                     </TableCell>
                   </TableRow>
                 ) : (
-                  inventories.map((inventory) => (
+                  inventories.map((inventory, index) => (
                     <TableRow key={inventory.id} hover>
-                      <TableCell>{formatDate(inventory.pending_date)}</TableCell>
-                      <TableCell>{inventory.pending_evidence}</TableCell>
-                      <TableCell>{formatDate(inventory.request_date)}</TableCell>
-                      <TableCell>{inventory.received_quantity}</TableCell>
-                      <TableCell>{parseFloat(inventory.unit_price).toFixed(2)}</TableCell>
-                      <TableCell>
-                        <Chip
-                          label={getRequestTypeLabel(inventory.request_type)}
-                          color={getRequestTypeColor(inventory.request_type)}
-                          size="small"
-                        />
-                      </TableCell>
-                      <TableCell>{inventory.issue_quantity}</TableCell>
-                      <TableCell>{inventory.total_borrowed}</TableCell>
-                      <TableCell>{inventory.stock_balance}</TableCell>
+                      {/* <TableCell>{page * rowsPerPage + index + 1}</TableCell> */}
+                      <TableCell>{inventory.document_record_inventory_number}</TableCell>
+                      <TableCell>{inventory.first_item}</TableCell>
+                      {/* <TableCell>{inventory.received_quantity}</TableCell> */}
+                      {/* <TableCell>{inventory.issue_quantity}</TableCell> */}
+                      {/* <TableCell>{inventory.total_borrowed}</TableCell> */}
+                      <TableCell align='center'>{inventory.stock_balance}</TableCell>
                       <TableCell align="center">
                         {isAuthenticated && (
                           <>
+                            {/* <Button variant='contained' startIcon={<EditIcon />} size='small' onClick={() => handlePaymentIntent(inventory.id!)} sx={{ mr: 1 }}>
+                              รับเข้า
+                            </Button>
+                            <Button variant='contained' startIcon={<EditIcon />} size='small' onClick={() => handlePaymentIntent(inventory.id!)} sx={{ mr: 1 }}>
+                              จ่ายออก
+                            </Button> */}
                             <Button variant='contained' startIcon={<EditIcon />} size='small' onClick={() => handleEdit(inventory.id!)} sx={{ mr: 1 }}>
-                              แก้ไข
+                              {/* แก้ไข */}
+                              ดูรายละเอียด
                             </Button>
                             <Button variant='contained' color='error' startIcon={<DeleteIcon />} size='small' onClick={() => handleDeleteClick(inventory.id!)} >
                               ลบ

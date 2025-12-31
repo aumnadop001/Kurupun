@@ -1,6 +1,8 @@
 export interface Inventory {
   id?: number;
   document_record?: number;
+  document_record_inventory_number?: string;
+  first_item?: string;
   // ค้างรับ และ ค้างจ่าย
   pending_date: string;
   pending_evidence: string;
