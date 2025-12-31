@@ -57,6 +57,7 @@ function Inventories() {
   const [totalCount, setTotalCount] = useState(0);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedInventoryId, setSelectedInventoryId] = useState<number | null>(null);
+  const [triggerSearch, setTriggerSearch] = useState(0);
 
   const loadInventories = async () => {
     setLoading(true);
@@ -96,7 +97,7 @@ function Inventories() {
 
   useEffect(() => {
     loadInventories();
-  }, [page, rowsPerPage, requestTypeFilter]);
+  }, [page, rowsPerPage, requestTypeFilter, triggerSearch]);
 
   const handleSearch = () => {
     setPage(0);
@@ -115,7 +116,7 @@ function Inventories() {
     setPage(0);
     // Clear URL parameters
     navigate('/inventory');
-    loadInventories();
+    setTriggerSearch(prev => prev + 1);
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
