@@ -102,9 +102,16 @@ function Documents() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedDocumentId, setSelectedDocumentId] = useState<number | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedId, setselectedId] = useState<number | null>(null);
+  const [selectInventory, setselectInventory] = useState(null)
   const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+  console.log(selectedDocumentId);
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>, id: any, invenId: any) => {
+    console.log('id ->', id);
+    setselectInventory(invenId)
     setAnchorEl(event.currentTarget);
+    setselectedId(id);
   };
   const handleClose = () => {
     setAnchorEl(null);
@@ -284,7 +291,7 @@ function Documents() {
                           aria-expanded={open ? 'true' : undefined}
                           variant="outlined"
                           disableElevation
-                          onClick={handleClick}
+                          onClick={(e) => handleClick(e, doc.id,doc.registration_number)}
                         // endIcon={<KeyboardArrowDownIcon />}
                         >
                           <MenuIcon />
@@ -301,7 +308,7 @@ function Documents() {
                           onClose={handleClose}
                         >
                           <MenuItem onClick={() => {
-                            navigate(`/inventory?search=${doc.registration_number}`);
+                            navigate(`/inventory?search=${selectInventory}`);
                             handleClose();
                           }} disableRipple
                           >
@@ -309,7 +316,7 @@ function Documents() {
                             แสดงข้อมูลพัสดุ {doc.inventories_count ? `(${doc.inventories_count})` : ''}
                           </MenuItem>
                           <MenuItem onClick={() => {
-                            navigate(`/documents/edit/${doc.id}`);
+                            navigate(`/documents/edit/${selectedId}`);
                             handleClose();
                           }}
                             disableRipple>
