@@ -80,3 +80,35 @@ export const getLatestStockBalance = async (documentRecordId: number): Promise<{
     throw error;
   }
 };
+
+// ===== Transaction APIs =====
+export const addInventoryTransaction = async (inventoryId: number, data: any): Promise<any> => {
+  try {
+    const response = await callPost(`/api/documents/inventories/${inventoryId}/add-transaction/`, data);
+    return response;
+  } catch (error) {
+    console.error("Add inventory transaction failed:", error);
+    throw error;
+  }
+};
+
+export const getInventoryTransactions = async (inventoryId: number): Promise<any[]> => {
+  try {
+    const response = await callGet(`/api/documents/inventories/${inventoryId}/transactions/`);
+    return response;
+  } catch (error) {
+    console.error("Get inventory transactions failed:", error);
+    throw error;
+  }
+};
+
+export const clearInventoryTransactions = async (inventoryId: number): Promise<any> => {
+  try {
+    const response = await callDelete(`/api/documents/inventories/${inventoryId}/clear-transactions/`);
+    return response;
+  } catch (error) {
+    console.error("Clear inventory transactions failed:", error);
+    throw error;
+  }
+};
+

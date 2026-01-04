@@ -2,9 +2,177 @@ from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment, Border, Side, PatternFill
 from openpyxl.utils import get_column_letter
 from django.http import HttpResponse
-from .models import DocumentRecord, Inventory
+from .models import DocumentRecord, Inventory, InventoryTransaction
 from urllib.parse import quote
 
+# DocumentRecord data
+# {
+#     "id": 8,
+#     "document_record_inventory_number": "4620-001-0001",
+#     "document_record_register_no": "0005-69",
+#     "unit_item": "อัน",
+#     "first_item": "เครื่องกลั่นน้ำแบบต่าง ๆ",
+#     "transactions": [
+#         {
+#             "id": 22,
+#             "transaction_type": "RECEIVE",
+#             "transaction_date": "2026-01-04",
+#             "evidence": "ใบแจ้งหนี้ - งานบริหารงานทั่วไป - 0005-69",
+#             "unit_price": "30.00",
+#             "type": "INITIAL",
+#             "quantity": 300,
+#             "total_borrowed": 0,
+#             "signature": "",
+#             "created_at": "2026-01-04T11:34:52.448454Z",
+#             "inventory": 8
+#         },
+#         {
+#             "id": 23,
+#             "transaction_type": "RECEIVE",
+#             "transaction_date": "2026-01-04",
+#             "evidence": "ใบแจ้งหนี้ - งานบริหารงานทั่วไป - 0005-69",
+#             "unit_price": "30.00",
+#             "type": "INITIAL",
+#             "quantity": 300,
+#             "total_borrowed": 0,
+#             "signature": "",
+#             "created_at": "2026-01-04T11:34:52.473435Z",
+#             "inventory": 8
+#         },
+#         {
+#             "id": 24,
+#             "transaction_type": "RECEIVE",
+#             "transaction_date": "2026-01-04",
+#             "evidence": "ใบแจ้งหนี้ - งานบริหารงานทั่วไป - 0005-69",
+#             "unit_price": "30.00",
+#             "type": "INITIAL",
+#             "quantity": 300,
+#             "total_borrowed": 0,
+#             "signature": "",
+#             "created_at": "2026-01-04T11:34:52.495693Z",
+#             "inventory": 8
+#         },
+#         {
+#             "id": 25,
+#             "transaction_type": "ISSUE",
+#             "transaction_date": "2026-01-04",
+#             "evidence": "ใบแจ้งหนี้ - งานบริหารงานทั่วไป - 0005-69",
+#             "unit_price": "30.00",
+#             "type": "INITIAL",
+#             "quantity": 300,
+#             "total_borrowed": 200,
+#             "signature": "",
+#             "created_at": "2026-01-04T11:34:52.524627Z",
+#             "inventory": 8
+#         },
+#         {
+#             "id": 26,
+#             "transaction_type": "ISSUE",
+#             "transaction_date": "2026-01-04",
+#             "evidence": "ใบแจ้งหนี้ - งานบริหารงานทั่วไป - 0005-69",
+#             "unit_price": "30.00",
+#             "type": "INITIAL",
+#             "quantity": 100,
+#             "total_borrowed": 0,
+#             "signature": "",
+#             "created_at": "2026-01-04T11:34:52.550323Z",
+#             "inventory": 8
+#         }
+#     ],
+#     "pending_date": null,
+#     "pending_evidence": "",
+#     "pending_unit": "",
+#     "pending_quantity": null,
+#     "pending_receive1": null,
+#     "pending_balance1": null,
+#     "pending_receive2": null,
+#     "pending_balance2": null,
+#     "pending_receive3": null,
+#     "pending_balance3": null,
+#     "pending_receive4": null,
+#     "pending_balance4": null,
+#     "pending_signature": "",
+#     "request_date": null,
+#     "received_quantity": 0,
+#     "unit_price": "0.00",
+#     "request_evidence": "ใบแจ้งหนี้ - งานบริหารงานทั่วไป - 0005-69",
+#     "request_type": "INITIAL",
+#     "issue_quantity": 0,
+#     "total_borrowed": 0,
+#     "previous_stock_balance": 0,
+#     "stock_balance": 300,
+#     "request_signature": "",
+#     "document_record": 5
+# }
+
+# Transaction data
+# [
+#     {
+#         "id": 22,
+#         "transaction_type": "RECEIVE",
+#         "transaction_date": "2026-01-04",
+#         "evidence": "ใบแจ้งหนี้ - งานบริหารงานทั่วไป - 0005-69",
+#         "unit_price": "30.00",
+#         "type": "INITIAL",
+#         "quantity": 300,
+#         "total_borrowed": 0,
+#         "signature": "",
+#         "created_at": "2026-01-04T11:34:52.448454Z",
+#         "inventory": 8
+#     },
+#     {
+#         "id": 23,
+#         "transaction_type": "RECEIVE",
+#         "transaction_date": "2026-01-04",
+#         "evidence": "ใบแจ้งหนี้ - งานบริหารงานทั่วไป - 0005-69",
+#         "unit_price": "30.00",
+#         "type": "INITIAL",
+#         "quantity": 300,
+#         "total_borrowed": 0,
+#         "signature": "",
+#         "created_at": "2026-01-04T11:34:52.473435Z",
+#         "inventory": 8
+#     },
+#     {
+#         "id": 24,
+#         "transaction_type": "RECEIVE",
+#         "transaction_date": "2026-01-04",
+#         "evidence": "ใบแจ้งหนี้ - งานบริหารงานทั่วไป - 0005-69",
+#         "unit_price": "30.00",
+#         "type": "INITIAL",
+#         "quantity": 300,
+#         "total_borrowed": 0,
+#         "signature": "",
+#         "created_at": "2026-01-04T11:34:52.495693Z",
+#         "inventory": 8
+#     },
+#     {
+#         "id": 25,
+#         "transaction_type": "ISSUE",
+#         "transaction_date": "2026-01-04",
+#         "evidence": "ใบแจ้งหนี้ - งานบริหารงานทั่วไป - 0005-69",
+#         "unit_price": "30.00",
+#         "type": "INITIAL",
+#         "quantity": 300,
+#         "total_borrowed": 200,
+#         "signature": "",
+#         "created_at": "2026-01-04T11:34:52.524627Z",
+#         "inventory": 8
+#     },
+#     {
+#         "id": 26,
+#         "transaction_type": "ISSUE",
+#         "transaction_date": "2026-01-04",
+#         "evidence": "ใบแจ้งหนี้ - งานบริหารงานทั่วไป - 0005-69",
+#         "unit_price": "30.00",
+#         "type": "INITIAL",
+#         "quantity": 100,
+#         "total_borrowed": 0,
+#         "signature": "",
+#         "created_at": "2026-01-04T11:34:52.550323Z",
+#         "inventory": 8
+#     }
+# ]
 def export_document_record_to_excel(document_record):
     """
     Export DocumentRecord และ Inventories ไปเป็นไฟล์ Excel
@@ -15,8 +183,8 @@ def export_document_record_to_excel(document_record):
     ws.title = f"ทะเบียนคุม_{document_record.registration_number}"
 
     # Define styles
-    header_font = Font(name="Calibri", size=11, bold=True)
-    normal_font = Font(name="Calibri", size=11)
+    header_font = Font(name="Calibri", size=10, bold=True)
+    normal_font = Font(name="Calibri", size=10)
     center_alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
     left_alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
 
@@ -29,26 +197,26 @@ def export_document_record_to_excel(document_record):
 
     gray_fill = PatternFill(start_color="D3D3D3", end_color="D3D3D3", fill_type="solid")
 
-    # Set column widths
+    # Set column widths (ปรับให้พอดีกับ A4)
     column_widths = {
-        "A": 17,
-        "B": 18,
-        "C": 19,
-        "D": 27,
-        "E": 35,
-        "F": 33,
-        "G": 33,
-        "H": 33,
-        "I": 15,
-        "J": 17,
-        "K": 10,
-        "L": 20,
-        "M": 29,
-        "N": 29,
-        "O": 16,
-        "P": 16,
-        "Q": 13,
-        "R": 17,
+        "A": 12,   # ว.ด.ป.
+        "B": 14,   # หลักฐาน
+        "C": 10,   # หน่วย
+        "D": 12,   # จำนวน
+        "E": 14,   # รับ/ค้าง 1
+        "F": 14,   # รับ/ค้าง 2
+        "G": 14,   # รับ/ค้าง 3
+        "H": 14,   # รับ/ค้าง 4
+        "I": 12,   # ว.ด.ป.
+        "J": 10,   # รับ
+        "K": 10,   # ราคาต่อหน่วย
+        "L": 18,   # หลักฐาน
+        "M": 10,   # ขั้นต้น
+        "N": 10,   # ทดแทน
+        "O": 10,   # จ่าย
+        "P": 10,   # รวมยืม
+        "Q": 12,   # คงคลัง
+        "R": 14,   # ลายมือชื่อ
     }
     for col, width in column_widths.items():
         ws.column_dimensions[col].width = width
@@ -279,107 +447,145 @@ def export_document_record_to_excel(document_record):
     ws["N8"].alignment = center_alignment
     ws["N8"].border = thin_border
 
-    # Row 9+: Data rows (Inventories)
-    # ดึง inventories จากทุก DocumentRecord ที่มี registration_number เดียวกัน
-    inventories = Inventory.objects.filter(
-        document_record__registration_number=document_record.registration_number
-    ).select_related('document_record').order_by("request_date")
-
+    # Row 9+: Data rows (InventoryTransactions)
+    # ดึง transactions จาก inventory ที่เกี่ยวข้องกับ document_record
     current_row = 9
     cumulative_received = 0  # ยอดรับสะสม
     cumulative_issued = 0    # ยอดจ่ายสะสม
     cumulative_borrowed = 0  # ยอดยืมสะสม
     
-    for inventory in inventories:
-        # Pending section
-        ws[f"A{current_row}"] = (
-            inventory.pending_date.strftime("%d/%m/%Y")
-            if inventory.pending_date
-            else ""
-        )
-        ws[f"B{current_row}"] = inventory.pending_evidence or ""
-        ws[f"C{current_row}"] = inventory.pending_unit or ""
-        ws[f"D{current_row}"] = inventory.pending_quantity or ""
-
-        # Pending receive/balance columns (4 sets)
-        pending_1 = (
-            f"{inventory.pending_receive1 or ''}/{inventory.pending_balance1 or ''}"
-        )
-        ws[f"E{current_row}"] = (
-            pending_1
-            if inventory.pending_receive1 or inventory.pending_balance1
-            else ""
-        )
-
-        pending_2 = (
-            f"{inventory.pending_receive2 or ''}/{inventory.pending_balance2 or ''}"
-        )
-        ws[f"F{current_row}"] = (
-            pending_2
-            if inventory.pending_receive2 or inventory.pending_balance2
-            else ""
-        )
-
-        pending_3 = (
-            f"{inventory.pending_receive3 or ''}/{inventory.pending_balance3 or ''}"
-        )
-        ws[f"G{current_row}"] = (
-            pending_3
-            if inventory.pending_receive3 or inventory.pending_balance3
-            else ""
-        )
-
-        pending_4 = (
-            f"{inventory.pending_receive4 or ''}/{inventory.pending_balance4 or ''}"
-        )
-        ws[f"H{current_row}"] = (
-            pending_4
-            if inventory.pending_receive4 or inventory.pending_balance4
-            else ""
-        )
-
-        # Request section
-        ws[f"I{current_row}"] = (
-            inventory.request_date.strftime("%d/%m/%Y")
-            if inventory.request_date
-            else ""
-        )
+    # ดึง inventory ของ document_record นี้
+    try:
+        inventory = document_record.inventory
+        # ดึง transactions ทั้งหมดที่เกี่ยวข้อง เรียงตามวันที่
+        transactions = inventory.transactions.all().order_by('transaction_date', 'created_at')
         
-        # คำนวณยอดสะสม
-        cumulative_received += inventory.received_quantity or 0
-        cumulative_issued += inventory.issue_quantity or 0
-        cumulative_borrowed += inventory.total_borrowed or 0
+        # เริ่มต้นด้วย previous_stock_balance ถ้ามี
+        previous_balance = inventory.previous_stock_balance or 0
         
-        # คงคลัง = รับสะสม - จ่ายสะสม - ยืมสะสม
-        calculated_stock_balance = cumulative_received - cumulative_issued - cumulative_borrowed
-        
-        ws[f"J{current_row}"] = cumulative_received
-        ws[f"K{current_row}"] = (
-            float(inventory.unit_price) if inventory.unit_price else ""
-        )
-        ws[f"L{current_row}"] = inventory.request_evidence or ""
+        for transaction in transactions:
+            # Pending section - ใช้ข้อมูลจาก inventory header (ถ้ามี)
+            if transaction == transactions.first():
+                # แสดง pending info ในแถวแรกเท่านั้น
+                ws[f"A{current_row}"] = (
+                    inventory.pending_date.strftime("%d/%m/%Y")
+                    if inventory.pending_date
+                    else ""
+                )
+                ws[f"B{current_row}"] = inventory.pending_evidence or ""
+                ws[f"C{current_row}"] = inventory.pending_unit or ""
+                ws[f"D{current_row}"] = inventory.pending_quantity or ""
 
-        # Request type checkboxes
-        ws[f"M{current_row}"] = "✓" if inventory.request_type == "INITIAL" else ""
-        ws[f"N{current_row}"] = "✓" if inventory.request_type == "REPLACEMENT" else ""
+                # Pending receive/balance columns (4 sets)
+                pending_1 = (
+                    f"{inventory.pending_receive1 or ''}/{inventory.pending_balance1 or ''}"
+                )
+                ws[f"E{current_row}"] = (
+                    pending_1
+                    if inventory.pending_receive1 or inventory.pending_balance1
+                    else ""
+                )
 
-        ws[f"O{current_row}"] = inventory.issue_quantity or ""
-        ws[f"P{current_row}"] = inventory.total_borrowed or ""
-        ws[f"Q{current_row}"] = calculated_stock_balance
-        ws[f"R{current_row}"] = inventory.request_signature or ""
+                pending_2 = (
+                    f"{inventory.pending_receive2 or ''}/{inventory.pending_balance2 or ''}"
+                )
+                ws[f"F{current_row}"] = (
+                    pending_2
+                    if inventory.pending_receive2 or inventory.pending_balance2
+                    else ""
+                )
 
-        # Apply styles to all cells in the row
-        for col in range(1, 19):  # A to R
-            cell = ws.cell(row=current_row, column=col)
-            cell.font = normal_font
-            cell.alignment = center_alignment
-            cell.border = thin_border
+                pending_3 = (
+                    f"{inventory.pending_receive3 or ''}/{inventory.pending_balance3 or ''}"
+                )
+                ws[f"G{current_row}"] = (
+                    pending_3
+                    if inventory.pending_receive3 or inventory.pending_balance3
+                    else ""
+                )
 
-        current_row += 1
+                pending_4 = (
+                    f"{inventory.pending_receive4 or ''}/{inventory.pending_balance4 or ''}"
+                )
+                ws[f"H{current_row}"] = (
+                    pending_4
+                    if inventory.pending_receive4 or inventory.pending_balance4
+                    else ""
+                )
+            else:
+                # แถวอื่นๆ ไม่แสดง pending info
+                ws[f"A{current_row}"] = ""
+                ws[f"B{current_row}"] = ""
+                ws[f"C{current_row}"] = ""
+                ws[f"D{current_row}"] = ""
+                ws[f"E{current_row}"] = ""
+                ws[f"F{current_row}"] = ""
+                ws[f"G{current_row}"] = ""
+                ws[f"H{current_row}"] = ""
 
-    # Set row heights
+            # Request section - ข้อมูลจาก transaction
+            ws[f"I{current_row}"] = (
+                transaction.transaction_date.strftime("%d/%m/%Y")
+                if transaction.transaction_date
+                else ""
+            )
+            
+            # คำนวณยอดสะสม
+            if transaction.transaction_type == 'RECEIVE':
+                cumulative_received += transaction.quantity or 0
+                ws[f"J{current_row}"] = transaction.quantity or 0
+                ws[f"O{current_row}"] = ""  # ไม่มีการจ่าย
+                ws[f"P{current_row}"] = ""  # ไม่มีการยืม
+            else:  # ISSUE
+                cumulative_issued += transaction.quantity or 0
+                cumulative_borrowed += transaction.total_borrowed or 0
+                ws[f"J{current_row}"] = ""  # ไม่มีการรับ
+                ws[f"O{current_row}"] = transaction.quantity or 0
+                ws[f"P{current_row}"] = transaction.total_borrowed or 0
+            
+            ws[f"K{current_row}"] = (
+                float(transaction.unit_price) if transaction.unit_price else ""
+            )
+            ws[f"L{current_row}"] = transaction.evidence or ""
+
+            # Request type checkboxes
+            ws[f"M{current_row}"] = "✓" if transaction.type == "INITIAL" else ""
+            ws[f"N{current_row}"] = "✓" if transaction.type == "REPLACEMENT" else ""
+
+            # คงคลัง = ยอดเริ่มต้น + รับสะสม - จ่ายสะสม - ยืมสะสม
+            calculated_stock_balance = previous_balance + cumulative_received - cumulative_issued - cumulative_borrowed
+            ws[f"Q{current_row}"] = calculated_stock_balance
+            ws[f"R{current_row}"] = transaction.signature or ""
+
+            # Apply styles to all cells in the row
+            for col in range(1, 19):  # A to R
+                cell = ws.cell(row=current_row, column=col)
+                cell.font = normal_font
+                cell.alignment = center_alignment
+                cell.border = thin_border
+
+            current_row += 1
+            
+    except Inventory.DoesNotExist:
+        # ถ้าไม่มี inventory ก็ข้ามไป
+        pass
+
+    # Set row heights (ปรับให้พอดีกับ A4)
     for row in range(1, current_row):
-        ws.row_dimensions[row].height = 19
+        ws.row_dimensions[row].height = 16
+    
+    # Set page setup for A4
+    ws.page_setup.orientation = ws.ORIENTATION_LANDSCAPE
+    ws.page_setup.paperSize = ws.PAPERSIZE_A4
+    ws.page_setup.fitToPage = True
+    ws.page_setup.fitToWidth = 1
+    ws.page_setup.fitToHeight = 0
+    
+    # Set margins
+    ws.page_margins.left = 0.5
+    ws.page_margins.right = 0.5
+    ws.page_margins.top = 0.5
+    ws.page_margins.bottom = 0.5
 
     return wb
 

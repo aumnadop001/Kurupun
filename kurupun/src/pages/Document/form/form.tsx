@@ -33,7 +33,7 @@ const validationSchema = Yup.object({
   registration_date: Yup.string().required('กรุณาเลือกวันที่ลงทะเบียน'),
   document_type: Yup.string().required('กรุณากรอกประเภทเอกสาร'),
   sender: Yup.string().required('กรุณากรอกผู้ส่ง'),
-  recipient: Yup.string().required('กรุณากรอกผู้รับ'),
+  // recipient: Yup.string().required('กรุณากรอกผู้รับ'),
   first_item: Yup.string().required('กรุณากรอกรายการแรก'),
   unit_of_measure: Yup.string(),
   file_storage_date: Yup.string().required('กรุณาเลือกวันที่เก็บเข้าแฟ้ม'),
@@ -168,15 +168,12 @@ function DocumentForm() {
       file_storage_date: '',
       related_document_number: '',
       remark: '',
-      related_equipment: '',
-      inventory_alternate_numbers: '',
       days_to_order: '',
       quantity_to_order: '',
       reorder_point_days: '',
       reorder_point_quantity: '',
       safety_stock_days: '',
       safety_stock_quantity: '',
-      storage_location: '',
       requester_set_number: '',
       requester_name: '',
     },
@@ -184,15 +181,8 @@ function DocumentForm() {
     onSubmit: async (values) => {
       setLoading(true);
       try {
-        // แปลง string เป็น array สำหรับ JSON fields
         const payload = {
           ...values,
-          related_equipment: values.related_equipment
-            ? values.related_equipment.split(',').map((item) => item.trim())
-            : null,
-          inventory_alternate_numbers: values.inventory_alternate_numbers
-            ? values.inventory_alternate_numbers.split(',').map((item) => item.trim())
-            : null,
           days_to_order: values.days_to_order ? parseInt(values.days_to_order) : null,
           quantity_to_order: values.quantity_to_order ? parseInt(values.quantity_to_order) : null,
           reorder_point_days: values.reorder_point_days
@@ -285,19 +275,12 @@ function DocumentForm() {
         file_storage_date: data.file_storage_date || '',
         related_document_number: data.related_document_number || '',
         remark: data.remark || '',
-        related_equipment: Array.isArray(data.related_equipment)
-          ? data.related_equipment.join(', ')
-          : '',
-        inventory_alternate_numbers: Array.isArray(data.inventory_alternate_numbers)
-          ? data.inventory_alternate_numbers.join(', ')
-          : '',
         days_to_order: data.days_to_order?.toString() || '',
         quantity_to_order: data.quantity_to_order?.toString() || '',
         reorder_point_days: data.reorder_point_days?.toString() || '',
         reorder_point_quantity: data.reorder_point_quantity?.toString() || '',
         safety_stock_days: data.safety_stock_days?.toString() || '',
         safety_stock_quantity: data.safety_stock_quantity?.toString() || '',
-        storage_location: data.storage_location || '',
         requester_set_number: data.requester_set_number || '',
         requester_name: data.requester_name || '',
       });
@@ -554,7 +537,7 @@ function DocumentForm() {
                 )}
               />
             </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
+            {/* <Grid size={{ xs: 12, sm: 6 }}>
               <Autocomplete
                 options={results?.dept || []}
                 getOptionLabel={(option) => option.dept_name || ''}
@@ -571,7 +554,7 @@ function DocumentForm() {
                   />
                 )}
               />
-            </Grid>
+            </Grid> */}
             <Grid size={{ xs: 12 }}>
               <TextField
                 fullWidth
@@ -641,68 +624,6 @@ function DocumentForm() {
                   formik.touched.requester_set_number && Boolean(formik.errors.requester_set_number)
                 }
                 helperText={formik.touched.requester_set_number && formik.errors.requester_set_number}
-              />
-            </Grid>
-          </Grid>
-
-          <Divider sx={{ my: 3 }} />
-
-          <Typography variant="h6" gutterBottom>
-            ข้อมูลพัสดุ
-          </Typography>
-          <Grid container spacing={2}>
-            {/* <Grid size={{ xs: 12, sm: 6 }}>
-              <TextField
-                fullWidth
-                id="inventory_number"
-                name="inventory_number"
-                label="หมายเลขพัสดุ"
-                value={formik.values.inventory_number}
-                onChange={formik.handleChange}
-              />
-            </Grid> */}
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <TextField
-                fullWidth
-                id="unit_of_measure"
-                name="unit_of_measure"
-                label="หน่วยนับ"
-                value={formik.values.unit_of_measure}
-                onChange={formik.handleChange}
-                error={formik.touched.unit_of_measure && Boolean(formik.errors.unit_of_measure)}
-                helperText={formik.touched.unit_of_measure && formik.errors.unit_of_measure}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <TextField
-                fullWidth
-                id="storage_location"
-                name="storage_location"
-                label="ที่เก็บ"
-                value={formik.values.storage_location}
-                onChange={formik.handleChange}
-              />
-            </Grid>
-            <Grid size={{ xs: 12 }}>
-              <TextField
-                fullWidth
-                id="inventory_alternate_numbers"
-                name="inventory_alternate_numbers"
-                label="หมายเลขพัสดุแทนกันได้ (คั่นด้วยเครื่องหมายจุลภาค)"
-                value={formik.values.inventory_alternate_numbers}
-                onChange={formik.handleChange}
-                helperText="ตัวอย่าง: A001, A002, A003"
-              />
-            </Grid>
-            <Grid size={{ xs: 12 }}>
-              <TextField
-                fullWidth
-                id="related_equipment"
-                name="related_equipment"
-                label="ครุภัณฑ์ที่เกี่ยวข้อง (คั่นด้วยเครื่องหมายจุลภาค)"
-                value={formik.values.related_equipment}
-                onChange={formik.handleChange}
-                helperText="ตัวอย่าง: คอมพิวเตอร์, เครื่องพิมพ์"
               />
             </Grid>
           </Grid>

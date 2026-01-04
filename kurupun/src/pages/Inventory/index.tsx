@@ -129,16 +129,17 @@ function Inventories() {
   };
 
   const handleCreate = () => {
-    navigate('/inventory/create');
+    if (searchParam) {
+      navigate(`/inventory/create?search=${searchParam}`);
+    } else {
+      navigate('/inventory/create');
+    }
   };
 
   const handleEdit = (id: number) => {
-    navigate(`/inventory/edit/${id}`);
+    navigate(`/inventory/edit/${id}?inventory_number=${inventories.find(inv => inv.id === id)?.document_record_inventory_number}`);
   };
 
-  const handlePaymentIntent = (id: number) => {
-    navigate(`/payment-intent/create`);
-  }
 
   const handleDeleteClick = (id: number) => {
     setSelectedInventoryId(id);
@@ -256,7 +257,8 @@ function Inventories() {
                   {/* <TableCell>รับเข้า</TableCell> */}
                   {/* <TableCell>จ่ายออก</TableCell> */}
                   {/* <TableCell>รวมยืม</TableCell> */}
-                  <TableCell align="center">คำนวนคงคลัง</TableCell>
+                  <TableCell align="center">จำนวนคงคลัง</TableCell>
+                  <TableCell align="center">หน่วยนับ</TableCell>
                   <TableCell align="center">จัดการ</TableCell>
                 </TableRow>
               </TableHead>
@@ -277,6 +279,7 @@ function Inventories() {
                       {/* <TableCell>{inventory.issue_quantity}</TableCell> */}
                       {/* <TableCell>{inventory.total_borrowed}</TableCell> */}
                       <TableCell align='center'>{inventory.stock_balance}</TableCell>
+                      <TableCell align='center'>{inventory.unit_item}</TableCell>
                       <TableCell align="center">
                         {isAuthenticated && (
                           <>

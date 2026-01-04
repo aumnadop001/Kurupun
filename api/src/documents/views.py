@@ -3,8 +3,8 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
-from .models import DocumentRecord, Inventory
-from .serializers import DocumentRecordSerializer, InventorySerializer
+from .models import DocumentRecord, Inventory, InventoryTransaction
+from .serializers import DocumentRecordSerializer, InventorySerializer, InventoryTransactionSerializer
 from .excel_export import generate_excel_response, generate_table_excel_response
 from rest_framework.pagination import PageNumberPagination
 
@@ -22,7 +22,7 @@ class DocumentRecordViewSet(viewsets.ModelViewSet):
     Supports filtering and search
     """
 
-    queryset = DocumentRecord.objects.prefetch_related("inventories").all().order_by('-id')
+    queryset = DocumentRecord.objects.select_related("inventory").all().order_by('-id')
     serializer_class = DocumentRecordSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     pagination_class = StandardResultsSetPagination
@@ -107,34 +107,25 @@ class DocumentRecordViewSet(viewsets.ModelViewSet):
             return Response({'error': 'Invalid date format. Use YYYY-MM-DD'}, status=status.HTTP_400_BAD_REQUEST)
     
     @action(detail=True, methods=["get"])
-    def inventories(self, request, pk=None):
-        """Get all inventories for a specific document record"""
+    def inventory(self, request, pk=None):
+        """Get inventory for a specific document record"""
         document_record = self.get_object()
-        inventories = document_record.inventories.all()
-        serializer = InventorySerializer(inventories, many=True)
-        return Response(serializer.data)
+        try:
+            inventory = document_record.inventory
+            serializer = InventorySerializer(inventory)
+            return Response(serializer.data)
+        except Inventory.DoesNotExist:
+            return Response({'detail': 'Inventory not found'}, status=status.HTTP_404_NOT_FOUND)
 
     @action(detail=True, methods=["get"], url_path="total-stock-balance")
     def total_stock_balance(self, request, pk=None):
-        """Get stock balance from the latest inventory record before the specified one"""
+        """Get stock balance from the inventory record"""
         document_record = self.get_object()
-        before_id = request.query_params.get('before_id')  # id ของ record ปัจจุบัน (ถ้ามี)
         
-        # ดึง inventories จากทุก DocumentRecord ที่มี registration_number เดียวกัน
-        queryset = Inventory.objects.filter(
-            document_record__registration_number=document_record.registration_number
-        )
-        
-        # ถ้ามี before_id ให้หาคงคลังจากรายการที่มี id น้อยกว่า (สร้างก่อน)
-        if before_id:
-            queryset = queryset.filter(id__lt=int(before_id))
-        
-        # เรียงตาม id แบบ descending เพื่อหารายการล่าสุด
-        latest_inventory = queryset.order_by('-id').first()
-        
-        if latest_inventory:
-            total_stock_balance = latest_inventory.stock_balance or 0
-        else:
+        try:
+            inventory = document_record.inventory
+            total_stock_balance = inventory.stock_balance or 0
+        except Inventory.DoesNotExist:
             total_stock_balance = 0
         
         return Response({'total_stock_balance': total_stock_balance})
@@ -206,6 +197,49 @@ class InventoryViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """Override to ensure ordering by -id is always applied"""
         return super().get_queryset().order_by('-id')
+
+    @action(detail=True, methods=["post"], url_path="add-transaction")
+    def add_transaction(self, request, pk=None):
+        """Add a new transaction (receive or issue) to inventory"""
+        inventory = self.get_object()
+        
+        serializer = InventoryTransactionSerializer(data=request.data)
+        if serializer.is_valid():
+            # Create transaction
+            transaction = serializer.save(inventory=inventory)
+            
+            # Recalculate stock balance
+            inventory.calculate_stock_balance()
+            
+            return Response({
+                'transaction': InventoryTransactionSerializer(transaction).data,
+                'stock_balance': inventory.stock_balance
+            }, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=["get"], url_path="transactions")
+    def get_transactions(self, request, pk=None):
+        """Get all transactions for this inventory"""
+        inventory = self.get_object()
+        transactions = inventory.transactions.all()
+        serializer = InventoryTransactionSerializer(transactions, many=True)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=["delete"], url_path="clear-transactions")
+    def clear_transactions(self, request, pk=None):
+        """Clear all transactions for this inventory"""
+        inventory = self.get_object()
+        count = inventory.transactions.all().delete()[0]
+        
+        # Reset stock balance
+        inventory.stock_balance = inventory.previous_stock_balance
+        inventory.save(update_fields=['stock_balance'])
+        
+        return Response({
+            'deleted_count': count,
+            'message': f'Deleted {count} transactions'
+        }, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=["get"], url_path="latest-stock-balance")
     def latest_stock_balance(self, request):

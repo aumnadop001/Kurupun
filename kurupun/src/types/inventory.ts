@@ -2,6 +2,7 @@ export interface Inventory {
   id?: number;
   document_record?: number;
   document_record_inventory_number?: string;
+  unit_item: string;
   first_item?: string;
   // ค้างรับ และ ค้างจ่าย
   pending_date: string;
@@ -53,6 +54,10 @@ export interface InventoryFormValues {
   total_borrowed: string;
   stock_balance: string;
   request_signature: string;
+  unit_of_measure: string;
+  storage_location: string;
+  inventory_alternate_numbers: string;
+  related_equipment: string;
 }
 
 export interface InventoryListResponse {
@@ -60,4 +65,18 @@ export interface InventoryListResponse {
   next: string | null;
   previous: string | null;
   results: Inventory[];
+}
+
+export interface InventoryTransaction {
+  id?: number;
+  inventory: number;
+  transaction_type: 'RECEIVE' | 'ISSUE';
+  transaction_date: string;
+  evidence: string;
+  unit_price: number;
+  type: string;
+  quantity: number;
+  total_borrowed?: number;
+  signature?: string;
+  created_at?: string;
 }

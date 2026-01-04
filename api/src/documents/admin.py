@@ -1,5 +1,5 @@
 from django.contrib import admin
-from src.documents.models import DocumentRecord, Inventory
+from src.documents.models import DocumentRecord, Inventory, InventoryTransaction
 
 # Register your models here.
 
@@ -54,4 +54,22 @@ class InventoryAdmin(admin.ModelAdmin):
     list_filter = ("request_type", "pending_date", "request_date")
 
 
+class InventoryTransactionAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "inventory",
+        "transaction_type",
+        "transaction_date",
+        "evidence",
+        "quantity",
+        "unit_price",
+        "total_borrowed",
+        "created_at",
+    )
+    search_fields = ("evidence", "signature")
+    list_filter = ("transaction_type", "transaction_date")
+    readonly_fields = ("created_at",)
+
+
 admin.site.register(Inventory, InventoryAdmin)
+admin.site.register(InventoryTransaction, InventoryTransactionAdmin)

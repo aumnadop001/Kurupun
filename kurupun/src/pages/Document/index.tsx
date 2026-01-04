@@ -4,6 +4,7 @@ import { useAuth } from '../../hooks/useAuth';
 import toast from 'react-hot-toast';
 import { styled, alpha } from '@mui/material/styles';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { formatDateToThai } from '../../utils/mappingMouth';
 import {
   Box,
   Button,
@@ -105,10 +106,13 @@ function Documents() {
   const [selectedId, setselectedId] = useState<number | null>(null);
   const [selectInventory, setselectInventory] = useState(null)
   const open = Boolean(anchorEl);
-  console.log(selectedDocumentId);
+  const [inventoryCount, setinventoryCount] = useState(0)
 
   const handleClick = (event: React.MouseEvent<HTMLElement>, id: any, invenId: any) => {
-    console.log('id ->', id);
+    const currentDoc: any = documents.find(doc => doc.id === id);
+    if (currentDoc) {
+      setinventoryCount(currentDoc?.inventory ? 1 : 0)
+    }
     setselectInventory(invenId)
     setAnchorEl(event.currentTarget);
     setselectedId(id);
@@ -199,7 +203,7 @@ function Documents() {
 
   const formatDate = (dateString: string) => {
     if (!dateString) return '-';
-    return new Date(dateString).toLocaleDateString('th-TH');
+    return formatDateToThai(dateString);
   };
 
   return (
@@ -259,7 +263,7 @@ function Documents() {
                   <TableCell>ประเภทเอกสาร</TableCell>
                   <TableCell>ชื่อพัสดุ</TableCell>
                   <TableCell>จาก</TableCell>
-                  <TableCell>ถึง</TableCell>
+                  {/* <TableCell>ถึง</TableCell> */}
                   <TableCell>หมายเลขพัสดุ</TableCell>
                   <TableCell>ที่เก็บ</TableCell>
                   <TableCell align="center">จัดการ</TableCell>
@@ -280,7 +284,7 @@ function Documents() {
                       <TableCell>{doc.document_type}</TableCell>
                       <TableCell>{doc.first_item}</TableCell>
                       <TableCell>{doc.sender}</TableCell>
-                      <TableCell>{doc.recipient}</TableCell>
+                      {/* <TableCell>{doc.recipient}</TableCell> */}
                       <TableCell>{doc.inventory_number || '-'}</TableCell>
                       <TableCell>{doc.storage_location || '-'}</TableCell>
                       <TableCell align="center">
@@ -291,7 +295,7 @@ function Documents() {
                           aria-expanded={open ? 'true' : undefined}
                           variant="outlined"
                           disableElevation
-                          onClick={(e) => handleClick(e, doc.id,doc.registration_number)}
+                          onClick={(e) => handleClick(e, doc.id, doc.registration_number)}
                         // endIcon={<KeyboardArrowDownIcon />}
                         >
                           <MenuIcon />
@@ -313,7 +317,7 @@ function Documents() {
                           }} disableRipple
                           >
                             <VisibilityIcon />
-                            แสดงข้อมูลพัสดุ {doc.inventories_count ? `(${doc.inventories_count})` : ''}
+                            แสดงข้อมูลพัสดุ {inventoryCount ? `(${inventoryCount})` : ''}
                           </MenuItem>
                           <MenuItem onClick={() => {
                             navigate(`/documents/edit/${selectedId}`);
@@ -340,7 +344,7 @@ function Documents() {
                           {isAuthenticated && (
                             <MenuItem
                               component="a"
-                              href={`${API_HOST}/api/documents/document-records/${doc.id}/export-excel/`}
+                              href={`${API_HOST}/api/documents/document-records/${selectedId}/export-excel/`}
                               target="_blank"
                               rel="noopener noreferrer"
                               onClick={handleClose}
@@ -350,15 +354,16 @@ function Documents() {
                               ดาวน์โหลดบัญชีคุมพัสดุ
                             </MenuItem>
                           )}
-                          {isAuthenticated && <>
-                            <Divider sx={{ my: 0.5 }} />
+                          {isAuthenticated && <Divider sx={{ my: 0.5 }} />}
+                          {isAuthenticated && (
                             <MenuItem onClick={() => {
                               handleDeleteClick(doc.id!);
                               handleClose();
                             }} disableRipple>
                               <DeleteIcon />
                               ลบ
-                            </MenuItem></>}
+                            </MenuItem>
+                          )}
                         </StyledMenu>
                         {/* <ButtonGroup variant='contained' size='small'>
                           <Button variant='contained' size='small' onClick={() => navigate(`/inventory?search=${doc.registration_number}`)}>

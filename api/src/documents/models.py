@@ -9,7 +9,7 @@ class DocumentRecord(models.Model):
     registration_date = models.DateField() # วันที่ลงทะเบียน
     document_type = models.CharField(max_length=100) # ประเภทเอกสาร
     sender = models.CharField(max_length=255) # จาก
-    recipient = models.CharField(max_length=255) # ถึง
+    recipient = models.CharField(max_length=255,null=True,blank=True) # ถึง
     first_item = models.CharField(max_length=255) # รายการแรก
     inventory_number = models.CharField(max_length=100, blank=True, null=True) # หมายเลขพัสดุ
     unit_of_measure = models.CharField(max_length=50, blank=True, null=True) # หน่วยนับ
@@ -37,7 +37,7 @@ class DocumentRecord(models.Model):
 
 
 class Inventory(models.Model):
-    document_record = models.ForeignKey(DocumentRecord, on_delete=models.CASCADE, related_name='inventories', null=True, blank=True)
+    document_record = models.OneToOneField(DocumentRecord, on_delete=models.CASCADE, related_name='inventory', null=True, blank=True)
     # ===== Zone ค้างรับ และ ค้างจ่าย =====
     pending_date = models.DateField(null=True, blank=True)  # ว.ด.ป
     pending_evidence = models.CharField(max_length=100, blank=True, default='')  # หลักฐาน
@@ -74,6 +74,56 @@ class Inventory(models.Model):
     stock_balance = models.PositiveIntegerField(default=0)  # คงคลัง
     request_signature = models.CharField(max_length=255, blank=True, default='')  # ลายมือชื่อ
 
+    def calculate_stock_balance(self):
+        """Calculate stock balance from all transactions"""
+        from django.db.models import Sum, Q
+        
+        # รวมรายการรับทั้งหมด
+        received = self.transactions.filter(
+            transaction_type='RECEIVE'
+        ).aggregate(total=Sum('quantity'))['total'] or 0
+        
+        # รวมรายการจ่ายและยืมทั้งหมด
+        issued = self.transactions.filter(
+            transaction_type='ISSUE'
+        ).aggregate(total=Sum('quantity'))['total'] or 0
+        
+        borrowed = self.transactions.filter(
+            transaction_type='ISSUE'
+        ).aggregate(total=Sum('total_borrowed'))['total'] or 0
+        
+        # คงคลัง = ยอดเริ่มต้น + รับ - จ่าย - ยืม
+        self.stock_balance = self.previous_stock_balance + received - issued - borrowed
+        self.save(update_fields=['stock_balance'])
+        return self.stock_balance
+
     class Meta:
         verbose_name = "ทะเบียนคุมวัสดุ"
         verbose_name_plural = "ทะเบียนคุมวัสดุทั้งหมด"
+
+
+class InventoryTransaction(models.Model):
+    """รายการรับและจ่ายวัสดุแต่ละครั้ง"""
+    TRANSACTION_TYPE_CHOICES = (
+        ('RECEIVE', 'รับเข้า'),
+        ('ISSUE', 'จ่ายออก'),
+    )
+    
+    inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE, related_name='transactions')
+    transaction_type = models.CharField(max_length=10, choices=TRANSACTION_TYPE_CHOICES)  # RECEIVE หรือ ISSUE
+    transaction_date = models.DateField()  # วันที่ทำรายการ
+    evidence = models.CharField(max_length=200, blank=True, default='')  # หลักฐาน
+    unit_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # ราคาต่อหน่วย
+    type = models.CharField(max_length=100, blank=True, default='')  # ประเภท (ขั้นต้น/ทดแทน)
+    quantity = models.PositiveIntegerField(default=0)  # จำนวน (รับหรือจ่าย)
+    total_borrowed = models.PositiveIntegerField(default=0, blank=True)  # รวมยืม (สำหรับ ISSUE เท่านั้น)
+    signature = models.CharField(max_length=255, blank=True, default='')  # ลายมือชื่อ
+    created_at = models.DateTimeField(auto_now_add=True)  # เวลาที่สร้างรายการ
+    
+    def __str__(self):
+        return f"{self.get_transaction_type_display()} - {self.quantity} ({self.transaction_date})"
+    
+    class Meta:
+        verbose_name = "รายการรับ-จ่ายวัสดุ"
+        verbose_name_plural = "รายการรับ-จ่ายวัสดุทั้งหมด"
+        ordering = ['transaction_date', 'created_at']

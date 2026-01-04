@@ -6,7 +6,6 @@ import Documents from '../pages/Document';
 import DocumentForm from '../pages/Document/form/form';
 import Inventories from '../pages/Inventory';
 import InventoryForm from '../pages/Inventory/form/form';
-import PaymentIntentForm from '../pages/Inventory/form/PaymentIntentForm';
 import RegisterPage from '../pages/Register';
 import Loader from '../components/Loader';
 import SidebarLayout from '../components/Sidebar';
@@ -68,16 +67,6 @@ const Router: React.FC = () => {
               <SidebarLayout>
                 <InventoryForm />
               </SidebarLayout>
-            }
-          />
-          <Route
-            path="/payment-intent/create"
-            element={
-              <RequireAuth>
-                <SidebarLayout>
-                  <PaymentIntentForm />
-                </SidebarLayout>
-              </RequireAuth>
             }
           />
           <Route path="*" element={<Navigate to="/" replace />} />

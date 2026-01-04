@@ -39,15 +39,12 @@ export interface DocumentRecordFormValues {
   file_storage_date: string;
   related_document_number: string;
   remark: string;
-  related_equipment: string;
-  inventory_alternate_numbers: string;
   days_to_order: string;
   quantity_to_order: string;
   reorder_point_days: string;
   reorder_point_quantity: string;
   safety_stock_days: string;
   safety_stock_quantity: string;
-  storage_location: string;
   requester_set_number: string;
   requester_name: string;
 }

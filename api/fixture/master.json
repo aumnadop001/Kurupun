@@ -2,17 +2,26 @@
   {
     "model": "master.pclass",
     "pk": 1,
-    "fields": { "class_id": "2305", "class_name": "ยานพาหนะใช้บนพื้นดิน" }
+    "fields": {
+      "class_id": "2305",
+      "class_name": "ยานพาหนะใช้บนพื้นดิน"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 2,
-    "fields": { "class_id": "2310", "class_name": "ยานยนต์โดยสาร" }
+    "fields": {
+      "class_id": "2310",
+      "class_name": "ยานยนต์โดยสาร"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 3,
-    "fields": { "class_id": "2320", "class_name": "รถบรรทุกและรถลากจูงใช้ล้อ" }
+    "fields": {
+      "class_id": "2320",
+      "class_name": "รถบรรทุกและรถลากจูงใช้ล้อ"
+    }
   },
   {
     "model": "master.pclass",
@@ -57,7 +66,10 @@
   {
     "model": "master.pclass",
     "pk": 9,
-    "fields": { "class_id": "2590", "class_name": "ส่วนประกอบอื่น ๆ" }
+    "fields": {
+      "class_id": "2590",
+      "class_name": "ส่วนประกอบอื่น ๆ"
+    }
   },
   {
     "model": "master.pclass",
@@ -78,7 +90,10 @@
   {
     "model": "master.pclass",
     "pk": 12,
-    "fields": { "class_id": "2630", "class_name": "ยางตัน" }
+    "fields": {
+      "class_id": "2630",
+      "class_name": "ยางตัน"
+    }
   },
   {
     "model": "master.pclass",
@@ -91,7 +106,10 @@
   {
     "model": "master.pclass",
     "pk": 14,
-    "fields": { "class_id": "2805", "class_name": "เครื่องยนต์แก๊สโซลีน   " }
+    "fields": {
+      "class_id": "2805",
+      "class_name": "เครื่องยนต์แก๊สโซลีน   "
+    }
   },
   {
     "model": "master.pclass",
@@ -160,7 +178,10 @@
   {
     "model": "master.pclass",
     "pk": 23,
-    "fields": { "class_id": "2895", "class_name": "เครื่องยนต์อื่น ๆ" }
+    "fields": {
+      "class_id": "2895",
+      "class_name": "เครื่องยนต์อื่น ๆ"
+    }
   },
   {
     "model": "master.pclass",
@@ -253,12 +274,18 @@
   {
     "model": "master.pclass",
     "pk": 35,
-    "fields": { "class_id": "3120", "class_name": "รองเพลาเรียบไม่ติดแน่น" }
+    "fields": {
+      "class_id": "3120",
+      "class_name": "รองเพลาเรียบไม่ติดแน่น"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 36,
-    "fields": { "class_id": "3130", "class_name": "รองเพลาชนิดติดแน่น" }
+    "fields": {
+      "class_id": "3130",
+      "class_name": "รองเพลาชนิดติดแน่น"
+    }
   },
   {
     "model": "master.pclass",
@@ -271,7 +298,10 @@
   {
     "model": "master.pclass",
     "pk": 38,
-    "fields": { "class_id": "3220", "class_name": "เครื่องจักรเบางานไม้" }
+    "fields": {
+      "class_id": "3220",
+      "class_name": "เครื่องจักรเบางานไม้"
+    }
   },
   {
     "model": "master.pclass",
@@ -308,12 +338,18 @@
   {
     "model": "master.pclass",
     "pk": 43,
-    "fields": { "class_id": "3411", "class_name": "เครื่องคว้าน" }
+    "fields": {
+      "class_id": "3411",
+      "class_name": "เครื่องคว้าน"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 44,
-    "fields": { "class_id": "3412", "class_name": "เครื่องเซาะ" }
+    "fields": {
+      "class_id": "3412",
+      "class_name": "เครื่องเซาะ"
+    }
   },
   {
     "model": "master.pclass",
@@ -334,17 +370,26 @@
   {
     "model": "master.pclass",
     "pk": 47,
-    "fields": { "class_id": "3415", "class_name": "เครื่องเจียรนัย" }
+    "fields": {
+      "class_id": "3415",
+      "class_name": "เครื่องเจียรนัย"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 48,
-    "fields": { "class_id": "3416", "class_name": "เครื่องกลึง" }
+    "fields": {
+      "class_id": "3416",
+      "class_name": "เครื่องกลึง"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 49,
-    "fields": { "class_id": "3417", "class_name": "เครื่องกัด" }
+    "fields": {
+      "class_id": "3417",
+      "class_name": "เครื่องกัด"
+    }
   },
   {
     "model": "master.pclass",
@@ -357,12 +402,18 @@
   {
     "model": "master.pclass",
     "pk": 51,
-    "fields": { "class_id": "3419", "class_name": "เครื่องมือกลอื่น ๆ" }
+    "fields": {
+      "class_id": "3419",
+      "class_name": "เครื่องมือกลอื่น ๆ"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 52,
-    "fields": { "class_id": "3422", "class_name": "เครื่องรีดและเครื่องอัดรีด" }
+    "fields": {
+      "class_id": "3422",
+      "class_name": "เครื่องรีดและเครื่องอัดรีด"
+    }
   },
   {
     "model": "master.pclass",
@@ -375,7 +426,10 @@
   {
     "model": "master.pclass",
     "pk": 54,
-    "fields": { "class_id": "3426", "class_name": "เครื่องเคลือบผิวโลหะ" }
+    "fields": {
+      "class_id": "3426",
+      "class_name": "เครื่องเคลือบผิวโลหะ"
+    }
   },
   {
     "model": "master.pclass",
@@ -412,7 +466,10 @@
   {
     "model": "master.pclass",
     "pk": 59,
-    "fields": { "class_id": "3438", "class_name": "อุปกรณ์การเชื่อมอื่น ๆ" }
+    "fields": {
+      "class_id": "3438",
+      "class_name": "อุปกรณ์การเชื่อมอื่น ๆ"
+    }
   },
   {
     "model": "master.pclass",
@@ -425,27 +482,42 @@
   {
     "model": "master.pclass",
     "pk": 61,
-    "fields": { "class_id": "3441", "class_name": "เครื่องดัดและขึ้นรูป" }
+    "fields": {
+      "class_id": "3441",
+      "class_name": "เครื่องดัดและขึ้นรูป"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 62,
-    "fields": { "class_id": "3442", "class_name": "เครื่องอัดด้วยของเหลวและลม" }
+    "fields": {
+      "class_id": "3442",
+      "class_name": "เครื่องอัดด้วยของเหลวและลม"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 63,
-    "fields": { "class_id": "3443", "class_name": "เครื่องอัดทางกล" }
+    "fields": {
+      "class_id": "3443",
+      "class_name": "เครื่องอัดทางกล"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 64,
-    "fields": { "class_id": "3444", "class_name": "เครื่องอัดด้วยมือ" }
+    "fields": {
+      "class_id": "3444",
+      "class_name": "เครื่องอัดด้วยมือ"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 65,
-    "fields": { "class_id": "3445", "class_name": "เครื่องเจาะและเครื่องตัด" }
+    "fields": {
+      "class_id": "3445",
+      "class_name": "เครื่องเจาะและเครื่องตัด"
+    }
   },
   {
     "model": "master.pclass",
@@ -458,12 +530,18 @@
   {
     "model": "master.pclass",
     "pk": 67,
-    "fields": { "class_id": "3447", "class_name": "เครื่องทำลวดและเหล็กพืด" }
+    "fields": {
+      "class_id": "3447",
+      "class_name": "เครื่องทำลวดและเหล็กพืด"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 68,
-    "fields": { "class_id": "3448", "class_name": "เครื่องย้ำหมุด" }
+    "fields": {
+      "class_id": "3448",
+      "class_name": "เครื่องย้ำหมุด"
+    }
   },
   {
     "model": "master.pclass",
@@ -476,7 +554,10 @@
   {
     "model": "master.pclass",
     "pk": 70,
-    "fields": { "class_id": "3450", "class_name": "เครื่องมือกลเคลื่อนย้ายได้" }
+    "fields": {
+      "class_id": "3450",
+      "class_name": "เครื่องมือกลเคลื่อนย้ายได้"
+    }
   },
   {
     "model": "master.pclass",
@@ -497,7 +578,10 @@
   {
     "model": "master.pclass",
     "pk": 73,
-    "fields": { "class_id": "3460", "class_name": "ส่วนประกอบเครื่องมือกล" }
+    "fields": {
+      "class_id": "3460",
+      "class_name": "ส่วนประกอบเครื่องมือกล"
+    }
   },
   {
     "model": "master.pclass",
@@ -510,7 +594,10 @@
   {
     "model": "master.pclass",
     "pk": 75,
-    "fields": { "class_id": "3470", "class_name": "ชุดเครื่องมือโรงงาน" }
+    "fields": {
+      "class_id": "3470",
+      "class_name": "ชุดเครื่องมือโรงงาน"
+    }
   },
   {
     "model": "master.pclass",
@@ -523,12 +610,18 @@
   {
     "model": "master.pclass",
     "pk": 77,
-    "fields": { "class_id": "3520", "class_name": "อุปกรณ์ซ่อมรองเท้า" }
+    "fields": {
+      "class_id": "3520",
+      "class_name": "อุปกรณ์ซ่อมรองเท้า"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 78,
-    "fields": { "class_id": "3530", "class_name": "จักรเย็บผ้าทางอุตสาหกรรม" }
+    "fields": {
+      "class_id": "3530",
+      "class_name": "จักรเย็บผ้าทางอุตสาหกรรม"
+    }
   },
   {
     "model": "master.pclass",
@@ -549,7 +642,10 @@
   {
     "model": "master.pclass",
     "pk": 81,
-    "fields": { "class_id": "3590", "class_name": "อุปกรณ์บริการอื่น ๆ" }
+    "fields": {
+      "class_id": "3590",
+      "class_name": "อุปกรณ์บริการอื่น ๆ"
+    }
   },
   {
     "model": "master.pclass",
@@ -594,7 +690,10 @@
   {
     "model": "master.pclass",
     "pk": 87,
-    "fields": { "class_id": "3625", "class_name": "เครื่องจักรโรงงานสิ่งทอ" }
+    "fields": {
+      "class_id": "3625",
+      "class_name": "เครื่องจักรโรงงานสิ่งทอ"
+    }
   },
   {
     "model": "master.pclass",
@@ -615,12 +714,18 @@
   {
     "model": "master.pclass",
     "pk": 90,
-    "fields": { "class_id": "3640", "class_name": "เครื่องจักรโรงงานยาสูบ" }
+    "fields": {
+      "class_id": "3640",
+      "class_name": "เครื่องจักรโรงงานยาสูบ"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 91,
-    "fields": { "class_id": "3645", "class_name": "เครื่องจักรโรงงานฟอกหนัง" }
+    "fields": {
+      "class_id": "3645",
+      "class_name": "เครื่องจักรโรงงานฟอกหนัง"
+    }
   },
   {
     "model": "master.pclass",
@@ -673,7 +778,10 @@
   {
     "model": "master.pclass",
     "pk": 98,
-    "fields": { "class_id": "3693", "class_name": "เครื่องจักรใช้การประกอบคุม" }
+    "fields": {
+      "class_id": "3693",
+      "class_name": "เครื่องจักรใช้การประกอบคุม"
+    }
   },
   {
     "model": "master.pclass",
@@ -694,12 +802,18 @@
   {
     "model": "master.pclass",
     "pk": 101,
-    "fields": { "class_id": "3710", "class_name": "เครื่องมือเตรียมดิน" }
+    "fields": {
+      "class_id": "3710",
+      "class_name": "เครื่องมือเตรียมดิน"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 102,
-    "fields": { "class_id": "3720", "class_name": "เครื่องมือเก็บเกี่ยว" }
+    "fields": {
+      "class_id": "3720",
+      "class_name": "เครื่องมือเก็บเกี่ยว"
+    }
   },
   {
     "model": "master.pclass",
@@ -744,12 +858,18 @@
   {
     "model": "master.pclass",
     "pk": 108,
-    "fields": { "class_id": "3805", "class_name": "อุปกรณ์ขุดและขนดิน" }
+    "fields": {
+      "class_id": "3805",
+      "class_name": "อุปกรณ์ขุดและขนดิน"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 109,
-    "fields": { "class_id": "3810", "class_name": "ปั้นจั่นและปั้นจั่นตักดิน" }
+    "fields": {
+      "class_id": "3810",
+      "class_name": "ปั้นจั่นและปั้นจั่นตักดิน"
+    }
   },
   {
     "model": "master.pclass",
@@ -786,22 +906,34 @@
   {
     "model": "master.pclass",
     "pk": 114,
-    "fields": { "class_id": "3835", "class_name": "อุปกรณ์ผลิตและจ่ายน้ำมัน" }
+    "fields": {
+      "class_id": "3835",
+      "class_name": "อุปกรณ์ผลิตและจ่ายน้ำมัน"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 115,
-    "fields": { "class_id": "3895", "class_name": "อุปกรณ์การก่อสร้างอื่น ๆ" }
+    "fields": {
+      "class_id": "3895",
+      "class_name": "อุปกรณ์การก่อสร้างอื่น ๆ"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 116,
-    "fields": { "class_id": "3910", "class_name": "รางเลื่อน" }
+    "fields": {
+      "class_id": "3910",
+      "class_name": "รางเลื่อน"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 117,
-    "fields": { "class_id": "3915", "class_name": "เครื่องป้อน" }
+    "fields": {
+      "class_id": "3915",
+      "class_name": "เครื่องป้อน"
+    }
   },
   {
     "model": "master.pclass",
@@ -838,22 +970,34 @@
   {
     "model": "master.pclass",
     "pk": 122,
-    "fields": { "class_id": "3960", "class_name": "บันไดไฟฟ้าและลิฟท์" }
+    "fields": {
+      "class_id": "3960",
+      "class_name": "บันไดไฟฟ้าและลิฟท์"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 123,
-    "fields": { "class_id": "3990", "class_name": "อุปกรณ์ยกขนพัสดุอื่น ๆ" }
+    "fields": {
+      "class_id": "3990",
+      "class_name": "อุปกรณ์ยกขนพัสดุอื่น ๆ"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 124,
-    "fields": { "class_id": "4010", "class_name": "โซ่และเชือกลวด" }
+    "fields": {
+      "class_id": "4010",
+      "class_name": "โซ่และเชือกลวด"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 125,
-    "fields": { "class_id": "4020", "class_name": "เชือก ด้ายและเชือกควั่น" }
+    "fields": {
+      "class_id": "4020",
+      "class_name": "เชือก ด้ายและเชือกควั่น"
+    }
   },
   {
     "model": "master.pclass",
@@ -866,12 +1010,18 @@
   {
     "model": "master.pclass",
     "pk": 127,
-    "fields": { "class_id": "4110", "class_name": "อุปกรณ์ตู้เย็น" }
+    "fields": {
+      "class_id": "4110",
+      "class_name": "อุปกรณ์ตู้เย็น"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 128,
-    "fields": { "class_id": "4120", "class_name": "อุปกรณ์เครื่องปรับอากาศ" }
+    "fields": {
+      "class_id": "4120",
+      "class_name": "อุปกรณ์เครื่องปรับอากาศ"
+    }
   },
   {
     "model": "master.pclass",
@@ -892,12 +1042,18 @@
   {
     "model": "master.pclass",
     "pk": 131,
-    "fields": { "class_id": "4310", "class_name": "เครื่องอัด และสูบสูญญากาศ" }
+    "fields": {
+      "class_id": "4310",
+      "class_name": "เครื่องอัด และสูบสูญญากาศ"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 132,
-    "fields": { "class_id": "4320", "class_name": "สูบมือและสูบเครื่อง" }
+    "fields": {
+      "class_id": "4320",
+      "class_name": "สูบมือและสูบเครื่อง"
+    }
   },
   {
     "model": "master.pclass",
@@ -926,7 +1082,10 @@
   {
     "model": "master.pclass",
     "pk": 136,
-    "fields": { "class_id": "4530", "class_name": "อุปกรณ์เผาไหม้เชื้อเพลิง" }
+    "fields": {
+      "class_id": "4530",
+      "class_name": "อุปกรณ์เผาไหม้เชื้อเพลิง"
+    }
   },
   {
     "model": "master.pclass",
@@ -939,7 +1098,10 @@
   {
     "model": "master.pclass",
     "pk": 138,
-    "fields": { "class_id": "4610", "class_name": "อุปกรณ์เครื่องกรองน้ำ" }
+    "fields": {
+      "class_id": "4610",
+      "class_name": "อุปกรณ์เครื่องกรองน้ำ"
+    }
   },
   {
     "model": "master.pclass",
@@ -952,17 +1114,26 @@
   {
     "model": "master.pclass",
     "pk": 140,
-    "fields": { "class_id": "4630", "class_name": "อุปกรณ์ระบายสิ่งโสโครก" }
+    "fields": {
+      "class_id": "4630",
+      "class_name": "อุปกรณ์ระบายสิ่งโสโครก"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 141,
-    "fields": { "class_id": "4710", "class_name": "ท่อและหลอด" }
+    "fields": {
+      "class_id": "4710",
+      "class_name": "ท่อและหลอด"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 142,
-    "fields": { "class_id": "4720", "class_name": "ท่อยาง และท่ออ่อน" }
+    "fields": {
+      "class_id": "4720",
+      "class_name": "ท่อยาง และท่ออ่อน"
+    }
   },
   {
     "model": "master.pclass",
@@ -975,12 +1146,18 @@
   {
     "model": "master.pclass",
     "pk": 144,
-    "fields": { "class_id": "4810", "class_name": "วาล์วใช้เครื่องให้กำลังงาน" }
+    "fields": {
+      "class_id": "4810",
+      "class_name": "วาล์วใช้เครื่องให้กำลังงาน"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 145,
-    "fields": { "class_id": "4820", "class_name": "วาล์วไม่ใช้เครื่องกำลัง" }
+    "fields": {
+      "class_id": "4820",
+      "class_name": "วาล์วไม่ใช้เครื่องกำลัง"
+    }
   },
   {
     "model": "master.pclass",
@@ -1025,7 +1202,10 @@
   {
     "model": "master.pclass",
     "pk": 151,
-    "fields": { "class_id": "5130", "class_name": "เครื่องมือใช้ขับด้วยแรงงาน" }
+    "fields": {
+      "class_id": "5130",
+      "class_name": "เครื่องมือใช้ขับด้วยแรงงาน"
+    }
   },
   {
     "model": "master.pclass",
@@ -1062,7 +1242,10 @@
   {
     "model": "master.pclass",
     "pk": 156,
-    "fields": { "class_id": "5210", "class_name": "เครื่องวัดทั่วไป" }
+    "fields": {
+      "class_id": "5210",
+      "class_name": "เครื่องวัดทั่วไป"
+    }
   },
   {
     "model": "master.pclass",
@@ -1083,72 +1266,114 @@
   {
     "model": "master.pclass",
     "pk": 159,
-    "fields": { "class_id": "5305", "class_name": "ควงเกลียว" }
+    "fields": {
+      "class_id": "5305",
+      "class_name": "ควงเกลียว"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 160,
-    "fields": { "class_id": "5306", "class_name": "สลักเกลียว" }
+    "fields": {
+      "class_id": "5306",
+      "class_name": "สลักเกลียว"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 161,
-    "fields": { "class_id": "5307", "class_name": "สลักเกลียวปล่อย" }
+    "fields": {
+      "class_id": "5307",
+      "class_name": "สลักเกลียวปล่อย"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 162,
-    "fields": { "class_id": "5310", "class_name": "แป้นเกลียวและแหวนรอง" }
+    "fields": {
+      "class_id": "5310",
+      "class_name": "แป้นเกลียวและแหวนรอง"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 163,
-    "fields": { "class_id": "5315", "class_name": "ตะปู  ลิ่ม  และสลัก" }
+    "fields": {
+      "class_id": "5315",
+      "class_name": "ตะปู  ลิ่ม  และสลัก"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 164,
-    "fields": { "class_id": "5320", "class_name": "หมุดย้ำ" }
+    "fields": {
+      "class_id": "5320",
+      "class_name": "หมุดย้ำ"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 165,
-    "fields": { "class_id": "5325", "class_name": "เครื่องยึดรัด" }
+    "fields": {
+      "class_id": "5325",
+      "class_name": "เครื่องยึดรัด"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 166,
-    "fields": { "class_id": "5330", "class_name": "ตัวอัดและตัวกันรั่ว" }
+    "fields": {
+      "class_id": "5330",
+      "class_name": "ตัวอัดและตัวกันรั่ว"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 167,
-    "fields": { "class_id": "5335", "class_name": "ตัวกรองโลหะ" }
+    "fields": {
+      "class_id": "5335",
+      "class_name": "ตัวกรองโลหะ"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 168,
-    "fields": { "class_id": "5340", "class_name": "เครื่องใช้อื่น ๆ" }
+    "fields": {
+      "class_id": "5340",
+      "class_name": "เครื่องใช้อื่น ๆ"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 169,
-    "fields": { "class_id": "5345", "class_name": "จานลับและหินลับ" }
+    "fields": {
+      "class_id": "5345",
+      "class_name": "จานลับและหินลับ"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 170,
-    "fields": { "class_id": "5350", "class_name": "วัสดุขัด" }
+    "fields": {
+      "class_id": "5350",
+      "class_name": "วัสดุขัด"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 171,
-    "fields": { "class_id": "5355", "class_name": "ควงหมุน และเข็มชี้" }
+    "fields": {
+      "class_id": "5355",
+      "class_name": "ควงหมุน และเข็มชี้"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 172,
-    "fields": { "class_id": "5360", "class_name": "ขดลวด แผ่นรอง และลวดแหนบ" }
+    "fields": {
+      "class_id": "5360",
+      "class_name": "ขดลวด แผ่นรอง และลวดแหนบ"
+    }
   },
   {
     "model": "master.pclass",
@@ -1177,7 +1402,10 @@
   {
     "model": "master.pclass",
     "pk": 176,
-    "fields": { "class_id": "5430", "class_name": "ถังเก็บพัสดุ" }
+    "fields": {
+      "class_id": "5430",
+      "class_name": "ถังเก็บพัสดุ"
+    }
   },
   {
     "model": "master.pclass",
@@ -1190,7 +1418,10 @@
   {
     "model": "master.pclass",
     "pk": 178,
-    "fields": { "class_id": "5445", "class_name": "โครงสร้างหอที่ถอดประกอบได้" }
+    "fields": {
+      "class_id": "5445",
+      "class_name": "โครงสร้างหอที่ถอดประกอบได้"
+    }
   },
   {
     "model": "master.pclass",
@@ -1211,7 +1442,10 @@
   {
     "model": "master.pclass",
     "pk": 181,
-    "fields": { "class_id": "5520", "class_name": "ไม้แปรรูป" }
+    "fields": {
+      "class_id": "5520",
+      "class_name": "ไม้แปรรูป"
+    }
   },
   {
     "model": "master.pclass",
@@ -1240,7 +1474,10 @@
   {
     "model": "master.pclass",
     "pk": 185,
-    "fields": { "class_id": "5630", "class_name": "ท่อและท่อน้ำไม่ใช่โลหะ" }
+    "fields": {
+      "class_id": "5630",
+      "class_name": "ท่อและท่อน้ำไม่ใช่โลหะ"
+    }
   },
   {
     "model": "master.pclass",
@@ -1253,7 +1490,10 @@
   {
     "model": "master.pclass",
     "pk": 187,
-    "fields": { "class_id": "5650", "class_name": "อุปกรณ์ทำหลังคาและฝาผนัง" }
+    "fields": {
+      "class_id": "5650",
+      "class_name": "อุปกรณ์ทำหลังคาและฝาผนัง"
+    }
   },
   {
     "model": "master.pclass",
@@ -1274,7 +1514,10 @@
   {
     "model": "master.pclass",
     "pk": 190,
-    "fields": { "class_id": "5680", "class_name": "อุปกรณ์การสร้างอื่น ๆ" }
+    "fields": {
+      "class_id": "5680",
+      "class_name": "อุปกรณ์การสร้างอื่น ๆ"
+    }
   },
   {
     "model": "master.pclass",
@@ -1303,12 +1546,18 @@
   {
     "model": "master.pclass",
     "pk": 194,
-    "fields": { "class_id": "5830", "class_name": "อุปกรณ์การติดต่อภายใน" }
+    "fields": {
+      "class_id": "5830",
+      "class_name": "อุปกรณ์การติดต่อภายใน"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 195,
-    "fields": { "class_id": "5835", "class_name": "อุปกรณ์การบันทึกเสียง" }
+    "fields": {
+      "class_id": "5835",
+      "class_name": "อุปกรณ์การบันทึกเสียง"
+    }
   },
   {
     "model": "master.pclass",
@@ -1321,17 +1570,26 @@
   {
     "model": "master.pclass",
     "pk": 197,
-    "fields": { "class_id": "5895", "class_name": "อุปกรณ์การติดต่ออื่น ๆ" }
+    "fields": {
+      "class_id": "5895",
+      "class_name": "อุปกรณ์การติดต่ออื่น ๆ"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 198,
-    "fields": { "class_id": "5905", "class_name": "ตัวความต้านทาน" }
+    "fields": {
+      "class_id": "5905",
+      "class_name": "ตัวความต้านทาน"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 199,
-    "fields": { "class_id": "5910", "class_name": "แคปพาซิเตอร์" }
+    "fields": {
+      "class_id": "5910",
+      "class_name": "แคปพาซิเตอร์"
+    }
   },
   {
     "model": "master.pclass",
@@ -1344,27 +1602,42 @@
   {
     "model": "master.pclass",
     "pk": 201,
-    "fields": { "class_id": "5920", "class_name": "ฟิวส์และเครื่องกันฟ้าผ่า" }
+    "fields": {
+      "class_id": "5920",
+      "class_name": "ฟิวส์และเครื่องกันฟ้าผ่า"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 202,
-    "fields": { "class_id": "5925", "class_name": "เครื่องตัดวงจร" }
+    "fields": {
+      "class_id": "5925",
+      "class_name": "เครื่องตัดวงจร"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 203,
-    "fields": { "class_id": "5930", "class_name": "สวิทซ์" }
+    "fields": {
+      "class_id": "5930",
+      "class_name": "สวิทซ์"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 204,
-    "fields": { "class_id": "5935", "class_name": "ขั้วต่อสายไฟ" }
+    "fields": {
+      "class_id": "5935",
+      "class_name": "ขั้วต่อสายไฟ"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 205,
-    "fields": { "class_id": "5940", "class_name": "แผ่นจับและขั้วปลายสาย" }
+    "fields": {
+      "class_id": "5940",
+      "class_name": "แผ่นจับและขั้วปลายสาย"
+    }
   },
   {
     "model": "master.pclass",
@@ -1377,12 +1650,18 @@
   {
     "model": "master.pclass",
     "pk": 207,
-    "fields": { "class_id": "5950", "class_name": "ขดลวดและหม้อแปลงไฟ" }
+    "fields": {
+      "class_id": "5950",
+      "class_name": "ขดลวดและหม้อแปลงไฟ"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 208,
-    "fields": { "class_id": "5955", "class_name": "แร่บังคับความถี่วิทยุ" }
+    "fields": {
+      "class_id": "5955",
+      "class_name": "แร่บังคับความถี่วิทยุ"
+    }
   },
   {
     "model": "master.pclass",
@@ -1419,17 +1698,26 @@
   {
     "model": "master.pclass",
     "pk": 213,
-    "fields": { "class_id": "5970", "class_name": "ฉนวนละวัสดุที่เป็นฉนวน" }
+    "fields": {
+      "class_id": "5970",
+      "class_name": "ฉนวนละวัสดุที่เป็นฉนวน"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 214,
-    "fields": { "class_id": "5975", "class_name": "เครื่องใช้และครุภัณฑ์ไฟฟ้า" }
+    "fields": {
+      "class_id": "5975",
+      "class_name": "เครื่องใช้และครุภัณฑ์ไฟฟ้า"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 215,
-    "fields": { "class_id": "5977", "class_name": "แปรงไฟและอีเลคโทรด" }
+    "fields": {
+      "class_id": "5977",
+      "class_name": "แปรงไฟและอีเลคโทรด"
+    }
   },
   {
     "model": "master.pclass",
@@ -1442,7 +1730,10 @@
   {
     "model": "master.pclass",
     "pk": 217,
-    "fields": { "class_id": "5990", "class_name": "ซินโครและรีโซลเวอร์" }
+    "fields": {
+      "class_id": "5990",
+      "class_name": "ซินโครและรีโซลเวอร์"
+    }
   },
   {
     "model": "master.pclass",
@@ -1463,12 +1754,18 @@
   {
     "model": "master.pclass",
     "pk": 220,
-    "fields": { "class_id": "6105", "class_name": "มอเตอร์ไฟฟ้า" }
+    "fields": {
+      "class_id": "6105",
+      "class_name": "มอเตอร์ไฟฟ้า"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 221,
-    "fields": { "class_id": "6110", "class_name": "เครื่องควบคุมไฟฟ้า" }
+    "fields": {
+      "class_id": "6110",
+      "class_name": "เครื่องควบคุมไฟฟ้า"
+    }
   },
   {
     "model": "master.pclass",
@@ -1513,17 +1810,26 @@
   {
     "model": "master.pclass",
     "pk": 227,
-    "fields": { "class_id": "6135", "class_name": "แบตเตอรี่แบบแรก" }
+    "fields": {
+      "class_id": "6135",
+      "class_name": "แบตเตอรี่แบบแรก"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 228,
-    "fields": { "class_id": "6140", "class_name": "แบตเตอรี่แบบที่ 2" }
+    "fields": {
+      "class_id": "6140",
+      "class_name": "แบตเตอรี่แบบที่ 2"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 229,
-    "fields": { "class_id": "6145", "class_name": "ลวดสายไฟและสายเคเบิล" }
+    "fields": {
+      "class_id": "6145",
+      "class_name": "ลวดสายไฟและสายเคเบิล"
+    }
   },
   {
     "model": "master.pclass",
@@ -1560,7 +1866,10 @@
   {
     "model": "master.pclass",
     "pk": 234,
-    "fields": { "class_id": "6240", "class_name": "หลอดไฟฟ้า" }
+    "fields": {
+      "class_id": "6240",
+      "class_name": "หลอดไฟฟ้า"
+    }
   },
   {
     "model": "master.pclass",
@@ -1645,12 +1954,18 @@
   {
     "model": "master.pclass",
     "pk": 245,
-    "fields": { "class_id": "6545", "class_name": "ชุดเครื่องมือทางการแพทย์" }
+    "fields": {
+      "class_id": "6545",
+      "class_name": "ชุดเครื่องมือทางการแพทย์"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 246,
-    "fields": { "class_id": "6605", "class_name": "เครื่องมือนำร่อง" }
+    "fields": {
+      "class_id": "6605",
+      "class_name": "เครื่องมือนำร่อง"
+    }
   },
   {
     "model": "master.pclass",
@@ -1671,7 +1986,10 @@
   {
     "model": "master.pclass",
     "pk": 249,
-    "fields": { "class_id": "6630", "class_name": "เครื่องมือวิเคราะห์ทางเคมี" }
+    "fields": {
+      "class_id": "6630",
+      "class_name": "เครื่องมือวิเคราะห์ทางเคมี"
+    }
   },
   {
     "model": "master.pclass",
@@ -1700,12 +2018,18 @@
   {
     "model": "master.pclass",
     "pk": 253,
-    "fields": { "class_id": "6645", "class_name": "เครื่องวัดบอกเวลา" }
+    "fields": {
+      "class_id": "6645",
+      "class_name": "เครื่องวัดบอกเวลา"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 254,
-    "fields": { "class_id": "6650", "class_name": "เครื่องมือทางทัศนะ" }
+    "fields": {
+      "class_id": "6650",
+      "class_name": "เครื่องมือทางทัศนะ"
+    }
   },
   {
     "model": "master.pclass",
@@ -1718,7 +2042,10 @@
   {
     "model": "master.pclass",
     "pk": 256,
-    "fields": { "class_id": "6660", "class_name": "เครื่องมืออุตุนิยม" }
+    "fields": {
+      "class_id": "6660",
+      "class_name": "เครื่องมืออุตุนิยม"
+    }
   },
   {
     "model": "master.pclass",
@@ -1731,7 +2058,10 @@
   {
     "model": "master.pclass",
     "pk": 258,
-    "fields": { "class_id": "6670", "class_name": "เครื่องวัดและเครื่องชั่ง" }
+    "fields": {
+      "class_id": "6670",
+      "class_name": "เครื่องวัดและเครื่องชั่ง"
+    }
   },
   {
     "model": "master.pclass",
@@ -1760,32 +2090,50 @@
   {
     "model": "master.pclass",
     "pk": 262,
-    "fields": { "class_id": "6695", "class_name": "เครื่องมืออื่น ๆ" }
+    "fields": {
+      "class_id": "6695",
+      "class_name": "เครื่องมืออื่น ๆ"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 263,
-    "fields": { "class_id": "6710", "class_name": "กล้องถ่ายภาพยนตร์" }
+    "fields": {
+      "class_id": "6710",
+      "class_name": "กล้องถ่ายภาพยนตร์"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 264,
-    "fields": { "class_id": "6720", "class_name": "กล้องถ่ายภาพนิ่ง" }
+    "fields": {
+      "class_id": "6720",
+      "class_name": "กล้องถ่ายภาพนิ่ง"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 265,
-    "fields": { "class_id": "6730", "class_name": "อุปกรณ์ เครื่องฉายภาพ" }
+    "fields": {
+      "class_id": "6730",
+      "class_name": "อุปกรณ์ เครื่องฉายภาพ"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 266,
-    "fields": { "class_id": "6740", "class_name": "อุปกรณ์การล้าง และอัดภาพ" }
+    "fields": {
+      "class_id": "6740",
+      "class_name": "อุปกรณ์การล้าง และอัดภาพ"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 267,
-    "fields": { "class_id": "6750", "class_name": "วัสดุเกี่ยวกับการถ่ายภาพ" }
+    "fields": {
+      "class_id": "6750",
+      "class_name": "วัสดุเกี่ยวกับการถ่ายภาพ"
+    }
   },
   {
     "model": "master.pclass",
@@ -1798,27 +2146,42 @@
   {
     "model": "master.pclass",
     "pk": 269,
-    "fields": { "class_id": "6770", "class_name": "ฟิล์มที่ถ่ายและล้างแล้ว" }
+    "fields": {
+      "class_id": "6770",
+      "class_name": "ฟิล์มที่ถ่ายและล้างแล้ว"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 270,
-    "fields": { "class_id": "6780", "class_name": "ชุดถ่ายภาพ" }
+    "fields": {
+      "class_id": "6780",
+      "class_name": "ชุดถ่ายภาพ"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 271,
-    "fields": { "class_id": "6810", "class_name": "วัตถุเคมี" }
+    "fields": {
+      "class_id": "6810",
+      "class_name": "วัตถุเคมี"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 272,
-    "fields": { "class_id": "6820", "class_name": "สีย้อม" }
+    "fields": {
+      "class_id": "6820",
+      "class_name": "สีย้อม"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 273,
-    "fields": { "class_id": "6830", "class_name": "แก๊สที่อัดไว้และแก๊สเหลว" }
+    "fields": {
+      "class_id": "6830",
+      "class_name": "แก๊สที่อัดไว้และแก๊สเหลว"
+    }
   },
   {
     "model": "master.pclass",
@@ -1831,37 +2194,58 @@
   {
     "model": "master.pclass",
     "pk": 275,
-    "fields": { "class_id": "6850", "class_name": "วัตถุเคมีพิเศษอื่น ๆ" }
+    "fields": {
+      "class_id": "6850",
+      "class_name": "วัตถุเคมีพิเศษอื่น ๆ"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 276,
-    "fields": { "class_id": "6910", "class_name": "เครื่องช่วยฝึก" }
+    "fields": {
+      "class_id": "6910",
+      "class_name": "เครื่องช่วยฝึก"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 277,
-    "fields": { "class_id": "6920", "class_name": "อุปกรณ์การฝึกอาวุธ" }
+    "fields": {
+      "class_id": "6920",
+      "class_name": "อุปกรณ์การฝึกอาวุธ"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 278,
-    "fields": { "class_id": "6930", "class_name": "อุปกรณ์การฝึกปฏิบัติการ" }
+    "fields": {
+      "class_id": "6930",
+      "class_name": "อุปกรณ์การฝึกปฏิบัติการ"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 279,
-    "fields": { "class_id": "6940", "class_name": "อุปกรณ์การฝึกการสื่อสาร" }
+    "fields": {
+      "class_id": "6940",
+      "class_name": "อุปกรณ์การฝึกการสื่อสาร"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 280,
-    "fields": { "class_id": "7105", "class_name": "เครื่องตกแต่งบ้าน" }
+    "fields": {
+      "class_id": "7105",
+      "class_name": "เครื่องตกแต่งบ้าน"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 281,
-    "fields": { "class_id": "7110", "class_name": "เครื่องตกแต่งสำนักงาน" }
+    "fields": {
+      "class_id": "7110",
+      "class_name": "เครื่องตกแต่งสำนักงาน"
+    }
   },
   {
     "model": "master.pclass",
@@ -1882,17 +2266,26 @@
   {
     "model": "master.pclass",
     "pk": 284,
-    "fields": { "class_id": "7210", "class_name": "เครื่องใช้ประจำบ้าน" }
+    "fields": {
+      "class_id": "7210",
+      "class_name": "เครื่องใช้ประจำบ้าน"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 285,
-    "fields": { "class_id": "7220", "class_name": "เครื่องปูพื้น" }
+    "fields": {
+      "class_id": "7220",
+      "class_name": "เครื่องปูพื้น"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 286,
-    "fields": { "class_id": "7230", "class_name": "ฉากกั้น  ผ้าม่านและบังตา" }
+    "fields": {
+      "class_id": "7230",
+      "class_name": "ฉากกั้น  ผ้าม่านและบังตา"
+    }
   },
   {
     "model": "master.pclass",
@@ -1921,37 +2314,58 @@
   {
     "model": "master.pclass",
     "pk": 290,
-    "fields": { "class_id": "7320", "class_name": "อุปกรณ์เครื่องใช้ในครัว" }
+    "fields": {
+      "class_id": "7320",
+      "class_name": "อุปกรณ์เครื่องใช้ในครัว"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 291,
-    "fields": { "class_id": "7330", "class_name": "เครื่องมือและภาชนะในครัว" }
+    "fields": {
+      "class_id": "7330",
+      "class_name": "เครื่องมือและภาชนะในครัว"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 292,
-    "fields": { "class_id": "7340", "class_name": "เครื่องตัดและภาชนะ" }
+    "fields": {
+      "class_id": "7340",
+      "class_name": "เครื่องตัดและภาชนะ"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 293,
-    "fields": { "class_id": "7350", "class_name": "ของใช้สำหรับโต๊ะอาหาร" }
+    "fields": {
+      "class_id": "7350",
+      "class_name": "ของใช้สำหรับโต๊ะอาหาร"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 294,
-    "fields": { "class_id": "7360", "class_name": "ชุดเตรียมอาหารและเลี้ยงดู" }
+    "fields": {
+      "class_id": "7360",
+      "class_name": "ชุดเตรียมอาหารและเลี้ยงดู"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 295,
-    "fields": { "class_id": "7410", "class_name": "เครื่องกลใช้ในการเจาะบัตร" }
+    "fields": {
+      "class_id": "7410",
+      "class_name": "เครื่องกลใช้ในการเจาะบัตร"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 296,
-    "fields": { "class_id": "7420", "class_name": "เครื่องคำนวณและทำบัญชี" }
+    "fields": {
+      "class_id": "7420",
+      "class_name": "เครื่องคำนวณและทำบัญชี"
+    }
   },
   {
     "model": "master.pclass",
@@ -1980,17 +2394,26 @@
   {
     "model": "master.pclass",
     "pk": 300,
-    "fields": { "class_id": "7460", "class_name": "อุปกรณ์บันทึกที่เห็นได้" }
+    "fields": {
+      "class_id": "7460",
+      "class_name": "อุปกรณ์บันทึกที่เห็นได้"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 301,
-    "fields": { "class_id": "7490", "class_name": "เครื่องกลสำนักงานอื่น ๆ" }
+    "fields": {
+      "class_id": "7490",
+      "class_name": "เครื่องกลสำนักงานอื่น ๆ"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 302,
-    "fields": { "class_id": "7510", "class_name": "พัสดุสำนักงาน" }
+    "fields": {
+      "class_id": "7510",
+      "class_name": "พัสดุสำนักงาน"
+    }
   },
   {
     "model": "master.pclass",
@@ -2003,22 +2426,34 @@
   {
     "model": "master.pclass",
     "pk": 304,
-    "fields": { "class_id": "7530", "class_name": "แบบพิมพ์" }
+    "fields": {
+      "class_id": "7530",
+      "class_name": "แบบพิมพ์"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 305,
-    "fields": { "class_id": "7540", "class_name": "แบบพิมพ์มาตรฐาน" }
+    "fields": {
+      "class_id": "7540",
+      "class_name": "แบบพิมพ์มาตรฐาน"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 306,
-    "fields": { "class_id": "7610", "class_name": "หนังสือและอนุสาร" }
+    "fields": {
+      "class_id": "7610",
+      "class_name": "หนังสือและอนุสาร"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 307,
-    "fields": { "class_id": "7630", "class_name": "หนังสือพิมพ์และวารสาร" }
+    "fields": {
+      "class_id": "7630",
+      "class_name": "หนังสือพิมพ์และวารสาร"
+    }
   },
   {
     "model": "master.pclass",
@@ -2031,27 +2466,42 @@
   {
     "model": "master.pclass",
     "pk": 309,
-    "fields": { "class_id": "7650", "class_name": "แผนแบบและข้อกำหนด" }
+    "fields": {
+      "class_id": "7650",
+      "class_name": "แผนแบบและข้อกำหนด"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 310,
-    "fields": { "class_id": "7660", "class_name": "แผ่นและสมุดโน๊ตดนตรี" }
+    "fields": {
+      "class_id": "7660",
+      "class_name": "แผ่นและสมุดโน๊ตดนตรี"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 311,
-    "fields": { "class_id": "7670", "class_name": "ไมโครฟิล์ม" }
+    "fields": {
+      "class_id": "7670",
+      "class_name": "ไมโครฟิล์ม"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 312,
-    "fields": { "class_id": "7690", "class_name": "สิ่งพิมพ์อื่น ๆ" }
+    "fields": {
+      "class_id": "7690",
+      "class_name": "สิ่งพิมพ์อื่น ๆ"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 313,
-    "fields": { "class_id": "7710", "class_name": "เครื่องดนตรี" }
+    "fields": {
+      "class_id": "7710",
+      "class_name": "เครื่องดนตรี"
+    }
   },
   {
     "model": "master.pclass",
@@ -2072,12 +2522,18 @@
   {
     "model": "master.pclass",
     "pk": 316,
-    "fields": { "class_id": "7740", "class_name": "แผ่นเสียง" }
+    "fields": {
+      "class_id": "7740",
+      "class_name": "แผ่นเสียง"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 317,
-    "fields": { "class_id": "7810", "class_name": "อุปกรณ์กีฬา" }
+    "fields": {
+      "class_id": "7810",
+      "class_name": "อุปกรณ์กีฬา"
+    }
   },
   {
     "model": "master.pclass",
@@ -2114,7 +2570,10 @@
   {
     "model": "master.pclass",
     "pk": 322,
-    "fields": { "class_id": "7930", "class_name": "ยาขัดและยาทำความสะอาด" }
+    "fields": {
+      "class_id": "7930",
+      "class_name": "ยาขัดและยาทำความสะอาด"
+    }
   },
   {
     "model": "master.pclass",
@@ -2127,7 +2586,10 @@
   {
     "model": "master.pclass",
     "pk": 324,
-    "fields": { "class_id": "8020", "class_name": "แปรงทาสีและพู่กัน" }
+    "fields": {
+      "class_id": "8020",
+      "class_name": "แปรงทาสีและพู่กัน"
+    }
   },
   {
     "model": "master.pclass",
@@ -2140,47 +2602,74 @@
   {
     "model": "master.pclass",
     "pk": 326,
-    "fields": { "class_id": "8040", "class_name": "สารติดผนึก" }
+    "fields": {
+      "class_id": "8040",
+      "class_name": "สารติดผนึก"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 327,
-    "fields": { "class_id": "8105", "class_name": "ถุงและกระสอบ" }
+    "fields": {
+      "class_id": "8105",
+      "class_name": "ถุงและกระสอบ"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 328,
-    "fields": { "class_id": "8110", "class_name": "ถังและกระป๋อง" }
+    "fields": {
+      "class_id": "8110",
+      "class_name": "ถังและกระป๋อง"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 329,
-    "fields": { "class_id": "8115", "class_name": "หีบ  กล่องกระดาษ  และลัง" }
+    "fields": {
+      "class_id": "8115",
+      "class_name": "หีบ  กล่องกระดาษ  และลัง"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 330,
-    "fields": { "class_id": "8120", "class_name": "ท่อบรรจุแก๊ส" }
+    "fields": {
+      "class_id": "8120",
+      "class_name": "ท่อบรรจุแก๊ส"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 331,
-    "fields": { "class_id": "8125", "class_name": "ขวดและเหยือก" }
+    "fields": {
+      "class_id": "8125",
+      "class_name": "ขวดและเหยือก"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 332,
-    "fields": { "class_id": "8130", "class_name": "ล้อม้วนและหลอดม้วน" }
+    "fields": {
+      "class_id": "8130",
+      "class_name": "ล้อม้วนและหลอดม้วน"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 333,
-    "fields": { "class_id": "8135", "class_name": "วัสดุใช้ทำหีบห่อ" }
+    "fields": {
+      "class_id": "8135",
+      "class_name": "วัสดุใช้ทำหีบห่อ"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 334,
-    "fields": { "class_id": "8140", "class_name": "หีบกระสุนและภาชนะพิเศษ" }
+    "fields": {
+      "class_id": "8140",
+      "class_name": "หีบกระสุนและภาชนะพิเศษ"
+    }
   },
   {
     "model": "master.pclass",
@@ -2193,12 +2682,18 @@
   {
     "model": "master.pclass",
     "pk": 336,
-    "fields": { "class_id": "8305", "class_name": "สิ่งถักทอ" }
+    "fields": {
+      "class_id": "8305",
+      "class_name": "สิ่งถักทอ"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 337,
-    "fields": { "class_id": "8310", "class_name": "เส้นใยและเส้นด้าย" }
+    "fields": {
+      "class_id": "8310",
+      "class_name": "เส้นใยและเส้นด้าย"
+    }
   },
   {
     "model": "master.pclass",
@@ -2211,42 +2706,66 @@
   {
     "model": "master.pclass",
     "pk": 339,
-    "fields": { "class_id": "8320", "class_name": "วัสดุสำหรับยัดหมอนและเบาะ" }
+    "fields": {
+      "class_id": "8320",
+      "class_name": "วัสดุสำหรับยัดหมอนและเบาะ"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 340,
-    "fields": { "class_id": "8325", "class_name": "วัสดุขนสัตว์" }
+    "fields": {
+      "class_id": "8325",
+      "class_name": "วัสดุขนสัตว์"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 341,
-    "fields": { "class_id": "8330", "class_name": "หนังสัตว์" }
+    "fields": {
+      "class_id": "8330",
+      "class_name": "หนังสัตว์"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 342,
-    "fields": { "class_id": "8335", "class_name": "วัสดุตกแต่งและเย็บรองเท้า" }
+    "fields": {
+      "class_id": "8335",
+      "class_name": "วัสดุตกแต่งและเย็บรองเท้า"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 343,
-    "fields": { "class_id": "8340", "class_name": "กระโจมและผ้าใบอาบน้ำมัน" }
+    "fields": {
+      "class_id": "8340",
+      "class_name": "กระโจมและผ้าใบอาบน้ำมัน"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 344,
-    "fields": { "class_id": "8345", "class_name": "ธง" }
+    "fields": {
+      "class_id": "8345",
+      "class_name": "ธง"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 345,
-    "fields": { "class_id": "8405", "class_name": "เครื่องแต่งกายชั้นนอก ชาย" }
+    "fields": {
+      "class_id": "8405",
+      "class_name": "เครื่องแต่งกายชั้นนอก ชาย"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 346,
-    "fields": { "class_id": "8410", "class_name": "เครื่องแต่งกายชั้นนอก หญิง" }
+    "fields": {
+      "class_id": "8410",
+      "class_name": "เครื่องแต่งกายชั้นนอก หญิง"
+    }
   },
   {
     "model": "master.pclass",
@@ -2275,12 +2794,18 @@
   {
     "model": "master.pclass",
     "pk": 350,
-    "fields": { "class_id": "8430", "class_name": "รองเท้าผู้ชาย" }
+    "fields": {
+      "class_id": "8430",
+      "class_name": "รองเท้าผู้ชาย"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 351,
-    "fields": { "class_id": "8435", "class_name": "รองเท้าผู้หญิง" }
+    "fields": {
+      "class_id": "8435",
+      "class_name": "รองเท้าผู้หญิง"
+    }
   },
   {
     "model": "master.pclass",
@@ -2309,27 +2834,42 @@
   {
     "model": "master.pclass",
     "pk": 355,
-    "fields": { "class_id": "8455", "class_name": "เครื่องหมายยศและเหล่า" }
+    "fields": {
+      "class_id": "8455",
+      "class_name": "เครื่องหมายยศและเหล่า"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 356,
-    "fields": { "class_id": "8460", "class_name": "กระเป๋าเดินทาง" }
+    "fields": {
+      "class_id": "8460",
+      "class_name": "กระเป๋าเดินทาง"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 357,
-    "fields": { "class_id": "8465", "class_name": "อุปกรณ์ประจำกาย" }
+    "fields": {
+      "class_id": "8465",
+      "class_name": "อุปกรณ์ประจำกาย"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 358,
-    "fields": { "class_id": "8470", "class_name": "เสื้อเกราะ" }
+    "fields": {
+      "class_id": "8470",
+      "class_name": "เสื้อเกราะ"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 359,
-    "fields": { "class_id": "8475", "class_name": "เครื่องแต่งกายเฉพาะการบิน" }
+    "fields": {
+      "class_id": "8475",
+      "class_name": "เครื่องแต่งกายเฉพาะการบิน"
+    }
   },
   {
     "model": "master.pclass",
@@ -2342,47 +2882,74 @@
   {
     "model": "master.pclass",
     "pk": 361,
-    "fields": { "class_id": "8520", "class_name": "สบู่ฟอกตัวและยาสีฟัน" }
+    "fields": {
+      "class_id": "8520",
+      "class_name": "สบู่ฟอกตัวและยาสีฟัน"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 362,
-    "fields": { "class_id": "8530", "class_name": "สุขภัณฑ์ประจำกาย" }
+    "fields": {
+      "class_id": "8530",
+      "class_name": "สุขภัณฑ์ประจำกาย"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 363,
-    "fields": { "class_id": "8540", "class_name": "ผลิตภัณฑ์กระดาษทำความสะอาด" }
+    "fields": {
+      "class_id": "8540",
+      "class_name": "ผลิตภัณฑ์กระดาษทำความสะอาด"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 364,
-    "fields": { "class_id": "8710", "class_name": "อาหารสัตว์และการเลี้ยง" }
+    "fields": {
+      "class_id": "8710",
+      "class_name": "อาหารสัตว์และการเลี้ยง"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 365,
-    "fields": { "class_id": "8720", "class_name": "ปุ๋ย" }
+    "fields": {
+      "class_id": "8720",
+      "class_name": "ปุ๋ย"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 366,
-    "fields": { "class_id": "8730", "class_name": "เมล็ดพันธุ์และไม้เพาะชำ" }
+    "fields": {
+      "class_id": "8730",
+      "class_name": "เมล็ดพันธุ์และไม้เพาะชำ"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 367,
-    "fields": { "class_id": "8905", "class_name": "เนื้อ  สัตว์ปีก  และปลา" }
+    "fields": {
+      "class_id": "8905",
+      "class_name": "เนื้อ  สัตว์ปีก  และปลา"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 368,
-    "fields": { "class_id": "8910", "class_name": "อาหารนมและไข่" }
+    "fields": {
+      "class_id": "8910",
+      "class_name": "อาหารนมและไข่"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 369,
-    "fields": { "class_id": "8915", "class_name": "ผักและผลไม้" }
+    "fields": {
+      "class_id": "8915",
+      "class_name": "ผักและผลไม้"
+    }
   },
   {
     "model": "master.pclass",
@@ -2411,7 +2978,10 @@
   {
     "model": "master.pclass",
     "pk": 373,
-    "fields": { "class_id": "8935", "class_name": "ซุปและบูยอง (น้ำซุป)" }
+    "fields": {
+      "class_id": "8935",
+      "class_name": "ซุปและบูยอง (น้ำซุป)"
+    }
   },
   {
     "model": "master.pclass",
@@ -2424,7 +2994,10 @@
   {
     "model": "master.pclass",
     "pk": 375,
-    "fields": { "class_id": "8945", "class_name": "ไขมันและน้ำมันปรุงอาหาร" }
+    "fields": {
+      "class_id": "8945",
+      "class_name": "ไขมันและน้ำมันปรุงอาหาร"
+    }
   },
   {
     "model": "master.pclass",
@@ -2437,32 +3010,50 @@
   {
     "model": "master.pclass",
     "pk": 377,
-    "fields": { "class_id": "8955", "class_name": "กาแฟ  ชา  และโกโก้" }
+    "fields": {
+      "class_id": "8955",
+      "class_name": "กาแฟ  ชา  และโกโก้"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 378,
-    "fields": { "class_id": "8960", "class_name": "เครื่องดื่มไม่มีแอลกอฮอล์" }
+    "fields": {
+      "class_id": "8960",
+      "class_name": "เครื่องดื่มไม่มีแอลกอฮอล์"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 379,
-    "fields": { "class_id": "8965", "class_name": "เครื่องดื่มมีแอลกอฮอล์" }
+    "fields": {
+      "class_id": "8965",
+      "class_name": "เครื่องดื่มมีแอลกอฮอล์"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 380,
-    "fields": { "class_id": "8970", "class_name": "อาหารบรรจุกล่อง" }
+    "fields": {
+      "class_id": "8970",
+      "class_name": "อาหารบรรจุกล่อง"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 381,
-    "fields": { "class_id": "8975", "class_name": "ผลิตภัณฑ์ยาสูบ" }
+    "fields": {
+      "class_id": "8975",
+      "class_name": "ผลิตภัณฑ์ยาสูบ"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 382,
-    "fields": { "class_id": "9110", "class_name": "เชื่อเพลิงแข็ง" }
+    "fields": {
+      "class_id": "9110",
+      "class_name": "เชื่อเพลิงแข็ง"
+    }
   },
   {
     "model": "master.pclass",
@@ -2483,7 +3074,10 @@
   {
     "model": "master.pclass",
     "pk": 385,
-    "fields": { "class_id": "9140", "class_name": "น้ำมันเชื้อเพลิง" }
+    "fields": {
+      "class_id": "9140",
+      "class_name": "น้ำมันเชื้อเพลิง"
+    }
   },
   {
     "model": "master.pclass",
@@ -2504,27 +3098,42 @@
   {
     "model": "master.pclass",
     "pk": 388,
-    "fields": { "class_id": "9310", "class_name": "กระดาษและกระดาษแข็ง" }
+    "fields": {
+      "class_id": "9310",
+      "class_name": "กระดาษและกระดาษแข็ง"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 389,
-    "fields": { "class_id": "9320", "class_name": "วัสดุประดิษฐ์ที่เป็นยาง" }
+    "fields": {
+      "class_id": "9320",
+      "class_name": "วัสดุประดิษฐ์ที่เป็นยาง"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 390,
-    "fields": { "class_id": "9330", "class_name": "วัสดุประดิษฐ์ด้วยพลาสติก" }
+    "fields": {
+      "class_id": "9330",
+      "class_name": "วัสดุประดิษฐ์ด้วยพลาสติก"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 391,
-    "fields": { "class_id": "9340", "class_name": "วัสดุประดิษฐ์ด้วยแก้ว" }
+    "fields": {
+      "class_id": "9340",
+      "class_name": "วัสดุประดิษฐ์ด้วยแก้ว"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 392,
-    "fields": { "class_id": "9350", "class_name": "วัสดุทนความร้อนและทนไฟ" }
+    "fields": {
+      "class_id": "9350",
+      "class_name": "วัสดุทนความร้อนและทนไฟ"
+    }
   },
   {
     "model": "master.pclass",
@@ -2537,7 +3146,10 @@
   {
     "model": "master.pclass",
     "pk": 394,
-    "fields": { "class_id": "9410", "class_name": "วัตถุดิบที่ได้จากพฤษชาติ" }
+    "fields": {
+      "class_id": "9410",
+      "class_name": "วัตถุดิบที่ได้จากพฤษชาติ"
+    }
   },
   {
     "model": "master.pclass",
@@ -2646,17 +3258,26 @@
   {
     "model": "master.pclass",
     "pk": 408,
-    "fields": { "class_id": "9610", "class_name": "สินแร่" }
+    "fields": {
+      "class_id": "9610",
+      "class_name": "สินแร่"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 409,
-    "fields": { "class_id": "9620", "class_name": "แร่ธรรมชาติและสังเคราะห์" }
+    "fields": {
+      "class_id": "9620",
+      "class_name": "แร่ธรรมชาติและสังเคราะห์"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 410,
-    "fields": { "class_id": "9630", "class_name": "โลหะผสมเหล็กและรอง" }
+    "fields": {
+      "class_id": "9630",
+      "class_name": "โลหะผสมเหล็กและรอง"
+    }
   },
   {
     "model": "master.pclass",
@@ -2677,17 +3298,26 @@
   {
     "model": "master.pclass",
     "pk": 413,
-    "fields": { "class_id": "9660", "class_name": "โลหะมีค่ามากในรูปขั้นต้น" }
+    "fields": {
+      "class_id": "9660",
+      "class_name": "โลหะมีค่ามากในรูปขั้นต้น"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 414,
-    "fields": { "class_id": "9670", "class_name": "เศษเหล็กและเศษเหล็กกล้า" }
+    "fields": {
+      "class_id": "9670",
+      "class_name": "เศษเหล็กและเศษเหล็กกล้า"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 415,
-    "fields": { "class_id": "9680", "class_name": "เศษโลหะอื่นที่ไม่ใช่เหล็ก" }
+    "fields": {
+      "class_id": "9680",
+      "class_name": "เศษโลหะอื่นที่ไม่ใช่เหล็ก"
+    }
   },
   {
     "model": "master.pclass",
@@ -2700,12 +3330,18 @@
   {
     "model": "master.pclass",
     "pk": 417,
-    "fields": { "class_id": "9910", "class_name": "เพชรพลอย" }
+    "fields": {
+      "class_id": "9910",
+      "class_name": "เพชรพลอย"
+    }
   },
   {
     "model": "master.pclass",
     "pk": 418,
-    "fields": { "class_id": "9915", "class_name": "พัสดุนักสะสม" }
+    "fields": {
+      "class_id": "9915",
+      "class_name": "พัสดุนักสะสม"
+    }
   },
   {
     "model": "master.pclass",
@@ -2718,7 +3354,10 @@
   {
     "model": "master.pclass",
     "pk": 420,
-    "fields": { "class_id": "9925", "class_name": "บริภัณฑ์พิธีทางศาสนา" }
+    "fields": {
+      "class_id": "9925",
+      "class_name": "บริภัณฑ์พิธีทางศาสนา"
+    }
   },
   {
     "model": "master.pclass",
@@ -2731,12 +3370,18 @@
   {
     "model": "master.pclass",
     "pk": 422,
-    "fields": { "class_id": "9999", "class_name": "รายการอื่น ๆ  (เบ็ดเตล็ด)" }
+    "fields": {
+      "class_id": "9999",
+      "class_name": "รายการอื่น ๆ  (เบ็ดเตล็ด)"
+    }
   },
   {
     "model": "master.gpscode",
     "pk": 1,
-    "fields": { "gpsc_id": "12181500", "gpsc_name": "ขี้ผึ้ง" }
+    "fields": {
+      "gpsc_id": "12181500",
+      "gpsc_name": "ขี้ผึ้ง"
+    }
   },
   {
     "model": "master.gpscode",
@@ -2749,27 +3394,42 @@
   {
     "model": "master.gpscode",
     "pk": 3,
-    "fields": { "gpsc_id": "14111600", "gpsc_name": "กระดาษทำโปสการ์ด" }
+    "fields": {
+      "gpsc_id": "14111600",
+      "gpsc_name": "กระดาษทำโปสการ์ด"
+    }
   },
   {
     "model": "master.gpscode",
     "pk": 4,
-    "fields": { "gpsc_id": "14111700", "gpsc_name": "กระดาษกระดาษชำระ" }
+    "fields": {
+      "gpsc_id": "14111700",
+      "gpsc_name": "กระดาษกระดาษชำระ"
+    }
   },
   {
     "model": "master.gpscode",
     "pk": 5,
-    "fields": { "gpsc_id": "14121800", "gpsc_name": "กระดาษเคลือบมีกาว" }
+    "fields": {
+      "gpsc_id": "14121800",
+      "gpsc_name": "กระดาษเคลือบมีกาว"
+    }
   },
   {
     "model": "master.gpscode",
     "pk": 6,
-    "fields": { "gpsc_id": "14122100", "gpsc_name": "กระดาษย่นมีกาว" }
+    "fields": {
+      "gpsc_id": "14122100",
+      "gpsc_name": "กระดาษย่นมีกาว"
+    }
   },
   {
     "model": "master.gpscode",
     "pk": 7,
-    "fields": { "gpsc_id": "24112000", "gpsc_name": "ถังและตระกร้าขนาดเล็ก" }
+    "fields": {
+      "gpsc_id": "24112000",
+      "gpsc_name": "ถังและตระกร้าขนาดเล็ก"
+    }
   },
   {
     "model": "master.gpscode",
@@ -2782,37 +3442,58 @@
   {
     "model": "master.gpscode",
     "pk": 9,
-    "fields": { "gpsc_id": "30103200", "gpsc_name": "ตะแกรง" }
+    "fields": {
+      "gpsc_id": "30103200",
+      "gpsc_name": "ตะแกรง"
+    }
   },
   {
     "model": "master.gpscode",
     "pk": 10,
-    "fields": { "gpsc_id": "30131500", "gpsc_name": "บล็อก" }
+    "fields": {
+      "gpsc_id": "30131500",
+      "gpsc_name": "บล็อก"
+    }
   },
   {
     "model": "master.gpscode",
     "pk": 11,
-    "fields": { "gpsc_id": "30171700", "gpsc_name": "หน้าต่าง" }
+    "fields": {
+      "gpsc_id": "30171700",
+      "gpsc_name": "หน้าต่าง"
+    }
   },
   {
     "model": "master.gpscode",
     "pk": 12,
-    "fields": { "gpsc_id": "31151500", "gpsc_name": "เชือก" }
+    "fields": {
+      "gpsc_id": "31151500",
+      "gpsc_name": "เชือก"
+    }
   },
   {
     "model": "master.gpscode",
     "pk": 13,
-    "fields": { "gpsc_id": "31201600", "gpsc_name": "กาวและตัวปิดผนึกอื่นๆ" }
+    "fields": {
+      "gpsc_id": "31201600",
+      "gpsc_name": "กาวและตัวปิดผนึกอื่นๆ"
+    }
   },
   {
     "model": "master.gpscode",
     "pk": 14,
-    "fields": { "gpsc_id": "31211500", "gpsc_name": "สีและสีรองพื้น" }
+    "fields": {
+      "gpsc_id": "31211500",
+      "gpsc_name": "สีและสีรองพื้น"
+    }
   },
   {
     "model": "master.gpscode",
     "pk": 15,
-    "fields": { "gpsc_id": "31211700", "gpsc_name": "สารเคลือบพื้น" }
+    "fields": {
+      "gpsc_id": "31211700",
+      "gpsc_name": "สารเคลือบพื้น"
+    }
   },
   {
     "model": "master.gpscode",
@@ -2825,32 +3506,50 @@
   {
     "model": "master.gpscode",
     "pk": 17,
-    "fields": { "gpsc_id": "31211900", "gpsc_name": "อุปกรณ์ทาสี" }
+    "fields": {
+      "gpsc_id": "31211900",
+      "gpsc_name": "อุปกรณ์ทาสี"
+    }
   },
   {
     "model": "master.gpscode",
     "pk": 18,
-    "fields": { "gpsc_id": "39101700", "gpsc_name": "หลอดไฟทำด้วยแก้ว" }
+    "fields": {
+      "gpsc_id": "39101700",
+      "gpsc_name": "หลอดไฟทำด้วยแก้ว"
+    }
   },
   {
     "model": "master.gpscode",
     "pk": 19,
-    "fields": { "gpsc_id": "39121400", "gpsc_name": "ขั้วต่อสายไฟ" }
+    "fields": {
+      "gpsc_id": "39121400",
+      "gpsc_name": "ขั้วต่อสายไฟ"
+    }
   },
   {
     "model": "master.gpscode",
     "pk": 20,
-    "fields": { "gpsc_id": "39121500", "gpsc_name": "อุปกรณ์โคมไฟ" }
+    "fields": {
+      "gpsc_id": "39121500",
+      "gpsc_name": "อุปกรณ์โคมไฟ"
+    }
   },
   {
     "model": "master.gpscode",
     "pk": 21,
-    "fields": { "gpsc_id": "39121700", "gpsc_name": "วัสดุและอุปกรณ์ไฟฟ้า" }
+    "fields": {
+      "gpsc_id": "39121700",
+      "gpsc_name": "วัสดุและอุปกรณ์ไฟฟ้า"
+    }
   },
   {
     "model": "master.gpscode",
     "pk": 22,
-    "fields": { "gpsc_id": "42281600", "gpsc_name": "น้ำยาฆ่าเชื้อ" }
+    "fields": {
+      "gpsc_id": "42281600",
+      "gpsc_name": "น้ำยาฆ่าเชื้อ"
+    }
   },
   {
     "model": "master.gpscode",
@@ -2863,17 +3562,26 @@
   {
     "model": "master.gpscode",
     "pk": 24,
-    "fields": { "gpsc_id": "43211700", "gpsc_name": "แผ่นดิสก์เก็บข้อมูลรหัส" }
+    "fields": {
+      "gpsc_id": "43211700",
+      "gpsc_name": "แผ่นดิสก์เก็บข้อมูลรหัส"
+    }
   },
   {
     "model": "master.gpscode",
     "pk": 25,
-    "fields": { "gpsc_id": "43211800", "gpsc_name": "แผ่นรองเมาส์" }
+    "fields": {
+      "gpsc_id": "43211800",
+      "gpsc_name": "แผ่นรองเมาส์"
+    }
   },
   {
     "model": "master.gpscode",
     "pk": 26,
-    "fields": { "gpsc_id": "44101600", "gpsc_name": "เครื่องเจาะรูกระดาษ" }
+    "fields": {
+      "gpsc_id": "44101600",
+      "gpsc_name": "เครื่องเจาะรูกระดาษ"
+    }
   },
   {
     "model": "master.gpscode",
@@ -2886,47 +3594,74 @@
   {
     "model": "master.gpscode",
     "pk": 28,
-    "fields": { "gpsc_id": "44103100", "gpsc_name": "ผงหมึก" }
+    "fields": {
+      "gpsc_id": "44103100",
+      "gpsc_name": "ผงหมึก"
+    }
   },
   {
     "model": "master.gpscode",
     "pk": 29,
-    "fields": { "gpsc_id": "44103500", "gpsc_name": "เทปปิดพัน" }
+    "fields": {
+      "gpsc_id": "44103500",
+      "gpsc_name": "เทปปิดพัน"
+    }
   },
   {
     "model": "master.gpscode",
     "pk": 30,
-    "fields": { "gpsc_id": "44111500", "gpsc_name": "กล่องใส่แฟ้มแผ่นที่" }
+    "fields": {
+      "gpsc_id": "44111500",
+      "gpsc_name": "กล่องใส่แฟ้มแผ่นที่"
+    }
   },
   {
     "model": "master.gpscode",
     "pk": 31,
-    "fields": { "gpsc_id": "44111800", "gpsc_name": "สเกลการร่างแบบ" }
+    "fields": {
+      "gpsc_id": "44111800",
+      "gpsc_name": "สเกลการร่างแบบ"
+    }
   },
   {
     "model": "master.gpscode",
     "pk": 32,
-    "fields": { "gpsc_id": "44111900", "gpsc_name": "แปรงลบกระดาษดำ" }
+    "fields": {
+      "gpsc_id": "44111900",
+      "gpsc_name": "แปรงลบกระดาษดำ"
+    }
   },
   {
     "model": "master.gpscode",
     "pk": 33,
-    "fields": { "gpsc_id": "44121500", "gpsc_name": "ซองมาตรฐาน" }
+    "fields": {
+      "gpsc_id": "44121500",
+      "gpsc_name": "ซองมาตรฐาน"
+    }
   },
   {
     "model": "master.gpscode",
     "pk": 34,
-    "fields": { "gpsc_id": "44121600", "gpsc_name": "กรรไกรซอง" }
+    "fields": {
+      "gpsc_id": "44121600",
+      "gpsc_name": "กรรไกรซอง"
+    }
   },
   {
     "model": "master.gpscode",
     "pk": 35,
-    "fields": { "gpsc_id": "44121700", "gpsc_name": "ดินสอ" }
+    "fields": {
+      "gpsc_id": "44121700",
+      "gpsc_name": "ดินสอ"
+    }
   },
   {
     "model": "master.gpscode",
     "pk": 36,
-    "fields": { "gpsc_id": "44121800", "gpsc_name": "เทปแก้คำผิด" }
+    "fields": {
+      "gpsc_id": "44121800",
+      "gpsc_name": "เทปแก้คำผิด"
+    }
   },
   {
     "model": "master.gpscode",
@@ -2939,12 +3674,18 @@
   {
     "model": "master.gpscode",
     "pk": 38,
-    "fields": { "gpsc_id": "44122000", "gpsc_name": "ซองเอกสาร" }
+    "fields": {
+      "gpsc_id": "44122000",
+      "gpsc_name": "ซองเอกสาร"
+    }
   },
   {
     "model": "master.gpscode",
     "pk": 39,
-    "fields": { "gpsc_id": "44122100", "gpsc_name": "คลิปกระดาษ" }
+    "fields": {
+      "gpsc_id": "44122100",
+      "gpsc_name": "คลิปกระดาษ"
+    }
   },
   {
     "model": "master.gpscode",
@@ -2981,7 +3722,10 @@
   {
     "model": "master.gpscode",
     "pk": 44,
-    "fields": { "gpsc_id": "47131700", "gpsc_name": "อุปกรณ์ภายในห้องน้ำ" }
+    "fields": {
+      "gpsc_id": "47131700",
+      "gpsc_name": "อุปกรณ์ภายในห้องน้ำ"
+    }
   },
   {
     "model": "master.gpscode",
@@ -2994,42 +3738,67 @@
   {
     "model": "master.gpscode",
     "pk": 46,
-    "fields": { "gpsc_id": "47132100", "gpsc_name": "ชุดอุปกรณ์ทำความสะอาด" }
+    "fields": {
+      "gpsc_id": "47132100",
+      "gpsc_name": "ชุดอุปกรณ์ทำความสะอาด"
+    }
   },
   {
     "model": "master.gpscode",
     "pk": 47,
-    "fields": { "gpsc_id": "52101500", "gpsc_name": "พรมเช็ดเท้าหน้าประตู" }
+    "fields": {
+      "gpsc_id": "52101500",
+      "gpsc_name": "พรมเช็ดเท้าหน้าประตู"
+    }
   },
   {
     "model": "master.gpscode",
     "pk": 48,
-    "fields": { "gpsc_id": "52141500", "gpsc_name": "จานใส่ของร้อนไฟฟ้า" }
+    "fields": {
+      "gpsc_id": "52141500",
+      "gpsc_name": "จานใส่ของร้อนไฟฟ้า"
+    }
   },
   {
     "model": "master.gpscode",
     "pk": 49,
-    "fields": { "gpsc_id": "52141600", "gpsc_name": "ตะกร้าขนาดใหญ่ซักรีด" }
+    "fields": {
+      "gpsc_id": "52141600",
+      "gpsc_name": "ตะกร้าขนาดใหญ่ซักรีด"
+    }
   },
   {
     "model": "master.gpscode",
     "pk": 50,
-    "fields": { "gpsc_id": "53131600", "gpsc_name": "เครื่องอาบน้ำ" }
+    "fields": {
+      "gpsc_id": "53131600",
+      "gpsc_name": "เครื่องอาบน้ำ"
+    }
   },
   {
     "model": "master.gpscode",
     "pk": 51,
-    "fields": { "gpsc_id": "55121700", "gpsc_name": "สัญลักษณ์" }
+    "fields": {
+      "gpsc_id": "55121700",
+      "gpsc_name": "สัญลักษณ์"
+    }
   },
   {
     "model": "master.gpscode",
     "pk": 52,
-    "fields": { "gpsc_id": "60121800", "gpsc_name": "หมึกพิมพ์และหมีกวาด" }
+    "fields": {
+      "gpsc_id": "60121800",
+      "gpsc_name": "หมึกพิมพ์และหมีกวาด"
+    }
   },
   {
     "model": "master.ptype",
     "pk": 1,
-    "fields": { "ptype_id": "001", "ptype_name": "ศูนย์ข่าว", "class_id": 422 }
+    "fields": {
+      "ptype_id": "001",
+      "ptype_name": "ศูนย์ข่าว",
+      "class_id": 422
+    }
   },
   {
     "model": "master.ptype",
@@ -3070,7 +3839,11 @@
   {
     "model": "master.ptype",
     "pk": 6,
-    "fields": { "ptype_id": "016", "ptype_name": "อื่น ๆ ", "class_id": 420 }
+    "fields": {
+      "ptype_id": "016",
+      "ptype_name": "อื่น ๆ ",
+      "class_id": 420
+    }
   },
   {
     "model": "master.ptype",
@@ -3084,7 +3857,11 @@
   {
     "model": "master.ptype",
     "pk": 8,
-    "fields": { "ptype_id": "005", "ptype_name": "อื่น ๆ", "class_id": 422 }
+    "fields": {
+      "ptype_id": "005",
+      "ptype_name": "อื่น ๆ",
+      "class_id": 422
+    }
   },
   {
     "model": "master.ptype",
@@ -3125,17 +3902,29 @@
   {
     "model": "master.ptype",
     "pk": 13,
-    "fields": { "ptype_id": "012", "ptype_name": "อื่น ๆ", "class_id": 421 }
+    "fields": {
+      "ptype_id": "012",
+      "ptype_name": "อื่น ๆ",
+      "class_id": 421
+    }
   },
   {
     "model": "master.ptype",
     "pk": 14,
-    "fields": { "ptype_id": "013", "ptype_name": "อาสนะ ", "class_id": 420 }
+    "fields": {
+      "ptype_id": "013",
+      "ptype_name": "อาสนะ ",
+      "class_id": 420
+    }
   },
   {
     "model": "master.ptype",
     "pk": 15,
-    "fields": { "ptype_id": "014", "ptype_name": "ขันน้ำมนต์", "class_id": 420 }
+    "fields": {
+      "ptype_id": "014",
+      "ptype_name": "ขันน้ำมนต์",
+      "class_id": 420
+    }
   },
   {
     "model": "master.ptype",
@@ -3230,7 +4019,11 @@
   {
     "model": "master.ptype",
     "pk": 26,
-    "fields": { "ptype_id": "026", "ptype_name": "กางเกง", "class_id": 354 }
+    "fields": {
+      "ptype_id": "026",
+      "ptype_name": "กางเกง",
+      "class_id": 354
+    }
   },
   {
     "model": "master.ptype",
@@ -3244,12 +4037,20 @@
   {
     "model": "master.ptype",
     "pk": 28,
-    "fields": { "ptype_id": "028", "ptype_name": "ไวโอลิน", "class_id": 313 }
+    "fields": {
+      "ptype_id": "028",
+      "ptype_name": "ไวโอลิน",
+      "class_id": 313
+    }
   },
   {
     "model": "master.ptype",
     "pk": 29,
-    "fields": { "ptype_id": "029", "ptype_name": "ไวโอลา", "class_id": 313 }
+    "fields": {
+      "ptype_id": "029",
+      "ptype_name": "ไวโอลา",
+      "class_id": 313
+    }
   },
   {
     "model": "master.ptype",
@@ -3263,7 +4064,11 @@
   {
     "model": "master.ptype",
     "pk": 31,
-    "fields": { "ptype_id": "031", "ptype_name": "ไชโลโฟน", "class_id": 313 }
+    "fields": {
+      "ptype_id": "031",
+      "ptype_name": "ไชโลโฟน",
+      "class_id": 313
+    }
   },
   {
     "model": "master.ptype",
@@ -3304,57 +4109,90 @@
   {
     "model": "master.dept",
     "pk": 1,
-    "fields": { "dept_id": "11001", "dept_name": "งานบริหารงานทั่วไป" }
+    "fields": {
+      "dept_id": "11001",
+      "dept_name": "งานบริหารงานทั่วไป"
+    }
   },
   {
     "model": "master.dept",
     "pk": 2,
-    "fields": { "dept_id": "11002", "dept_name": "งานบุคลากร" }
+    "fields": {
+      "dept_id": "11002",
+      "dept_name": "งานบุคลากร"
+    }
   },
   {
     "model": "master.dept",
     "pk": 3,
-    "fields": { "dept_id": "11003", "dept_name": "งานการเงิน" }
+    "fields": {
+      "dept_id": "11003",
+      "dept_name": "งานการเงิน"
+    }
   },
   {
     "model": "master.dept",
     "pk": 4,
-    "fields": { "dept_id": "11004", "dept_name": "งานบัญชี" }
+    "fields": {
+      "dept_id": "11004",
+      "dept_name": "งานบัญชี"
+    }
   },
   {
     "model": "master.dept",
     "pk": 5,
-    "fields": { "dept_id": "11005", "dept_name": "งานพัสดุ" }
+    "fields": {
+      "dept_id": "11005",
+      "dept_name": "งานพัสดุ"
+    }
   },
   {
     "model": "master.dept",
     "pk": 6,
-    "fields": { "dept_id": "11006", "dept_name": "งานอาคารสถานที่" }
+    "fields": {
+      "dept_id": "11006",
+      "dept_name": "งานอาคารสถานที่"
+    }
   },
   {
     "model": "master.dept",
     "pk": 7,
-    "fields": { "dept_id": "11007", "dept_name": "งานทะเบียน" }
+    "fields": {
+      "dept_id": "11007",
+      "dept_name": "งานทะเบียน"
+    }
   },
   {
     "model": "master.dept",
     "pk": 8,
-    "fields": { "dept_id": "11008", "dept_name": "งานประชาสัมพันธ์" }
+    "fields": {
+      "dept_id": "11008",
+      "dept_name": "งานประชาสัมพันธ์"
+    }
   },
   {
     "model": "master.dept",
     "pk": 9,
-    "fields": { "dept_id": "12001", "dept_name": "งานวางแผนและงบประมาณ" }
+    "fields": {
+      "dept_id": "12001",
+      "dept_name": "งานวางแผนและงบประมาณ"
+    }
   },
   {
     "model": "master.dept",
     "pk": 10,
-    "fields": { "dept_id": "12002", "dept_name": "งานศูนย์ข้อมูลสารสนเทศ" }
+    "fields": {
+      "dept_id": "12002",
+      "dept_name": "งานศูนย์ข้อมูลสารสนเทศ"
+    }
   },
   {
     "model": "master.dept",
     "pk": 11,
-    "fields": { "dept_id": "12003", "dept_name": "งานความร่วมมือ" }
+    "fields": {
+      "dept_id": "12003",
+      "dept_name": "งานความร่วมมือ"
+    }
   },
   {
     "model": "master.dept",
@@ -3383,17 +4221,26 @@
   {
     "model": "master.dept",
     "pk": 15,
-    "fields": { "dept_id": "13001", "dept_name": "งานกิจกรรมนักเรียนนักศึกษา" }
+    "fields": {
+      "dept_id": "13001",
+      "dept_name": "งานกิจกรรมนักเรียนนักศึกษา"
+    }
   },
   {
     "model": "master.dept",
     "pk": 16,
-    "fields": { "dept_id": "13002", "dept_name": "งานครูที่ปรึกษา" }
+    "fields": {
+      "dept_id": "13002",
+      "dept_name": "งานครูที่ปรึกษา"
+    }
   },
   {
     "model": "master.dept",
     "pk": 17,
-    "fields": { "dept_id": "13003", "dept_name": "งานปกครอง" }
+    "fields": {
+      "dept_id": "13003",
+      "dept_name": "งานปกครอง"
+    }
   },
   {
     "model": "master.dept",
@@ -3430,27 +4277,42 @@
   {
     "model": "master.dept",
     "pk": 22,
-    "fields": { "dept_id": "14002", "dept_name": "งานวัดผลและประเมินผล" }
+    "fields": {
+      "dept_id": "14002",
+      "dept_name": "งานวัดผลและประเมินผล"
+    }
   },
   {
     "model": "master.dept",
     "pk": 23,
-    "fields": { "dept_id": "14003", "dept_name": "งานวิทยบริการและห้องสมุด" }
+    "fields": {
+      "dept_id": "14003",
+      "dept_name": "งานวิทยบริการและห้องสมุด"
+    }
   },
   {
     "model": "master.dept",
     "pk": 24,
-    "fields": { "dept_id": "14004", "dept_name": "งานอาชีวศึกษาระบบทวิภาคิ" }
+    "fields": {
+      "dept_id": "14004",
+      "dept_name": "งานอาชีวศึกษาระบบทวิภาคิ"
+    }
   },
   {
     "model": "master.dept",
     "pk": 25,
-    "fields": { "dept_id": "14005", "dept_name": "งานสื่อการเรียนการสอน" }
+    "fields": {
+      "dept_id": "14005",
+      "dept_name": "งานสื่อการเรียนการสอน"
+    }
   },
   {
     "model": "master.dept",
     "pk": 26,
-    "fields": { "dept_id": "15000", "dept_name": "งานอาชีวศึกษาจังหวัดนครปฐม" }
+    "fields": {
+      "dept_id": "15000",
+      "dept_name": "งานอาชีวศึกษาจังหวัดนครปฐม"
+    }
   },
   {
     "model": "master.dept",
@@ -3503,27 +4365,42 @@
   {
     "model": "master.dept",
     "pk": 33,
-    "fields": { "dept_id": "20000", "dept_name": "สาขาวิชาสามัญสัมพันธ์" }
+    "fields": {
+      "dept_id": "20000",
+      "dept_name": "สาขาวิชาสามัญสัมพันธ์"
+    }
   },
   {
     "model": "master.dept",
     "pk": 34,
-    "fields": { "dept_id": "20100", "dept_name": "สาขาวิชาการบัญชี" }
+    "fields": {
+      "dept_id": "20100",
+      "dept_name": "สาขาวิชาการบัญชี"
+    }
   },
   {
     "model": "master.dept",
     "pk": 35,
-    "fields": { "dept_id": "20200", "dept_name": "สาขาวิชาการตลาด" }
+    "fields": {
+      "dept_id": "20200",
+      "dept_name": "สาขาวิชาการตลาด"
+    }
   },
   {
     "model": "master.dept",
     "pk": 36,
-    "fields": { "dept_id": "20212", "dept_name": "สาขาวิชาภาษาต่างประเทศ" }
+    "fields": {
+      "dept_id": "20212",
+      "dept_name": "สาขาวิชาภาษาต่างประเทศ"
+    }
   },
   {
     "model": "master.dept",
     "pk": 37,
-    "fields": { "dept_id": "20300", "dept_name": "สาขาวิชาการเลขานุการ" }
+    "fields": {
+      "dept_id": "20300",
+      "dept_name": "สาขาวิชาการเลขานุการ"
+    }
   },
   {
     "model": "master.dept",
@@ -3544,7 +4421,10 @@
   {
     "model": "master.dept",
     "pk": 40,
-    "fields": { "dept_id": "30200", "dept_name": "สาขาวิชาออกแบบ" }
+    "fields": {
+      "dept_id": "30200",
+      "dept_name": "สาขาวิชาออกแบบ"
+    }
   },
   {
     "model": "master.dept",
@@ -3565,87 +4445,146 @@
   {
     "model": "master.dept",
     "pk": 43,
-    "fields": { "dept_id": "40200", "dept_name": "สาขาวิชาแฟชั่นดีไซน์" }
+    "fields": {
+      "dept_id": "40200",
+      "dept_name": "สาขาวิชาแฟชั่นดีไซน์"
+    }
   },
   {
     "model": "master.dept",
     "pk": 44,
-    "fields": { "dept_id": "40300", "dept_name": "สาขาวิชาอาหารและโภชนาการ" }
+    "fields": {
+      "dept_id": "40300",
+      "dept_name": "สาขาวิชาอาหารและโภชนาการ"
+    }
   },
   {
     "model": "master.dept",
     "pk": 45,
-    "fields": { "dept_id": "70100", "dept_name": "สาขาวิชาการโรงแรม" }
+    "fields": {
+      "dept_id": "70100",
+      "dept_name": "สาขาวิชาการโรงแรม"
+    }
   },
   {
     "model": "master.dept",
     "pk": 46,
-    "fields": { "dept_id": "80100", "dept_name": "สาขาวิชาโลจิสติกส์" }
+    "fields": {
+      "dept_id": "80100",
+      "dept_name": "สาขาวิชาโลจิสติกส์"
+    }
   },
   {
     "model": "master.dept",
     "pk": 47,
-    "fields": { "dept_id": "90100", "dept_name": "สาขาวิชาเทคโนโลยีสารสนเทศ" }
+    "fields": {
+      "dept_id": "90100",
+      "dept_name": "สาขาวิชาเทคโนโลยีสารสนเทศ"
+    }
   },
   {
     "model": "master.invoicetype",
     "pk": 1,
-    "fields": { "invioc_type": "1", "invioc_name": "ใบเสร็จรับเงิน" }
+    "fields": {
+      "invioc_type": "1",
+      "invioc_name": "ใบเสร็จรับเงิน"
+    }
   },
   {
     "model": "master.invoicetype",
     "pk": 2,
-    "fields": { "invioc_type": "2", "invioc_name": "ใบแจ้งหนี้" }
+    "fields": {
+      "invioc_type": "2",
+      "invioc_name": "ใบแจ้งหนี้"
+    }
   },
   {
     "model": "master.invoicetype",
     "pk": 3,
-    "fields": { "invioc_type": "3", "invioc_name": "ใบกำกับภาษี" }
+    "fields": {
+      "invioc_type": "3",
+      "invioc_name": "ใบกำกับภาษี"
+    }
   },
   {
     "model": "master.invoicetype",
     "pk": 4,
-    "fields": { "invioc_type": "4", "invioc_name": "ใบส่งของ" }
+    "fields": {
+      "invioc_type": "4",
+      "invioc_name": "ใบส่งของ"
+    }
   },
   {
     "model": "master.invoicetype",
     "pk": 5,
-    "fields": { "invioc_type": "5", "invioc_name": "ใบส่งมอบงาน" }
+    "fields": {
+      "invioc_type": "5",
+      "invioc_name": "ใบส่งมอบงาน"
+    }
   },
   {
     "model": "master.invoicetype",
     "pk": 6,
-    "fields": { "invioc_type": "6", "invioc_name": "ใบส่งมอบสินค้า" }
+    "fields": {
+      "invioc_type": "6",
+      "invioc_name": "ใบส่งมอบสินค้า"
+    }
   },
   {
     "model": "master.invoicetype",
     "pk": 7,
-    "fields": { "invioc_type": "7", "invioc_name": "ใบส่งสินค้า" }
+    "fields": {
+      "invioc_type": "7",
+      "invioc_name": "ใบส่งสินค้า"
+    }
   },
   {
     "model": "master.invoicetype",
     "pk": 8,
-    "fields": { "invioc_type": "8", "invioc_name": "ใบสำคัญรับเงิน" }
+    "fields": {
+      "invioc_type": "8",
+      "invioc_name": "ใบสำคัญรับเงิน"
+    }
   },
   {
     "model": "master.invoicetype",
     "pk": 9,
-    "fields": { "invioc_type": "9", "invioc_name": "บิลเงินสด" }
+    "fields": {
+      "invioc_type": "9",
+      "invioc_name": "บิลเงินสด"
+    }
   },
   {
     "model": "master.invoicetype",
     "pk": 10,
-    "fields": { "invioc_type": "10", "invioc_name": "บันทึกข้อความ" }
+    "fields": {
+      "invioc_type": "10",
+      "invioc_name": "บันทึกข้อความ"
+    }
   },
   {
     "model": "master.invoicetype",
     "pk": 11,
-    "fields": { "invioc_type": "11", "invioc_name": "ใบกำกับสินค้า" }
+    "fields": {
+      "invioc_type": "11",
+      "invioc_name": "ใบกำกับสินค้า"
+    }
   },
   {
     "model": "master.invoicetype",
     "pk": 12,
-    "fields": { "invioc_type": "12", "invioc_name": "หนังสือบริจาค" }
+    "fields": {
+      "invioc_type": "12",
+      "invioc_name": "หนังสือบริจาค"
+    }
+  },
+  {
+    "model": "master.invoicetype",
+    "pk": 13,
+    "fields": {
+      "invioc_type": "12",
+      "invioc_name": "ใบเบิก"
+    }
   },
   {
     "model": "master.description",
@@ -10027,8 +10966,8 @@
       "Des_name": "เครื่องขยายท่อ",
       "gpsc_id": null,
       "keyword": "เครื่องจักรงานโลหะ เครื่องดัดและขึ้นรูป เครื่องขยายท่อ เครื่องขยายท่อ",
-      "created_at": "2025-12-02T06:19:21.000Z",
-      "updated_at": "2025-12-02T06:19:21.000Z"
+      "created_at": "2025-12-02T06:19:21Z",
+      "updated_at": "2025-12-02T06:19:21Z"
     }
   },
   {
@@ -24251,8 +25190,8 @@
       "Des_name": "ตะปู  3 นิ้ว",
       "gpsc_id": null,
       "keyword": "เครื่องใช้และวัสดุขัด ตะปู  ลิ่ม  และสลัก ตะปูแบบต่าง ๆ ตะปู  3 นิ้ว",
-      "created_at": "2025-12-02T06:19:22.000Z",
-      "updated_at": "2025-12-02T06:19:22.000Z"
+      "created_at": "2025-12-02T06:19:22Z",
+      "updated_at": "2025-12-02T06:19:22Z"
     }
   },
   {
@@ -24265,8 +25204,8 @@
       "Des_name": "ลิ่มแบบต่าง ๆ",
       "gpsc_id": null,
       "keyword": "เครื่องใช้และวัสดุขัด ตะปู  ลิ่ม  และสลัก ลิ่มแบบต่าง ๆ ลิ่มแบบต่าง ๆ",
-      "created_at": "2025-12-02T06:19:22.000Z",
-      "updated_at": "2025-12-02T06:19:22.000Z"
+      "created_at": "2025-12-02T06:19:22Z",
+      "updated_at": "2025-12-02T06:19:22Z"
     }
   },
   {
@@ -39469,8 +40408,8 @@
       "Des_name": "ทิงเจอร์ไอโอดีน",
       "gpsc_id": null,
       "keyword": "อุปกรณ์  และเครื่องใช้ทางการแพทย์  ทันตแพทย์  และสัตวแพทย์ ยาชีววัตถุ  และรีเอเย่นต์ที่ทางการรับรอง อื่น ๆ ทิงเจอร์ไอโอดีน",
-      "created_at": "2025-12-02T06:19:23.000Z",
-      "updated_at": "2025-12-02T06:19:23.000Z"
+      "created_at": "2025-12-02T06:19:23Z",
+      "updated_at": "2025-12-02T06:19:23Z"
     }
   },
   {
@@ -54057,8 +54996,8 @@
       "Des_name": "อุปกรณ์สำรองข้อมูลแบบดิจิตอล SATA SSD M2 SSD บันทึกข้อมูลดิจิตอล",
       "gpsc_id": null,
       "keyword": "เครื่องกลสำนักงานและอุปกรณ์  กรรมวิธีบันทึกและลงข้อมูล ระบบกรรมวิธีข้อมูลอัตโนมัติ สำหรับอุตสาหกรรมวิทยาศาสตร์ และสำนักงาน อุปกรณ์และส่วนประกอบอื่น ๆ (คอมพิวเตอร์) อุปกรณ์สำรองข้อมูลแบบดิจิตอล SATA SSD M2 SSD บันทึกข้อมูลดิจิตอล",
-      "created_at": "2025-12-02T06:19:24.000Z",
-      "updated_at": "2025-12-02T06:19:24.000Z"
+      "created_at": "2025-12-02T06:19:24Z",
+      "updated_at": "2025-12-02T06:19:24Z"
     }
   },
   {
@@ -68673,8 +69612,8 @@
       "Des_name": "เครื่องเล่น DVD  VCD",
       "gpsc_id": null,
       "keyword": "เครื่องดนตรี  เครื่องเล่นแผ่นเสียง  และวิทยุใช้ในบ้าน เครื่องเล่นแผ่นเสียง วิทยุและโทรทัศน์ใช้ในบ้าน อื่น ๆ   เครื่องขยายเสียง เครื่องเล่น DVD  VCD",
-      "created_at": "2025-12-02T06:19:25.000Z",
-      "updated_at": "2025-12-02T06:19:25.000Z"
+      "created_at": "2025-12-02T06:19:25Z",
+      "updated_at": "2025-12-02T06:19:25Z"
     }
   },
   {
@@ -68687,8 +69626,8 @@
       "Des_name": "ชุดเครื่องขยายเสียงพร้อม ลำโพง และไมโครโฟน",
       "gpsc_id": null,
       "keyword": "เครื่องดนตรี  เครื่องเล่นแผ่นเสียง  และวิทยุใช้ในบ้าน เครื่องเล่นแผ่นเสียง วิทยุและโทรทัศน์ใช้ในบ้าน อื่น ๆ   เครื่องขยายเสียง ชุดเครื่องขยายเสียงพร้อม ลำโพง และไมโครโฟน",
-      "created_at": "2025-12-02T06:19:25.000Z",
-      "updated_at": "2025-12-02T06:19:25.000Z"
+      "created_at": "2025-12-02T06:19:25Z",
+      "updated_at": "2025-12-02T06:19:25Z"
     }
   },
   {
@@ -83877,8 +84816,8 @@
       "Des_name": "เครื่องอื่น ๆ",
       "gpsc_id": null,
       "keyword": "อาหาร กาแฟ  ชา  และโกโก้ เครื่องอื่น ๆ เครื่องอื่น ๆ",
-      "created_at": "2025-12-02T06:19:26.000Z",
-      "updated_at": "2025-12-02T06:19:26.000Z"
+      "created_at": "2025-12-02T06:19:26Z",
+      "updated_at": "2025-12-02T06:19:26Z"
     }
   },
   {
@@ -93007,6 +93946,20 @@
       "keyword": "เบ็ดเตล็ด รายการอื่น ๆ (เบ็ดเตล็ด) อื่น ๆ ยางลบก้อนสำหรับแกะสลัก",
       "created_at": "2025-12-02T06:19:26.605Z",
       "updated_at": "2025-12-02T06:19:26.605Z"
+    }
+  },
+  {
+    "model": "master.description",
+    "pk": 6384,
+    "fields": {
+      "class_id": 422,
+      "type_id": 6,
+      "Des_id": "0001",
+      "Des_name": "ปีโป้",
+      "gpsc_id": 30,
+      "keyword": "",
+      "created_at": "2026-01-04T09:15:35.178Z",
+      "updated_at": "2026-01-04T09:16:28.030Z"
     }
   }
 ]
