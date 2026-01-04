@@ -24,6 +24,7 @@ import LoginIcon from '@mui/icons-material/Login';
 import DescriptionIcon from '@mui/icons-material/Description';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import SettingsIcon from '@mui/icons-material/Settings';
 import { store } from '../../stores/store';
 import { useNavigate, useLocation } from 'react-router-dom';
 import ConfirmDialog from '../ConfirmDialog';
@@ -86,6 +87,14 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
       path: '/inventory',
     }
   ];
+
+  const menuSettings = [
+    {
+      text: 'จัดการพัสดุ',
+      icon: <SettingsIcon />,
+      path: '/manage-inventory',
+    }
+  ]
 
   const handleMenuClick = (path: string) => {
     navigate(path);
@@ -165,6 +174,59 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
               if (location.pathname.split('/')[1] === item.path.split('/')[1] && item.path !== '/') {
                 isActive = true;
               }
+            }
+
+            return (
+              <ListItem key={item.text} disablePadding sx={{ mb: 0.5 }}>
+                <ListItemButton
+                  onClick={() => handleMenuClick(item.path)}
+                  selected={isActive}
+                  sx={{
+                    borderRadius: 2,
+                    justifyContent: collapsed ? 'center' : 'flex-start',
+                    '&.Mui-selected': {
+                      bgcolor: 'primary.main',
+                      color: 'primary.contrastText',
+                      '&:hover': {
+                        bgcolor: 'primary.dark',
+                      },
+                      '& .MuiListItemIcon-root': {
+                        color: 'primary.contrastText',
+                      },
+                    },
+                  }}
+                >
+                  <ListItemIcon
+                    sx={{
+                      color: isActive ? 'inherit' : 'text.secondary',
+                      minWidth: collapsed ? 'unset' : 40,
+                      justifyContent: 'center',
+                    }}
+                  >
+                    {item.icon}
+                  </ListItemIcon>
+                  {!collapsed && (
+                    <ListItemText
+                      primary={item.text}
+                      primaryTypographyProps={{
+                        fontSize: '0.875rem',
+                        fontWeight: isActive ? 600 : 400,
+                      }}
+                    />
+                  )}
+                </ListItemButton>
+              </ListItem>
+            );
+          })}
+        </List>
+        <Divider sx={{ my: 1 }} />
+        <List sx={{ px: 1, py: 2 }}>
+          {menuSettings.map((item) => {
+            let isActive = location.pathname === item.path;
+            // กำหนดเงื่อนไขการ active สำหรับ path ที่มี dynamic parameter
+
+            if (item.path === '/manage-inventory' && (location.pathname.startsWith('/manage-inventory/edit/') || location.pathname === '/manage-inventory/create')) {
+              isActive = true;
             }
 
             return (

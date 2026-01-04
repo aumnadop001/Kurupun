@@ -65,7 +65,7 @@ const receiveColumns: GridColDef[] = [
 
 const spendColumns: GridColDef[] = [
   { field: 'id', headerName: 'ลำดับ', flex: 0.5 },
-  { field: 'date', headerName: 'วันที่', flex: 1 , valueFormatter: (params: any) => formatDateToThai(params)},
+  { field: 'date', headerName: 'วันที่', flex: 1, valueFormatter: (params: any) => formatDateToThai(params) },
   { field: 'evidence', headerName: 'หลักฐาน', flex: 1.5 },
   { field: 'unitPrice', headerName: 'ราคาต่อหน่วย', type: 'number', flex: 1 },
   {
@@ -594,21 +594,22 @@ function InventoryForm() {
             เชื่อมโยงกับเอกสาร
             <FormControl
               fullWidth
+              sx={{ mt: 2 }}
               error={formik.touched.document_record && Boolean(formik.errors.document_record)}
             >
-              <FormControl fullWidth size="small" sx={{ mt: 1 }}>
+              <FormControl fullWidth size="small" >
                 <InputLabel id="document_record-label">
                   ทะเบียนเอกสาร
                 </InputLabel>
-
                 <Select
                   labelId="document_record-label"
                   id="document_record"
+                  size='small'
                   name="document_record"
                   disabled={inventoryNumberParam ? true : false}
                   value={formik.values.document_record}
                   label="ทะเบียนเอกสาร"
-                  sx={{ mt: 1 }}
+                  // sx={{ mt: 1 }}
                   onChange={formik.handleChange}
                 >
                   <MenuItem value="">ไม่เชื่อมโยง</MenuItem>

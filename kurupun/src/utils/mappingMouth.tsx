@@ -18,8 +18,6 @@ export const mappingMonthToThai = (month: string) => {
 import moment from 'moment-timezone';
 
 export const formatDateToThai = (dateString: string) => {
-  console.log(dateString);
-  
   if (!dateString) return '';
   const date = moment(dateString);
   const day = date.date();

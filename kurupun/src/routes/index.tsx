@@ -6,6 +6,8 @@ import Documents from '../pages/Document';
 import DocumentForm from '../pages/Document/form/form';
 import Inventories from '../pages/Inventory';
 import InventoryForm from '../pages/Inventory/form/form';
+import ManageInventory from '../pages/ManageInventory';
+import ManageInventoryForm from '../pages/ManageInventory/form';
 import RegisterPage from '../pages/Register';
 import Loader from '../components/Loader';
 import SidebarLayout from '../components/Sidebar';
@@ -66,6 +68,32 @@ const Router: React.FC = () => {
             element={
               <SidebarLayout>
                 <InventoryForm />
+              </SidebarLayout>
+            }
+          />
+          <Route
+            path="/manage-inventory"
+            element={
+              <SidebarLayout>
+                <ManageInventory />
+              </SidebarLayout>
+            }
+          />
+          <Route
+            path="/manage-inventory/create"
+            element={
+              <RequireAuth>
+                <SidebarLayout>
+                  <ManageInventoryForm />
+                </SidebarLayout>
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/manage-inventory/edit/:id"
+            element={
+              <SidebarLayout>
+                <ManageInventoryForm />
               </SidebarLayout>
             }
           />

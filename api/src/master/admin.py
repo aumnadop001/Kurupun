@@ -3,7 +3,7 @@ from src.master.models import ptype, pClass, gpscode, invoiceType, Description
 
 
 class DescriptionAdmin(admin.ModelAdmin):
-    list_display = ("id", "get_item_id", "Des_name", "class_id", "type_id", "gpsc_id")
+    list_display = ("id", "get_item_id","Des_name", "class_id", "type_id", "gpsc_id")
     list_filter = ("class_id", "type_id")
     search_fields = ("Des_name", "Des_id", "keyword")
     ordering = ("class_id", "type_id", "Des_id")

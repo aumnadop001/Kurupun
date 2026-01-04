@@ -78,6 +78,7 @@ class Description(models.Model):
         max_length=100, null=True, blank=True, verbose_name="รหัสรายละเอียด"
     )
     Des_name = models.TextField(blank=True, null=True, verbose_name="ชื่อรายละเอียด")
+
     gpsc_id = models.ForeignKey(
         gpscode,
         on_delete=models.SET_NULL,
